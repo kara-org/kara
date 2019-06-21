@@ -1,5 +1,6 @@
 __pycache__/
 *.pyc
+migrations
 .pytest_cache/
 node_modules
 .vscode/
