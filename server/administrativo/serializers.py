@@ -8,14 +8,47 @@ from .models import *
 
 REGEX_PASSWORD = re.compile('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,50}$')
 
+class EnderecoSerializer(serializers.ModelSerializer):
+    desabilitado = serializers.BooleanField(write_only=True)
+
+    class Meta:
+        model = Endereco
+        fields = ['usuario','id', 'logradouro', 'bairro', 'cidade', 'estado' , 'numero', 'principal', 'desabilitado' ]
+
+    def create(self, validated_data):
+        usuario_id = validated_data.pop('usuario')
+        usuario = Usuario.objects.get(id=usuario_id)
+
+        novo_end = Endereco(usuario=usuario, **validated_data)
+        novo_end.save()
+
+        return novo_end
+    
+class TelefoneSerializer(serializers.ModelSerializer):
+    desabilitado = serializers.BooleanField(write_only=True)
+
+    class Meta:
+        model = Telefone
+        fields = ['usuario','id', 'numero', 'whatsapp', 'desabilitado' ]
+
+    def create(self, validated_data):
+        usuario_id = validated_data.pop('usuario')
+        usuario = Usuario.objects.get(id=usuario_id)
+
+        novo_telefone = Telefone(usuario=usuario, **validated_data)
+        novo_telefone.save()
+
+        return novo_telefone
 
 class UsuarioSerializer(serializers.ModelSerializer):
     # password2 = serializers.CharField(max_length=128, read_only=True)
+    enderecos = serializers.ListField(child=EnderecoSerializer(), read_only=True)
+    telefones = serializers.ListField(child=TelefoneSerializer(), read_only=True)
 
     class Meta:
         model = Usuario
         fields = (
-                    'id', 'email', 'password', 'nome_completo', 'ultimo_login', 'cpf_cnpj', 'foto'
+                    'id', 'email', 'password', 'nome_completo', 'ultimo_login', 'cpf_cnpj', 'foto', 'enderecos', 'telefones'
                 )
 
 
@@ -47,35 +80,3 @@ class UsuarioSerializer(serializers.ModelSerializer):
     #     instance.save()
     #
     #     return instance
-
-class EnderecoSerializer(serializers.ModelSerializer):
-    desabilitado = serializers.BooleanField(write_only=True)
-
-    class Meta:
-        model = Endereco
-        fields = ['usuario','id', 'logradouro', 'bairro', 'cidade', 'estado' , 'numero', 'principal', 'desabilitado' ]
-
-    def create(self, validated_data):
-        usuario_id = validated_data.pop('usuario')
-        usuario = Usuario.objects.get(id=usuario_id)
-
-        novo_end = Endereco(usuario=usuario, **validated_data)
-        novo_end.save()
-
-        return novo_end
-
-class TelefoneSerializer(serializers.ModelSerializer):
-    desabilitado = serializers.BooleanField(write_only=True)
-
-    class Meta:
-        model = Telefone
-        fields = ['usuario','id', 'numero', 'whatsapp', 'desabilitado' ]
-
-    def create(self, validated_data):
-        usuario_id = validated_data.pop('usuario')
-        usuario = Usuario.objects.get(id=usuario_id)
-
-        novo_telefone = Telefone(usuario=usuario, **validated_data)
-        novo_telefone.save()
-
-        return novo_telefone

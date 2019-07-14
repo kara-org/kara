@@ -103,12 +103,12 @@ class Telefone(models.Model):
     desabilitado = models.BooleanField(default=False, blank=True, null=True)
 
     def save(self):
-        super(Endereco, self).save()
+        super(Telefone, self).save()
             
 
     def __str__(self):
         return self.bairro + " "+ self.cidade
 
     class Meta:
-        verbose_name = "Endereço"
-        verbose_name_plural = "Endereços"
+        verbose_name = "Telefone"
+        verbose_name_plural = "Telefones"
