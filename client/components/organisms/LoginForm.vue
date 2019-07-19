@@ -34,7 +34,15 @@
       <br>
       
      <button type="submit" class="button is-primary is-outlined is-medium is-rounded is-fullwidth"> Entrar</button>
-     
+     <div class="column  has-text-centered">
+      <nuxt-link
+          class="voltar is-primary is-inverted"
+          to="/"
+          exact-active-class="is-active"
+        >                      
+          Voltar
+        </nuxt-link>     
+      </div>
     </form>
   </section>
 </template>
@@ -55,9 +63,16 @@ export default {
                     email: this.email,
                     password: this.password
                 }
-            }).catch((erro) => {
+            }).catch((err) => {
+              console.error(err);
+              if(! err.response){
+                err.message = "Servidor desconectado"
+              } 
+              else if(err.response.status === 400){
+                err.message = err.response.data.non_field_errors[0]
+              }              
               this.$toast.open({
-                message: erro,
+                message: err.message,
                 type: 'is-danger',
                 position: 'is-bottom'
               })     
@@ -67,8 +82,11 @@ export default {
          this.$toast.open({
           message: e.response.data.message,
           type: 'is-danger',
-          position: 'is-bottom'
+          position: 'is-bottom'        
         })
+        
+        return
+        
       }
     },
 

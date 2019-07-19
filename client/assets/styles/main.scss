@@ -1,12 +1,13 @@
 // @import './bulma/sass/utilities/_all.sass';
-@import "~bulma/sass/utilities/initial-variables";
-@import "~bulma/sass/utilities/functions";
+@import '~bulma/sass/utilities/initial-variables';
+@import '~bulma/sass/utilities/functions';
 
 @import './variables';
 
-@import "~bulma";
-@import "~buefy/src/scss/buefy";
+@import '~bulma';
+@import '~buefy/src/scss/buefy';
 
+@import './transitions';
 
 
 a {

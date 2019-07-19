@@ -60,12 +60,12 @@ export default {
     strategies: {
       local: {
         endpoints: {
-          login: { url: 'login/', method: 'post', propertyName: 'data.token' },
+          login: { url: 'login/', method: 'post', propertyName: 'token'  },
+          user: { url: 'usuarios/', method: 'get', propertyName: false },
           logout: false,
-          user: { url: 'usuarios/', method: 'get', propertyName: false }
         },
-        // tokenRequired: true,
-        // tokenType: 'bearer'
+        tokenRequired: true,
+        tokenType: 'JWT '
       }
     }
   },
