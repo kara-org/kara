@@ -9,11 +9,11 @@ from .models import *
 REGEX_PASSWORD = re.compile('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,50}$')
 
 class EnderecoSerializer(serializers.ModelSerializer):
-    desabilitado = serializers.BooleanField(write_only=True)
+    desabilitado = serializers.BooleanField(write_only=True, required=False)
 
     class Meta:
         model = Endereco
-        fields = ['usuario','id', 'logradouro', 'bairro', 'cidade', 'estado' , 'numero', 'principal', 'desabilitado' ]
+        fields = ['id', 'logradouro', 'bairro', 'cidade', 'estado' , 'numero', 'principal', 'desabilitado' ]
 
     def create(self, validated_data):
         usuario_id = validated_data.pop('usuario')
@@ -25,11 +25,11 @@ class EnderecoSerializer(serializers.ModelSerializer):
         return novo_end
     
 class TelefoneSerializer(serializers.ModelSerializer):
-    desabilitado = serializers.BooleanField(write_only=True)
+    desabilitado = serializers.BooleanField(write_only=True, required=False)
 
     class Meta:
         model = Telefone
-        fields = ['usuario','id', 'numero', 'whatsapp', 'desabilitado' ]
+        fields = ['id', 'numero', 'whatsapp', 'desabilitado' ]
 
     def create(self, validated_data):
         usuario_id = validated_data.pop('usuario')
@@ -41,14 +41,14 @@ class TelefoneSerializer(serializers.ModelSerializer):
         return novo_telefone
 
 class UsuarioSerializer(serializers.ModelSerializer):
-    # password2 = serializers.CharField(max_length=128, read_only=True)
+    password = serializers.CharField(max_length=128, write_only=True)
     enderecos = serializers.ListField(child=EnderecoSerializer(), read_only=True)
     telefones = serializers.ListField(child=TelefoneSerializer(), read_only=True)
 
     class Meta:
         model = Usuario
         fields = (
-                    'id', 'email', 'password', 'nome_completo', 'ultimo_login', 'cpf_cnpj', 'foto', 'enderecos', 'telefones'
+                    'id', 'email', 'password', 'nome_completo', 'ultimo_login', 'cpf_cnpj', 'foto', 'enderecos', 'telefones', 'perfil_institucional', 'biografia'
                 )
 
 
@@ -62,17 +62,13 @@ class UsuarioSerializer(serializers.ModelSerializer):
     #
     #     return data
     #
-    # def create(self, validated_data):
-    #
-    #     obj, created = Usuario.objects.create_user(
-    #         email=validated_data['email'],
-    #         password=validated_data['password'],
-    #     )
-    #
-    #     if not created:
-    #         raise IntegrityError('Usuário já existe.')
-    #     else:
-    #         return obj
+    def create(self, validated_data):
+    
+        try:
+            Usuario.objects.create_user(**validated_data)
+            return obj
+        except Exception as e:
+            raise IntegrityError('Usuário já existe.')
     #
     # def update(self, instance, validated_data):
     #     instance.email = validated_data.get('email', instance.email)

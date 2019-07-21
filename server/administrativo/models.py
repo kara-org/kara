@@ -39,7 +39,8 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     cpf_cnpj = models.CharField("CPF/CNPJ", max_length=20, blank=True, null=True)
     foto = models.ImageField("Foto", upload_to= "foto", blank=True)
     desabilitado = models.BooleanField(default=False, blank=True, null=True)
-
+    perfil_institucional = models.BooleanField(default=False, blank=True, null=True)
+    biografia = models.TextField("História", blank=True, null=True)
 
     def save(self, *args, **kwargs):
         return super(Usuario, self).save(*args, **kwargs)
