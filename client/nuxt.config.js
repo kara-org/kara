@@ -27,13 +27,14 @@ export default {
   ],
 
   styleResources: {
-    scss: ['~assets/styles/main.scss'] 
+    scss: ['~assets/styles/main.scss']
   },
   /*
   ** Plugins to load before mounting the App
   */
   plugins: [
-    {src: '~/plugins/vee-validate'},
+    { src: '~/plugins/vee-validate' },
+    { src: '~/plugins/via-cep' },
   ],
   /*
   ** Nuxt.js modules
@@ -60,12 +61,12 @@ export default {
     strategies: {
       local: {
         endpoints: {
-          login: { url: 'login/', method: 'post', propertyName: 'data.token' },
+          login: { url: 'login/', method: 'post', propertyName: 'token' },
+          user: { url: 'usuarios/', method: 'get', propertyName: false },
           logout: false,
-          user: { url: 'usuarios/', method: 'get', propertyName: false }
         },
-        // tokenRequired: true,
-        // tokenType: 'bearer'
+        tokenRequired: true,
+        tokenType: 'JWT '
       }
     }
   },
