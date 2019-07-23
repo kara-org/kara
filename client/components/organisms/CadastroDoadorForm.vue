@@ -11,7 +11,12 @@
         :type="{'is-danger': errors.has('Nome')}"
         :message="errors.first('Nome')"
       >
-        <b-input type="text" v-model.trim="fullName" name="Nome" v-validate="'required'"></b-input>
+        <b-input
+          type="text"
+          v-model.trim="usuario.nome_completo"
+          name="Nome"
+          v-validate="'required'"
+        ></b-input>
       </b-field>
       <div v-show="pessoaFisica">
         <b-field
@@ -21,7 +26,7 @@
         >
           <b-input
             type="text"
-            v-model.trim="cpf"
+            v-model.trim="usuario.cpf_cnpj"
             name="CPF"
             v-cleave="masks.cpf"
             maxlength="14"
@@ -37,7 +42,7 @@
         >
           <b-input
             type="text"
-            v-model.trim="cnpj"
+            v-model.trim="usuario.cpf_cnpj"
             maxlength="18"
             v-cleave="masks.cnpj"
             name="CNPJ"
@@ -52,14 +57,14 @@
       >
         <b-input
           type="text"
-          v-model.trim="phoneNumber"
+          v-model.trim="usuario.telefone.numero"
           v-cleave="masks.phone"
           maxlength="15"
           name="Telefone"
           v-validate="'required|phone'"
         ></b-input>
       </b-field>
-      <b-checkbox v-model="whatsapp" type="is-black">
+      <b-checkbox v-model="usuario.telefone.whatsapp" type="is-black">
         Whatsapp?
         <img width="15" src="~assets/wpp-icon.png" />
       </b-checkbox>
@@ -68,7 +73,12 @@
         :type="{'is-danger': errors.has('Email')}"
         :message="errors.first('Email')"
       >
-        <b-input type="text" v-model.trim="email" name="Email" v-validate="'required|email'" />
+        <b-input
+          type="text"
+          v-model.trim="usuario.email"
+          name="Email"
+          v-validate="'required|email'"
+        />
       </b-field>
       <b-field
         label="Senha"
@@ -78,7 +88,7 @@
         <b-input
           type="password"
           name="Senha"
-          v-model="password"
+          v-model="usuario.password"
           v-validate="'required|min:8'"
           ref="Senha"
         />
@@ -128,16 +138,18 @@ import cleave from '@/plugins/cleave-directive.js'
 export default {
   data() {
     return {
+      usuario: {
+        nome_completo: null,
+        cpf_cnpj: null,
+        telefone: {
+          numero: null,
+          whatsapp: false
+        },
+        email: null,
+        password: null
+      },
       pessoaFisica: true,
-      fullName: null,
-      cpf: '',
-      cnpj: null,
-      razaoSocial: null,
-      phoneNumber: null,
-      email: null,
-      password: null,
       passwordConfirm: null,
-      whatsapp: false,
       sucess: false, //toremove
       masks: {
         cpf: {
@@ -160,9 +172,29 @@ export default {
   },
   methods: {
     async register() {
-      setTimeout(() => {
-        this.sucess = true
-      }, 1000)
+      try {
+        var headers = {
+          Authorization:
+            'JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6Impfa0Bob3RtYWlsLmNvbSIsImV4cCI6MTU2Mzg5NzU1MiwiZW1haWwiOiJqX2tAaG90bWFpbC5jb20ifQ.2ZfE1kqMJ01kFD8v1Q78VJc_WG-Kl-UKoKrUYCczMi8'
+        }
+        await this.$axios.post('usuarios/', this.usuario).catch(err => {
+          console.error(err)
+          if (!err.response) {
+            err.message = 'Servidor desconectado'
+          } else if (err.response.status === 400) {
+            err.message = err.response.data.non_field_errors[0]
+          }
+          this.$toast.open({
+            message: err.message,
+            type: 'is-danger',
+            position: 'is-bottom'
+          })
+        })
+        /* this.$router.push('/') */
+      } catch (e) {
+        this.error = e.response.data.message
+      }
+      console.log(await this.$axios.get('usuarios/', headers))
     },
     validateBeforeSubmit() {
       console.log(this.pessoaFisica)

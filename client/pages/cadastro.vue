@@ -2,12 +2,12 @@
   <div>
     <div class="tabs is-centered is-toggle is-toggle-rounded">
       <ul>
-        <li @click="pessoaFisica = true" :class="pessoaFisica ? 'is-active' : 'is-d'">
+        <li @click="doador = true" :class="doador ? 'is-active' : 'is-d'">
           <a>
             <span>DOADOR</span>
           </a>
         </li>
-        <li @click="pessoaFisica = false" :class="!pessoaFisica ? 'is-active' : 'is-d'">
+        <li @click="doador = false" :class="!doador ? 'is-active' : 'is-d'">
           <a>
             <span>ONG</span>
           </a>
@@ -24,7 +24,7 @@
                   <img class="logo" src="~assets/kara-negativo.png" alt="logo" width="400" />
                 </h1>
                 <hr />
-                <CadastroDoadorForm v-if="pessoaFisica" />
+                <CadastroDoadorForm v-if="doador" />
                 <CadastroOngForm v-else />
               </div>
             </article>
@@ -46,7 +46,7 @@ export default {
   },
   data() {
     return {
-      pessoaFisica: true
+      doador: true
     }
   }
 }
