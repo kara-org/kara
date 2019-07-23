@@ -1,0 +1,11 @@
+h1 {
+  padding-top: 1.5em;
+
+  &.is-primary {
+    color: $primary;
+  }
+
+  &.is-centered {
+    text-align: center;
+  }
+}
