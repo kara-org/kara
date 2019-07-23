@@ -1,15 +1,16 @@
 <template>
   <div>
+
     <div class="tabs is-centered is-toggle is-toggle-rounded">
       <ul>
-        <li @click="pessoaFisica = true" :class="pessoaFisica ? 'is-active' : 'is-d'">
+        <li @click="isDoador = true" :class="isDoador ? 'is-active' : 'is-d'">
           <a>
-            <span>DOADOR</span>
+            <span>SOU DOADOR</span>
           </a>
         </li>
-        <li @click="pessoaFisica = false" :class="!pessoaFisica ? 'is-active' : 'is-d'">
+        <li @click="isDoador = false" :class="!isDoador ? 'is-active' : 'is-d'">
           <a>
-            <span>ONG</span>
+            <span>SOU UMA ONG</span>
           </a>
         </li>
       </ul>
@@ -18,13 +19,9 @@
       <div class="hero-body">
         <div class="container">
           <div class="columns is-centered">
-            <article class="card is-rounded" style="width:400px">
+            <article class="card is-rounded" style="width:600px">
               <div class="card-content">
-                <h1 class="title">
-                  <img class="logo" src="~assets/kara-negativo.png" alt="logo" width="400" />
-                </h1>
-                <hr />
-                <CadastroDoadorForm v-if="pessoaFisica" />
+                <CadastroDoadorForm v-if="isDoador" />
                 <CadastroOngForm v-else />
               </div>
             </article>
@@ -46,7 +43,7 @@ export default {
   },
   data() {
     return {
-      pessoaFisica: true
+      isDoador: true
     }
   }
 }

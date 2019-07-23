@@ -17,6 +17,7 @@ export default class Api extends Service {
    * @param {Object} record
    */
   create (record) {
+
     return promise({status: 'CREATE'})
   }
 

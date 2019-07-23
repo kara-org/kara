@@ -2,13 +2,11 @@
 @import '~bulma/sass/utilities/initial-variables';
 @import '~bulma/sass/utilities/functions';
 
-@import './variables';
+@import 'variables';
 
 @import '~bulma';
 @import '~buefy/src/scss/buefy';
 
-@import './transitions';
-
-a {
-  color: $primary;
-}
+@import 'transitions';
+@import 'atoms/links';
+@import 'atoms/titles';
