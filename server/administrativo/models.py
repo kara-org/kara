@@ -32,10 +32,15 @@ class UsuarioManager(BaseUserManager):
 class Usuario(AbstractBaseUser, PermissionsMixin):
 
     email = models.EmailField(unique=True)
-    nome_completo = models.CharField(max_length=255)
+    nome_completo = models.CharField("Nome completo", max_length=255, blank=True, null=True)
     ativo = models.BooleanField(default=True)
-    ultimo_login = models.DateTimeField(blank=True, null=True)
+    ultimo_login = models.DateTimeField(auto_now_add=True)
     usuario_api = models.BooleanField(default=False)
+    cpf_cnpj = models.CharField("CPF/CNPJ", max_length=20, blank=True, null=True)
+    foto = models.ImageField("Foto", upload_to= "foto", blank=True)
+    desabilitado = models.BooleanField(default=False, blank=True, null=True)
+    perfil_institucional = models.BooleanField(default=False, blank=True, null=True)
+    biografia = models.TextField("História", blank=True, null=True)
 
     def save(self, *args, **kwargs):
         return super(Usuario, self).save(*args, **kwargs)
@@ -44,7 +49,6 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
     #REQUIRED_FIELDS = ['']
-    #teste
     class Meta:
         verbose_name = 'Usuário'
 
@@ -64,3 +68,48 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     @property
     def is_active(self):
         return self.ativo
+
+class Endereco(models.Model):
+    usuario = models.ForeignKey("Usuario", on_delete=models.DO_NOTHING, blank=True)
+    logradouro = models.TextField("Logradouro")
+    bairro = models.CharField("Bairro", max_length=30)
+    cidade = models.CharField("Cidade", max_length=30)
+    estado = models.CharField("Estado", max_length=30)
+    numero = models.IntegerField("Número")
+    principal = models.BooleanField("Principal?")
+    desabilitado = models.BooleanField(default=False, blank=True, null=True)
+
+
+    def save(self):
+        if self.principal == True:
+            query = Endereco.objects.filter(principal=True)
+            if query.exists:
+                for elemento in query:
+                    elemento.principal = False
+                    elemento.save()
+        super(Endereco, self).save()
+            
+
+    def __str__(self):
+        return self.bairro + " "+ self.cidade
+
+    class Meta:
+        verbose_name = "Endereço"
+        verbose_name_plural = "Endereços"
+
+class Telefone(models.Model):
+    usuario = models.ForeignKey("Usuario", on_delete=models.DO_NOTHING, blank=True)
+    numero = models.IntegerField("Número")
+    whatsapp = models.BooleanField("Principal?")
+    desabilitado = models.BooleanField(default=False, blank=True, null=True)
+
+    def save(self):
+        super(Telefone, self).save()
+            
+
+    def __str__(self):
+        return self.bairro + " "+ self.cidade
+
+    class Meta:
+        verbose_name = "Telefone"
+        verbose_name_plural = "Telefones"
