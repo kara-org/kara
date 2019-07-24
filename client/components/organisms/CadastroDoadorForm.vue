@@ -173,10 +173,6 @@ export default {
   methods: {
     async register() {
       try {
-        var headers = {
-          Authorization:
-            'JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6Impfa0Bob3RtYWlsLmNvbSIsImV4cCI6MTU2Mzg5NzU1MiwiZW1haWwiOiJqX2tAaG90bWFpbC5jb20ifQ.2ZfE1kqMJ01kFD8v1Q78VJc_WG-Kl-UKoKrUYCczMi8'
-        }
         await this.$axios.post('usuarios/', this.usuario).catch(err => {
           console.error(err)
           if (!err.response) {
@@ -194,7 +190,6 @@ export default {
       } catch (e) {
         this.error = e.response.data.message
       }
-      console.log(await this.$axios.get('usuarios/', headers))
     },
     validateBeforeSubmit() {
       console.log(this.pessoaFisica)

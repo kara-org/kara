@@ -22,23 +22,19 @@
           v-validate="'required|min:8'"
         />
       </b-field>
-      <hr />
-      <div class="column has-text-centered">
-        <span>Esqueceu a senha?</span>
+        <div class="level has-text-centered">
         <nuxt-link
           class="is-primary is-inverted"
           to="/esqueciSenha"
           exact-active-class="is-active"
-        >Resete sua senha</nuxt-link>
+        >Esqueci minha senha</nuxt-link>
         <br />
-        <span>Não é usuário?</span>
         <nuxt-link
           class="is-primary is-inverted"
           to="/cadastro"
           exact-active-class="is-active"
-        >Cadastre-se</nuxt-link>
+        >Não sou cadastrado</nuxt-link>
       </div>
-      <hr />
       <button
         type="submit"
         class="button is-primary is-outlined is-medium is-rounded is-fullwidth"
@@ -64,37 +60,21 @@ export default {
   },
   methods: {
     async login() {
-      try {
-        this.$auth
-          .loginWith('local', {
-            data: {
-              email: this.email,
-              password: this.password
-            }
-          })
-          .catch(err => {
-            console.error(err)
-            if (!err.response) {
-              err.message = 'Servidor desconectado'
-            } else if (err.response.status === 400) {
-              err.message = err.response.data.non_field_errors[0]
-            }
-            this.$toast.open({
-              message: err.message,
-              type: 'is-danger',
-              position: 'is-bottom'
-            })
-          })
-        // this.$router.push('/')
-      } catch (e) {
-        this.$toast.open({
-          message: e.response.data.message,
-          type: 'is-danger',
-          position: 'is-bottom'
-        })
+        await this.$LoginService.login(this.email, this.password)
+                .catch((err) => {
+                  if (!err.response) {
+                    err.message = 'Servidor desconectado'
+                  } else if (err.response.status === 400) {
+                    err.message = "Login ou senha inválidos, confira os dados e tente novamente"
+                  }
 
-        return
-      }
+                  this.$toast.open({
+                    message: err.message,
+                    type: 'is-danger',
+                    position: 'is-bottom'
+                  })
+                return
+              })
     },
 
     validateBeforeSubmit() {

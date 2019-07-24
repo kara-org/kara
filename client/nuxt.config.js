@@ -35,6 +35,9 @@ export default {
   plugins: [
     { src: '~/plugins/vee-validate' },
     { src: '~/plugins/via-cep' },
+    { src: '~/plugins/axios' },
+    { src: '~/plugins/services' },
+
   ],
   /*
   ** Nuxt.js modules
@@ -54,7 +57,7 @@ export default {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-    baseURL: "http://localhost:8000/api/"
+    baseURL: "http://localhost:8000/api/",
   },
 
   auth: {
@@ -68,7 +71,8 @@ export default {
         tokenRequired: true,
         tokenType: 'JWT '
       }
-    }
+    },
+    plugins: [ '~/plugins/auth.js' ]
   },
   /*
   ** Build configuration

@@ -1,19 +1,13 @@
 <template>
   <section class="hero is-fullheight is-medium  is-bold">
-    <div class="hero-body">      
+    <div class="hero-body">
       <div class="container">
         <div class="columns is-centered">
           <article class="card is-rounded" style="width:400px">
             <div class="card-content">
               <h1 class="title">
-                <img
-                  class="logo"
-                  src="~assets/kara-negativo.png"
-                  alt="logo"
-                  width="400"
-                />                
+                <Logo width="250" />
               </h1>
-              <hr>
               <LoginForm />
             </div>
           </article>
@@ -24,18 +18,22 @@
 </template>
 
 <script>
+import Logo from '../components/atoms/Logo'
 import LoginForm from '../components/organisms/LoginForm'
+
 export default {
-  layout: 'default',
+  layout: 'empty',
   components: {
-    LoginForm
+    LoginForm,
+    Logo
   }
 }
 </script>
 
 
 <style lang="scss" scoped>
-  .logo {
-    padding: 10px 40px;
-  }  
+  .hero-body {
+    padding-top: 5em !important;
+  }
+
 </style>

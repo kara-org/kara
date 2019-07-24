@@ -35,6 +35,7 @@
 <script>
 import CadastroDoadorForm from '@/components/organisms/CadastroDoadorForm'
 import CadastroOngForm from '@/components/organisms/CadastroOngForm'
+
 export default {
   layout: 'default',
   components: {

@@ -47,7 +47,7 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .filtro input {
   border-radius: 50px;
 }
@@ -61,7 +61,6 @@ export default {
 .title,
 .subtitle {
   color: $white;
-
   span {
     background: $primary;
     font-weight: bold;
