@@ -32,12 +32,8 @@ def gerar_senha():
     senhalist = list(senha)
     random.shuffle(senhalist)
     return (''.join(senhalist))
-
-# @permission_classes((AllowAny, ))
-# class UsuarioPublicView(viewsets.ViewSet):
     
-
-
+@permission_classes((AllowAny, ))
 class UsuarioView(viewsets.ViewSet):
     serializer_class = UsuarioSerializer
 
