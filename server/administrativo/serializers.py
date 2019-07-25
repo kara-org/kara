@@ -9,6 +9,18 @@ from .models import Usuario
 REGEX_PASSWORD = re.compile('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,50}$')
 
 
+class SolicitacaoRecuperarSenhaUsuarioSerializer(serializers.ModelSerializer):
+    class UsuarioSerializer(serializers.ModelSerializer):
+
+        email = serializers.EmailField(max_length=255)
+
+        class Meta:
+            model = Usuario
+            fields = (
+                'email', 'password'
+            )
+
+
 class UsuarioSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(max_length=128, write_only=True)
 
