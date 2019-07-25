@@ -20,10 +20,15 @@
     </div>
     <div class="perfil-auth navbar-item media" v-else >
       <figure class="image media-left is-32x32">
-        <img class="is-rounded" src="https://bulma.io/images/placeholders/128x128.png">
+        <img class="is-rounded" :src="user.foto">
       </figure>
       <div class="media-content">
-        <strong>John Smith</strong> <small>@johnsmith</small>
+        <span><small>Bem vindo!</small> </span> <span><strong>{{ userName }}</strong></span>
+      </div>
+      <div class="media-right">
+        <a href="#" class="nav-link" @click="logout">
+          sair
+        </a>
       </div>
     </div>
 
@@ -35,7 +40,7 @@ import { mapGetters } from 'vuex'
 export default {
     data () {
       return {
-        user: {}
+
       }
     },
     computed: {
@@ -44,7 +49,45 @@ export default {
       },
       user () {
         return this.$auth.user
+      },
+      userName (){
+        return this.user.nome_completo.split(' ')[0]
       }
     },
+    methods: {
+      logout: function () {
+        this.$dialog.confirm({
+            message: 'Deseja mesmo Sair?',
+            confirmText: 'Sim',
+            onConfirm: () => {
+              this.$auth.logout()
+              this.$router.push('/')
+              this.$toast.open('Logout Realizado com sucesso')
+            }
+        })
+
+
+      }
+    }
 }
 </script>
+
+<style lang="scss" scoped>
+.buttons-auth {
+  display: flex;
+  height: 100%;
+}
+.perfil-auth {
+  img {
+    width: auto
+  }
+
+  .media-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+}
+
+</style>
+

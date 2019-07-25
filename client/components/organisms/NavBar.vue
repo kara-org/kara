@@ -26,18 +26,15 @@
       </div>
       <div class="navbar-menu">
         <div class="navbar-start">
-          <a
+            <nuxt-link
               class="navbar-item"
               v-for="(item, key) of items"
               :key="key"
+              :to="item.to"
+              exact-active-class="is-active"
             >
-              <nuxt-link
-                :to="item.to"
-                exact-active-class="is-active"
-              >
-                <b-icon :icon="item.icon" /> {{ item.title }}
-              </nuxt-link>
-            </a>
+              <b-icon :icon="item.icon" /> {{ item.title }}
+            </nuxt-link>
         </div>
         <div class="navbar-end">
           <LoginNavItem />

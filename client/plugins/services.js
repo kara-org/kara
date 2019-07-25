@@ -11,7 +11,7 @@ export default (ctx, inject) => {
   const serviceOng = composite(serviceDefault('/ong/'), "$doacoes", doacoesService)
   const serviceDoador = composite(serviceDefault('/doador/'),"$doacoes", doacoesService)
 
-  inject('UsuarioService', serviceDefault('/usuarios/'))
+  inject('UsuarioService', serviceDefault('/usuario/'))
   inject('NovoService', serviceDefault('/url/'))
   inject('OngService', serviceOng)
   inject('DoadorService', serviceDoador)

@@ -23,7 +23,7 @@ export default {
   methods: {
   },
   mounted: async function () {
-    this.ip = await this.$OngService.index()
+    this.ip = await this.$UsuarioService.index()
   }
 }
 </script>

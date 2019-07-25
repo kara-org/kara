@@ -66,7 +66,7 @@ export default {
         endpoints: {
           login: { url: 'login/', method: 'post', propertyName: 'token' },
           logout: false,
-          user: { url: 'usuarios/', method: 'get', propertyName: false },
+          user: { url: 'auth/usuario/', method: 'get', propertyName: false },
         },
         tokenRequired: true,
         tokenType: 'JWT '
