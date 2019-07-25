@@ -1,6 +1,6 @@
 <template>
   <section class="hero is-fullheight is-medium  is-bold">
-    <div class="hero-body">
+    <div class="hero-body">      
       <div class="container">
         <div class="columns is-centered">
           <article class="card is-rounded" style="width:400px">
@@ -36,5 +36,5 @@ export default {
 <style lang="scss" scoped>
   .logo {
     padding: 10px 40px;
-  }
+  }  
 </style>
