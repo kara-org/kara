@@ -36,11 +36,10 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     ativo = models.BooleanField(default=True)
     ultimo_login = models.DateTimeField(auto_now_add=True)
     usuario_api = models.BooleanField(default=False)
-    cpf_cnpj = models.CharField("CPF/CNPJ", max_length=20, blank=True, null=True)
-    foto = models.ImageField("Foto", upload_to= "foto", blank=True)
-    desabilitado = models.BooleanField(default=False, blank=True, null=True)
-    perfil_institucional = models.BooleanField(default=False, blank=True, null=True)
-    biografia = models.TextField("História", blank=True, null=True)
+    cpf = models.CharField("CPF", max_length=20, blank=True, null=True)
+    foto = models.ImageField("Foto", upload_to= "foto", blank=True, null=True)
+    vinculo_ong = models.BooleanField(default=False, blank=True, null=True)
+    endereco = models.ForeignKey("Endereco", on_delete=models.DO_NOTHING, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         return super(Usuario, self).save(*args, **kwargs)
@@ -70,7 +69,6 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
         return self.ativo
 
 class Endereco(models.Model):
-    usuario = models.ForeignKey("Usuario", on_delete=models.DO_NOTHING, blank=True)
     logradouro = models.TextField("Logradouro")
     bairro = models.CharField("Bairro", max_length=30)
     cidade = models.CharField("Cidade", max_length=30)
@@ -78,7 +76,6 @@ class Endereco(models.Model):
     numero = models.IntegerField("Número")
     principal = models.BooleanField("Principal?")
     desabilitado = models.BooleanField(default=False, blank=True, null=True)
-
 
     def save(self):
         if self.principal == True:
@@ -98,7 +95,7 @@ class Endereco(models.Model):
         verbose_name_plural = "Endereços"
 
 class Telefone(models.Model):
-    usuario = models.ForeignKey("Usuario", on_delete=models.DO_NOTHING, blank=True)
+    usuario = models.ForeignKey("Usuario", related_name="telefone", on_delete=models.DO_NOTHING, blank=True, null=True)
     numero = models.IntegerField("Número")
     whatsapp = models.BooleanField("Principal?")
     desabilitado = models.BooleanField(default=False, blank=True, null=True)
@@ -107,9 +104,53 @@ class Telefone(models.Model):
         super(Telefone, self).save()
             
 
-    def __str__(self):
-        return self.bairro + " "+ self.cidade
-
     class Meta:
+        
         verbose_name = "Telefone"
         verbose_name_plural = "Telefones"
+        
+class UsuarioPertenceOng(models.Model):
+    usuario = models.OneToOneField("Usuario", on_delete=models.DO_NOTHING)
+    ong = models.OneToOneField("Ong", on_delete=models.DO_NOTHING)
+    data_inicio = models.DateTimeField(auto_now_add=True)
+    ativo = models.BooleanField(default=True)
+
+    def __str__(self):
+        return str(self.id)
+
+    class Meta:
+        verbose_name = "UsuarioPertenceOng"
+        verbose_name_plural = "UsuarioPertenceOng"
+        
+class Ong(models.Model):
+    cnpj = models.CharField("CPF", max_length=20, blank=True, null=True)
+    historia = models.TextField(blank=True, null=True)
+    ativo = models.BooleanField(default=True)
+    ultimo_login = models.DateTimeField(auto_now_add=True)
+    
+class Status(models.Model):
+    codigo_status = models.IntegerField("Código status")
+    mensagem = models.CharField("Mensagem", max_length=255)
+    
+class Demanda(models.Model):
+    ong = models.OneToOneField("Ong", on_delete=models.DO_NOTHING)
+    produto = models.CharField("Produto", max_length=255)
+    quantidade_esperada = models.CharField("Quantidade", max_length=20)
+    quantidade_alcancada = models.CharField("Quantidade alcançada", max_length=20)
+    unidade = models.CharField("Unidade", max_length=5)
+    data_inicio = models.DateField("Data inicial")
+    data_fim = models.DateField("Data fim")
+    sem_limite = models.BooleanField(default=True)
+    status = models.ForeignKey("Status", on_delete=models.DO_NOTHING)
+
+
+class Doacao(models.Model):
+    usuario = models.OneToOneField("Usuario", on_delete=models.DO_NOTHING)
+    ong = models.OneToOneField("Ong", on_delete=models.DO_NOTHING)    
+    demanda = models.OneToOneField("Demanda", on_delete=models.DO_NOTHING) 
+    quantidade_reservada = models.CharField("Quantidade reservada", max_length=20)
+    data_agendamento = models.DateField("Data agendamento")
+    status = models.ForeignKey("Status", on_delete=models.DO_NOTHING)
+
+
+     

@@ -12,6 +12,24 @@ class EnderecoAdmin(admin.ModelAdmin):
 class TelefoneAdmin(admin.ModelAdmin):
     model = Telefone
 
-@admin.register(Usuario)
-class UsuarioAdmin(admin.ModelAdmin):
-    model = Usuario 
+@admin.register(Ong)
+class OngAdmin(admin.ModelAdmin):
+    model = Ong 
+    
+    
+@admin.register(Status)
+class StatusAdmin(admin.ModelAdmin):
+    model = Status 
+
+@admin.register(Demanda)
+class DemandaAdmin(admin.ModelAdmin):
+    model = Demanda 
+
+@admin.register(Doacao)
+class DoacaoAdmin(admin.ModelAdmin):
+    model = Doacao 
+
+@admin.register(UsuarioPertenceOng)
+class UsuarioPertenceOngAdmin(admin.ModelAdmin):
+    model = UsuarioPertenceOng 
+
