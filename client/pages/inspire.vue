@@ -7,15 +7,23 @@
       />"
     </h2>
     <h3 class="subtitle is-6 has-text-grey">
-      Author: <a href="https://github.com/anteriovieira">
-        Kara Org
-      </a>
+      {{ ip }}
     </h3>
   </section>
 </template>
 
 <script>
 export default {
-  middleware: 'auth'
+  middleware: 'auth',
+  data () {
+    return {
+      ip: ''
+    }
+  },
+  methods: {
+  },
+  mounted: async function () {
+    this.ip = await this.$OngService.index()
+  }
 }
 </script>

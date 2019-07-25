@@ -1,9 +1,33 @@
 import Vue from 'vue'
-import VeeValidate from 'vee-validate'
+import VeeValidate, { Validator } from 'vee-validate'
+import br from "vee-validate/dist/locale/pt_BR";
+import { isCNPJ, isCPF, isCEP } from 'brazilian-values'
 
+Validator.localize({ pt_BR: br });
 
-
-Vue.use(VeeValidate, {  
-  inject: true,
-  fieldsBagName: 'veeFields',
+Validator.extend('cpf', {
+    getMessage: field => 'O campo ' + field + ' deve ser um CPF válido.',
+    validate: value => isCPF(value)
 });
+
+Validator.extend('cnpj', {
+    getMessage: field => 'O campo ' + field + ' deve ser um CNPJ válido.',
+    validate: value => isCNPJ(value)
+});
+
+Validator.extend('cep', {
+    getMessage: field => 'O campo ' + field + ' deve ser um CEP válido.',
+    validate: value => isCEP(value)
+});
+
+Validator.extend('phone', {
+    getMessage: field => 'O campo ' + field + ' deve ser um Telefone válido.',
+    validate: value => isPhone(value)
+});
+
+function isPhone(tel) {
+    var exp = /\(\d{2}\)\ \d{4}\-\d{4}/
+    return !exp.test(tel) ? false : true
+}
+
+Vue.use(VeeValidate, { locale: 'pt_BR' });

@@ -27,13 +27,17 @@ export default {
   ],
 
   styleResources: {
-    scss: ['~assets/styles/main.scss'] 
+    scss: ['~assets/styles/main.scss']
   },
   /*
   ** Plugins to load before mounting the App
   */
   plugins: [
-    {src: '~/plugins/vee-validate'},
+    { src: '~/plugins/vee-validate' },
+    { src: '~/plugins/via-cep' },
+    { src: '~/plugins/axios' },
+    { src: '~/plugins/services' },
+
   ],
   /*
   ** Nuxt.js modules
@@ -53,21 +57,22 @@ export default {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-    baseURL: "http://localhost:8000/api/"
+    baseURL: "http://localhost:8000/api/",
   },
 
   auth: {
     strategies: {
       local: {
         endpoints: {
-          login: { url: 'login/', method: 'post', propertyName: 'token'  },
-          user: { url: 'usuarios/', method: 'get', propertyName: false },
+          login: { url: 'login/', method: 'post', propertyName: 'token' },
           logout: false,
+          user: { url: 'usuarios/', method: 'get', propertyName: false },
         },
         tokenRequired: true,
         tokenType: 'JWT '
       }
-    }
+    },
+    plugins: [ '~/plugins/auth.js' ]
   },
   /*
   ** Build configuration

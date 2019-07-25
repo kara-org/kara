@@ -1,5 +1,5 @@
 <template>
-  <section class="hero is-fullheight is-medium  is-bold">
+  <section class="hero is-fullheight is-medium is-bold">
     <div class="hero-body">
       <div class="container">
         <div class="columns is-centered">
@@ -8,7 +8,7 @@
               <h1 class="title">
                 <Logo width="250" />
               </h1>
-              <LoginForm />
+              <ForgotForm />
             </div>
           </article>
         </div>
@@ -18,13 +18,12 @@
 </template>
 
 <script>
+import ForgotForm from '../components/organisms/ForgotForm'
 import Logo from '../components/atoms/Logo'
-import LoginForm from '../components/organisms/LoginForm'
-
 export default {
-  layout: 'empty',
+  layout: 'default',
   components: {
-    LoginForm,
+    ForgotForm,
     Logo
   }
 }
@@ -32,8 +31,12 @@ export default {
 
 
 <style lang="scss" scoped>
-  .hero-body {
-    padding-top: 5em !important;
-  }
+.logo {
+  padding: 10px 40px;
+}
+
+.hero-body {
+  padding-top: 5em !important;
+}
 
 </style>
