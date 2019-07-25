@@ -5,13 +5,17 @@ from django.db.models import Q
 from .models import *
 from .serializers import *
 
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import AllowAny
 
+
+@permission_classes((AllowAny, ))
 class UsuarioView(viewsets.ViewSet):
     serializer_class = UsuarioSerializer
 
     def list(self, request):
 
-        usuarios = Usuario.objects.filter(desabilitado=False)
+        usuarios = Usuario.objects.filter(ativo=True)
         for u in usuarios:
             u.enderecos = Endereco.objects.filter(usuario=u.pk, desabilitado = False)
             u.telefones = Telefone.objects.filter(usuario=u.pk, desabilitado = False)
@@ -34,8 +38,10 @@ class UsuarioView(viewsets.ViewSet):
         data = request.data
         serializer = self.serializer_class(data= data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data , status=status.HTTP_201_CREATED)
+            sucesso = serializer.save()
+            if sucesso:
+                return Response(serializer.data , status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UsuarioDetailView(viewsets.ViewSet):
@@ -45,7 +51,7 @@ class UsuarioDetailView(viewsets.ViewSet):
 
     def get_object(self, id):
         try:
-            return Usuario.objects.get(id = id, desabilitado=False)
+            return Usuario.objects.get(id = id, ativo=True)
         except Usuario.DoesNotExist:
             raise Http404
 
@@ -90,7 +96,7 @@ class EnderecoView(viewsets.ViewSet):
 
     def get_usuario(self, id):
         try:
-            return Usuario.objects.get(id = id, desabilitado=False)
+            return Usuario.objects.get(id = id, ativo=True)
         except Usuario.DoesNotExist:
             raise Http404
 
@@ -101,7 +107,7 @@ class EnderecoView(viewsets.ViewSet):
         else:
             usuario_id = None
 
-        enderecos = Endereco.objects.filter(usuario = usuario_id, desabilitado=False)
+        enderecos = Endereco.objects.filter(usuario = usuario_id, ativo=True)
         serializer = EnderecoSerializer(enderecos, many=True)
       
         return Response(serializer.data)
@@ -124,7 +130,7 @@ class EnderecoViewDetail(viewsets.ViewSet):
 
     def get_object(self, pk_usr, id):
         try:
-            return Endereco.objects.get(id = id, usuario = pk_usr , desabilitado=False)
+            return Endereco.objects.get(id = id, usuario = pk_usr , ativo=True)
         except Usuario.DoesNotExist:
             raise Http404
 
@@ -165,7 +171,7 @@ class TelefoneView(viewsets.ViewSet):
 
     def get_usuario(self, id):
         try:
-            return Usuario.objects.get(id = id, desabilitado=False)
+            return Usuario.objects.get(id = id, ativo=True)
         except Usuario.DoesNotExist:
             raise Http404
 
@@ -176,7 +182,7 @@ class TelefoneView(viewsets.ViewSet):
         else:
             usuario_id = None
 
-        telefones = Telefone.objects.filter(usuario = usuario_id, desabilitado=False)
+        telefones = Telefone.objects.filter(usuario = usuario_id, ativo=True)
         serializer = TelefoneSerializer(telefones, many=True)
       
         return Response(serializer.data)
@@ -199,7 +205,7 @@ class TelefoneViewDetail(viewsets.ViewSet):
 
     def get_object(self, pk_usr, id):
         try:
-            return Telefone.objects.get(id = id, usuario = pk_usr , desabilitado=False)
+            return Telefone.objects.get(id = id, usuario = pk_usr , ativo=True)
         except Usuario.DoesNotExist:
             raise Http404
 

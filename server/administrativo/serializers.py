@@ -13,7 +13,9 @@ class EnderecoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Endereco
-        fields = ['id', 'logradouro', 'bairro', 'cidade', 'estado' , 'numero', 'principal', 'desabilitado' ]
+        fields = ['id', 'logradouro', 'bairro',
+                  'cidade', 'estado' , 'numero', 
+                  'principal', 'desabilitado' ]
 
     def create(self, validated_data):
         usuario_id = validated_data.pop('usuario')
@@ -32,26 +34,24 @@ class TelefoneSerializer(serializers.ModelSerializer):
         fields = ['id', 'numero', 'whatsapp', 'desabilitado' ]
 
     def create(self, validated_data):
-        usuario_id = validated_data.pop('usuario')
-        usuario = Usuario.objects.get(id=usuario_id)
-
-        novo_telefone = Telefone(usuario=usuario, **validated_data)
+        novo_telefone = Telefone( **validated_data)
         novo_telefone.save()
 
         return novo_telefone
 
 class UsuarioSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=128, write_only=True)
-    enderecos = serializers.ListField(child=EnderecoSerializer(), read_only=True)
-    telefones = serializers.ListField(child=TelefoneSerializer(), read_only=True)
+    endereco = EnderecoSerializer()
+    telefone = TelefoneSerializer(many=True)
 
     class Meta:
         model = Usuario
         fields = (
-                    'id', 'email', 'password', 'nome_completo', 'ultimo_login', 'cpf_cnpj', 'foto', 'enderecos', 'telefones', 'perfil_institucional', 'biografia'
+                    'id', 'email', 'password', 'nome_completo', 'ativo',
+                    'ultimo_login', 'cpf', 'foto','vinculo_ong',
+                    'endereco','telefone', 'vinculo_ong',
                 )
-
-
+        
     # def validate(self, data):
     #
     #     if data.get('password') and data.get('password2') and data.get('password') == data.get('password2'):
@@ -64,11 +64,26 @@ class UsuarioSerializer(serializers.ModelSerializer):
     #
     def create(self, validated_data):
     
+        print(validated_data)
+        endereco = validated_data.pop("endereco")
+        telefone = validated_data.pop("telefone")
+        
         try:
-            Usuario.objects.create_user(**validated_data)
-            return obj
+            end = Endereco(**endereco)
+            end.save()
+            
+            user = Usuario.objects.create_user(endereco= end,  **validated_data)
+            for t in telefone:
+                fone = Telefone(**t)
+                fone.save()
+                user.telefone.add(fone)
+            user.save()
+        
+            return user
         except Exception as e:
-            raise IntegrityError('Usuário já existe.')
+            print(e)
+            return False
+            # raise IntegrityError('Usuário já existe.')
     #
     # def update(self, instance, validated_data):
     #     instance.email = validated_data.get('email', instance.email)

@@ -81,8 +81,27 @@
 // >>> POST
 
 {
-    "email": "mayara.machado@dcomp.ufs.br",
-    "password": "senha"
+    "email": "teste23@dcomp.ufs.br",
+    "password": "senha1",
+    "nome_completo": "Mayara Machado 2",
+    "ativo": true,
+    "ultimo_login": "2019-07-24T22:39:02.543520Z",
+    "cpf": "067.845.605-40",
+    "vinculo_ong": false,
+    "endereco": 
+        {
+            "id": 1,
+            "logradouro": "Rua das aboboras 2",
+            "bairro": "Leguminosas",
+            "cidade": "Aracaju",
+            "estado": "Sergipe",
+            "numero": 2,
+            "principal": true
+        },
+    "telefone": [{
+                "numero": 11111111111,
+                "whatsapp": true
+            }]
 }
 
 //Demais campos são opcionais na criação do usuário e podem ser atualizados utilizando verbos PUT e PATCH passando o id do usuário
