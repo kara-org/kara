@@ -122,6 +122,15 @@ REST_FRAMEWORK = {
     ),
 }
 
+##################### SMTP EMAIL ###################################
+
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'joao.daltro'
+EMAIL_HOST_PASSWORD = 'jpmd454245'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+#######################################################################
+
 JWT_AUTH = {
     'JWT_VERIFY_EXPIRATION': False,
     #'JWT_PAYLOAD_HANDLER': 'pagueon.utils.jwt_payload_handler',

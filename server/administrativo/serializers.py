@@ -39,6 +39,15 @@ class TelefoneSerializer(serializers.ModelSerializer):
 
         return novo_telefone
 
+class SolicitacaoRecuperarSenhaUsuarioSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(max_length=255)
+
+    class Meta:
+        model = Usuario
+        fields = (
+            'email', 'password'
+        )
+
 class UsuarioSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=128, write_only=True)
     endereco = EnderecoSerializer()
