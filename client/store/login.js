@@ -1,9 +1,12 @@
 export const getters = {
     isAuthenticated(state) {
-        return state.auth.loggedIn
+      console.log(state.auth)
+      if (!state.auth) return false
+      return state.auth.loggedIn
     },
 
     loggedInUser(state) {
-        return state.auth.user
+      if (!state.auth) return false
+      return state.auth.user
     }
 }
