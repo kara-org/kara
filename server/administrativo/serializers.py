@@ -52,16 +52,6 @@ class UsuarioSerializer(serializers.ModelSerializer):
                     'endereco','telefone', 'vinculo_ong',
                 )
         
-    # def validate(self, data):
-    #
-    #     if data.get('password') and data.get('password2') and data.get('password') == data.get('password2'):
-    #         if not re.match(REGEX_PASSWORD, data.get('password')):
-    #             raise ValidationError('Senhas invalidas')
-    #     else:
-    #         raise ValidationError('Senhas invalidas')
-    #
-    #     return data
-    #
     def create(self, validated_data):
     
         print(validated_data)
@@ -84,10 +74,37 @@ class UsuarioSerializer(serializers.ModelSerializer):
             print(e)
             return False
             # raise IntegrityError('Usuário já existe.')
-    #
-    # def update(self, instance, validated_data):
-    #     instance.email = validated_data.get('email', instance.email)
-    #     instance.password = validated_data.get('password', instance.password)
-    #     instance.save()
-    #
-    #     return instance
+
+
+class OngSerializer(serializers.ModelSerializer):
+    usuario = UsuarioSerializer(write_only=True)
+    class Meta:
+        model = Ong
+        fields = ['id', 'cnpj', 'historia', 'ativo' , 'usuario']
+
+    def create(self, validated_data):
+        usuario_data = validated_data.pop('usuario')
+        
+        ong, created = Ong.objects.get_or_create(
+                                                **validated_data)
+
+        if ong:
+            
+            endereco = usuario_data.pop("endereco")
+            telefone = usuario_data.pop("telefone")
+            
+            end = Endereco(**endereco)
+            end.save()
+            
+            user = Usuario.objects.create_user(endereco= end,  **usuario_data)
+            for t in telefone:
+                fone = Telefone(**t)
+                fone.save()
+                user.telefone.add(fone)
+            user.save()
+    
+            upo = UsuarioPertenceOng(usuario=user, ong=ong)
+            upo.save()
+            print(upo)
+
+        return ong
