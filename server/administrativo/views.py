@@ -34,6 +34,20 @@ def gerar_senha():
     return (''.join(senhalist))
     
 @permission_classes((AllowAny, ))
+class UsuarioPublicView(viewsets.ViewSet):
+    serializer_class = UsuarioSerializer
+    
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        serializer = self.serializer_class(data= data)
+        if serializer.is_valid():
+            sucesso = serializer.save()
+            if sucesso:
+                return Response(serializer.data , status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
 class UsuarioView(viewsets.ViewSet):
     serializer_class = UsuarioSerializer
 
@@ -54,15 +68,6 @@ class UsuarioView(viewsets.ViewSet):
         serializer = self.serializer_class(usuarios, many=True)
         return Response(serializer.data)
     
-    def create(self, request, *args, **kwargs):
-        data = request.data
-        serializer = self.serializer_class(data= data)
-        if serializer.is_valid():
-            sucesso = serializer.save()
-            if sucesso:
-                return Response(serializer.data , status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 @permission_classes((AllowAny, ))

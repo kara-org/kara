@@ -173,7 +173,7 @@ export default {
   methods: {
     async register() {
       try {
-        await this.$axios.post('usuarios/', this.usuario).catch(err => {
+        await this.$UsuarioService.create(this.usuario).catch(err => {
           console.error(err)
           if (!err.response) {
             err.message = 'Servidor desconectado'
