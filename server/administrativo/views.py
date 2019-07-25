@@ -21,6 +21,9 @@ from random import randint
 from django.contrib.auth.hashers import make_password, check_password
 
 
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+
 def gerar_senha():
     senha_numerica = randint(1000, 9999)
     chars=(string.ascii_uppercase + string.ascii_lowercase)
@@ -30,14 +33,17 @@ def gerar_senha():
     random.shuffle(senhalist)
     return (''.join(senhalist))
 
-@permission_classes((AllowAny, ))
+# @permission_classes((AllowAny, ))
+# class UsuarioPublicView(viewsets.ViewSet):
+    
+
+
 class UsuarioView(viewsets.ViewSet):
     serializer_class = UsuarioSerializer
 
     def retrive(self, request):
-
         try:
-            usuario = Usuario.objects.get(pk=request.user.pk)
+            usuario = Usuario.objects.get(pk=request.user.pk)            
             serializer = self.serializer_class(usuario)
         except:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -51,7 +57,7 @@ class UsuarioView(viewsets.ViewSet):
             u.telefones = Telefone.objects.filter(usuario=u.pk, desabilitado = False)
         serializer = self.serializer_class(usuarios, many=True)
         return Response(serializer.data)
-
+    
     def create(self, request, *args, **kwargs):
         data = request.data
         serializer = self.serializer_class(data= data)
@@ -61,6 +67,7 @@ class UsuarioView(viewsets.ViewSet):
                 return Response(serializer.data , status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
 @permission_classes((AllowAny, ))
 class RecuperarSenhaUsuarioView(viewsets.ViewSet):
