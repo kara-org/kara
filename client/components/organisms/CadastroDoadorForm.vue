@@ -1,7 +1,7 @@
 <template>
   <section>
     <form v-if="!success" @submit.prevent="validateBeforeSubmit" method="post">
-      <div class="block has-text-centered">
+      <div class="block has-text-centered" v-if="isCadastro">
         <b-radio v-model="pessoaFisica" :native-value="true" type="is-black">Física</b-radio>
         <b-radio v-model="pessoaFisica" :native-value="false" type="is-black">Juridíca</b-radio>
       </div>
@@ -25,6 +25,7 @@
           :message="errors.first('CPF')"
         >
           <b-input
+            :disabled="!isCadastro"
             type="text"
             v-model.trim="doador.cpf_cnpj"
             name="CPF"
@@ -41,6 +42,7 @@
           :message="errors.first('CNPJ')"
         >
           <b-input
+            :disabled="!isCadastro"
             type="text"
             v-model.trim="doador.cpf_cnpj"
             maxlength="18"
@@ -80,40 +82,42 @@
           v-validate="'required|email'"
         />
       </b-field>
-      <b-field
-        label="Senha"
-        :type="{'is-danger': errors.has('senha')}"
-        :message="errors.first('senha')"
-      >
-        <b-input
-          type="password"
-          name="senha"
-          v-model="doador.password"
-          v-validate="'required|min:8'"
-          ref="senha"
-        />
-      </b-field>
-      <b-field
-        label="Confirme sua senha"
-        :type="{'is-danger': errors.has('confirmação')}"
-        :message="errors.first('confirmação')"
-      >
-        <b-input
-          v-validate="'required|confirmed:senha'"
-          name="confirmação"
-          type="password"
-          v-model="passwordConfirm"
-        />
-      </b-field>
-      <hr />
-      <div class="column has-text-centered">
-        Já tem um cadastro?
-        <nuxt-link
-          class="is-primary is-inverted"
-          to="/login"
-          exact-active-class="is-active"
-        >Logue-se</nuxt-link>
-      </div>
+      <template v-if="isCadastro">
+        <b-field
+          label="Senha"
+          :type="{'is-danger': errors.has('senha')}"
+          :message="errors.first('senha')"
+        >
+          <b-input
+            type="password"
+            name="senha"
+            v-model="doador.password"
+            v-validate="'required|min:8'"
+            ref="senha"
+          />
+        </b-field>
+        <b-field
+          label="Confirme sua senha"
+          :type="{'is-danger': errors.has('confirmação')}"
+          :message="errors.first('confirmação')"
+        >
+          <b-input
+            v-validate="'required|confirmed:senha'"
+            name="confirmação"
+            type="password"
+            v-model="passwordConfirm"
+          />
+        </b-field>
+        <hr />
+        <div class="column has-text-centered">
+          Já tem um cadastro?
+          <nuxt-link
+            class="is-primary is-inverted"
+            to="/login"
+            exact-active-class="is-active"
+          >Logue-se</nuxt-link>
+        </div>
+      </template>
       <hr />
       <button
         type="submit"
@@ -127,8 +131,12 @@
         >Voltar</nuxt-link>
       </div>
     </form>
-    <div v-else class="column has-text-centered">
+    <div v-else-if="isCadastro" class="column has-text-centered">
       <h1>Cadastro realizado com successo! Será enviada uma confirmação para seu email.</h1>
+      <hr />
+    </div>
+    <div v-else-if="!isCadastro" class="column has-text-centered">
+      <h1>Atualização realizada com successo! Será enviada uma confirmação para seu email.</h1>
       <hr />
     </div>
   </section>
@@ -138,7 +146,8 @@ import cleave from '@/plugins/cleave-directive.js'
 export default {
   props: {
     isCadastro: Boolean,
-    isDoador: Boolean
+    isDoador: Boolean,
+    usuarioEditar: Object
   },
   data() {
     return {
@@ -175,19 +184,9 @@ export default {
     }
   },
   created() {
-    !this.isCadastro ? this.getDoador() : {}
+    !this.isCadastro ? (this.doador = this.usuarioEditar) : this.doador
   },
   methods: {
-    async getDoador() {
-      var doador = await this.$UsuarioService.get('id')
-      console.log(doador.data)
-      console.log(doador.data.cpf_cnpj)
-      console.log(doador.data.nome_completo)
-      console.log(doador.data.email)
-      this.doador.cpf_cnpj = doador.data.cpf_cnpj
-      this.doador.nome_completo = doador.data.nome_completo
-      this.doador.email = doador.data.email
-    },
     async register() {
       try {
         await this.$UsuarioService

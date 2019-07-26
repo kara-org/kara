@@ -20,6 +20,7 @@
         :message="errors.first('CNPJ')"
       >
         <b-input
+          :disabled="!isCadastro"
           type="text"
           v-model.trim="ong.cpf_cnpj"
           maxlength="18"
@@ -48,32 +49,34 @@
       >
         <b-input type="text" v-model.trim="ong.email" name="email" v-validate="'required|email'" />
       </b-field>
-      <b-field
-        label="Senha"
-        :type="{'is-danger': errors.has('senha')}"
-        :message="errors.first('senha')"
-      >
-        <b-input
-          type="password"
-          name="senha"
-          v-model="ong.password"
-          v-validate="'required|min:8'"
-          ref="senha"
-        />
-      </b-field>
-      <b-field
-        label="Confirme sua senha"
-        :type="{'is-danger': errors.has('confirmação')}"
-        :message="errors.first('confirmação')"
-      >
-        <b-input
-          v-validate="'required|confirmed:senha'"
-          v-model="passwordConfirm"
-          name="confirmação"
-          type="password"
-          data-vv-as="senha"
-        />
-      </b-field>
+      <template v-if="isCadastro">
+        <b-field
+          label="Senha"
+          :type="{'is-danger': errors.has('senha')}"
+          :message="errors.first('senha')"
+        >
+          <b-input
+            type="password"
+            name="senha"
+            v-model="ong.password"
+            v-validate="'required|min:8'"
+            ref="senha"
+          />
+        </b-field>
+        <b-field
+          label="Confirme sua senha"
+          :type="{'is-danger': errors.has('confirmação')}"
+          :message="errors.first('confirmação')"
+        >
+          <b-input
+            v-validate="'required|confirmed:senha'"
+            v-model="passwordConfirm"
+            name="confirmação"
+            type="password"
+            data-vv-as="senha"
+          />
+        </b-field>
+      </template>
       <hr />
       <EnderecoForm :endereco="ong.endereco" :submitted="submitted" />
       <hr />
@@ -91,7 +94,7 @@
         ></b-input>
       </b-field>
       <hr />
-      <div class="column has-text-centered">
+      <div class="column has-text-centered" v-if="isCadastro">
         Já tem um cadastro?
         <nuxt-link
           class="is-primary is-inverted"
@@ -113,8 +116,12 @@
         >Voltar</nuxt-link>
       </div>
     </form>
-    <div v-else class="column has-text-centered">
+    <div v-else-if="isCadastro" class="column has-text-centered">
       <h1>Cadastro realizado com sucesso! Será enviada uma confirmação para seu email.</h1>
+      <hr />
+    </div>
+    <div v-else class="column has-text-centered">
+      <h1>Atualização realizada com sucesso! Será enviada uma confirmação para seu email.</h1>
       <hr />
     </div>
   </section>
