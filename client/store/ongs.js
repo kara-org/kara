@@ -1,6 +1,9 @@
+import demandas from './fake/demandas'
+
 export const states = {
   ongs: [],
-  perfil: {}
+  perfil: {},
+  demandas: []
 }
 
 export const mutations = {
@@ -9,6 +12,9 @@ export const mutations = {
   },
   UPDATE_PERFIL (state, payload) {
     state.ongs = payload
+  },
+  UPDATE_DEMANDAS (state, payload) {
+    state.demandas = payload
   }
 }
 
@@ -19,5 +25,9 @@ export const actions = {
 
   fetchPerfilOng (id) {
     context.commit('UPDATE_PERFIL', this.$OngService.show(id))
+  },
+
+  fetchDemandas (id) {
+    context.commit('UPDATE_DEMANDAS', demandas)
   }
 }
