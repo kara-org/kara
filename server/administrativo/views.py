@@ -154,6 +154,10 @@ class OngCreateView(viewsets.ViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9cbd37cdd07ceca1853065b08ab453a859b119eb
 @permission_classes((AllowAny, ))
 class OngDetailView(viewsets.ViewSet):
 
@@ -220,6 +224,7 @@ class OngDetailView(viewsets.ViewSet):
                 return Response(serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response({"message":"Este usuário não tem acesso a esta ong."}, status=status.HTTP_403_FORBIDDEN)
+<<<<<<< HEAD
       
 class TelefoneView(viewsets.ViewSet):
     serializer_class = TelefoneSerializer
@@ -295,3 +300,6 @@ class TelefoneViewDetail(viewsets.ViewSet):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+=======
+      
+>>>>>>> 9cbd37cdd07ceca1853065b08ab453a859b119eb
