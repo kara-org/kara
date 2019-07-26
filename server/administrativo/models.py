@@ -110,8 +110,8 @@ class Telefone(models.Model):
         verbose_name_plural = "Telefones"
         
 class UsuarioPertenceOng(models.Model):
-    usuario = models.OneToOneField("Usuario", on_delete=models.DO_NOTHING)
-    ong = models.OneToOneField("Ong", on_delete=models.DO_NOTHING)
+    usuario = models.OneToOneField("Usuario", on_delete=models.DO_NOTHING, unique=True)
+    ong = models.ForeignKey("Ong", on_delete=models.DO_NOTHING, unique=False)
     data_inicio = models.DateTimeField(auto_now_add=True)
     ativo = models.BooleanField(default=True)
 
