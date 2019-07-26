@@ -221,3 +221,78 @@ class OngDetailView(viewsets.ViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response({"message":"Este usuário não tem acesso a esta ong."}, status=status.HTTP_403_FORBIDDEN)
       
+      
+class TelefoneView(viewsets.ViewSet):
+    serializer_class = TelefoneSerializer
+
+    # def get_usuario(self, id):
+    #     try:
+    #         return Usuario.objects.get(id = id, ativo=True)
+    #     except Usuario.DoesNotExist:
+    #         raise Http404
+
+    def list(self, request, pk_usr):
+        usuario = self.get_usuario(pk_usr)
+        if usuario:
+            usuario_id = usuario.id 
+        else:
+            usuario_id = None
+
+        telefones = Telefone.objects.filter(usuario = usuario_id, ativo=True)
+        serializer = TelefoneSerializer(telefones, many=True)
+      
+        return Response(serializer.data)
+
+    
+    def create(self, request,pk_usr, *args, **kwargs):
+        request.data['usuario'] = self.get_usuario(pk_usr).pk
+        data = request.data
+        serializer = self.serializer_class(data=data)
+        if serializer.is_valid():
+            # serializer.save()
+            obj = TelefoneSerializer.create(self, request.data)
+            serializer = TelefoneSerializer(obj)
+            return Response(serializer.data , status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class TelefoneViewDetail(viewsets.ViewSet):
+    serializers_class = TelefoneSerializer
+    queryset = Telefone.objects.all()
+
+    def get_object(self, pk_usr, id):
+        try:
+            return Telefone.objects.get(id = id, usuario = pk_usr , ativo=True)
+        except Usuario.DoesNotExist:
+            raise Http404
+
+    # def get(self, request,pk_usr, pk, formar=True):
+    #     obj = self.get_object(pk_usr, pk)
+    #     if obj:
+    #         serializer = TelefoneSerializer(obj)
+    #         return Response(serializer.data)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, pk_usr, pk, *args, **kwargs):
+        obj = self.get_object(pk_usr, pk)
+        serializer = TelefoneSerializer(obj, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request,pk_usr, pk, *args, **kwargs):
+        obj = self.get_object(pk_usr, pk)
+        serializer = TelefoneSerializer(obj, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request,pk_usr, pk, *args, **kwargs):
+        obj = self.get_object(pk_usr, pk)
+        request.data['desabilitado'] = True
+        serializer = TelefoneSerializer(obj, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
