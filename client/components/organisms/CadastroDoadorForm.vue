@@ -1,20 +1,20 @@
 <template>
   <section>
-    <form v-if="!sucess" @submit.prevent="validateBeforeSubmit" method="post">
+    <form v-if="!success" @submit.prevent="validateBeforeSubmit" method="post">
       <div class="block has-text-centered">
-        <b-radio v-model="pessoaFisica" :native-value="true" ref="fis" type="is-black">Física</b-radio>
-        <b-radio v-model="pessoaFisica" :native-value="false" ref="jur" type="is-black">Juridíca</b-radio>
+        <b-radio v-model="pessoaFisica" :native-value="true" type="is-black">Física</b-radio>
+        <b-radio v-model="pessoaFisica" :native-value="false" type="is-black">Juridíca</b-radio>
       </div>
       <hr />
       <b-field
         label="Nome/Razão social"
-        :type="{'is-danger': errors.has('Nome')}"
-        :message="errors.first('Nome')"
+        :type="{'is-danger': errors.has('nome')}"
+        :message="errors.first('nome')"
       >
         <b-input
           type="text"
-          v-model.trim="usuario.nome_completo"
-          name="Nome"
+          v-model.trim="doador.nome_completo"
+          name="nome"
           v-validate="'required'"
         ></b-input>
       </b-field>
@@ -26,7 +26,7 @@
         >
           <b-input
             type="text"
-            v-model.trim="usuario.cpf_cnpj"
+            v-model.trim="doador.cpf_cnpj"
             name="CPF"
             v-cleave="masks.cpf"
             maxlength="14"
@@ -42,7 +42,7 @@
         >
           <b-input
             type="text"
-            v-model.trim="usuario.cpf_cnpj"
+            v-model.trim="doador.cpf_cnpj"
             maxlength="18"
             v-cleave="masks.cnpj"
             name="CNPJ"
@@ -52,55 +52,55 @@
       </div>
       <b-field
         label="Telefone"
-        :type="{'is-danger': errors.has('Telefone')}"
-        :message="errors.first('Telefone')"
+        :type="{'is-danger': errors.has('telefone')}"
+        :message="errors.first('telefone')"
       >
         <b-input
           type="text"
-          v-model.trim="usuario.telefone.numero"
+          v-model.trim="doador.telefone.numero"
           v-cleave="masks.phone"
           maxlength="15"
-          name="Telefone"
+          name="telefone"
           v-validate="'required|phone'"
         ></b-input>
       </b-field>
-      <b-checkbox v-model="usuario.telefone.whatsapp" type="is-black">
+      <b-checkbox v-model="doador.telefone.whatsapp" type="is-black">
         Whatsapp?
         <img width="15" src="~assets/wpp-icon.png" />
       </b-checkbox>
       <b-field
         label="Email"
-        :type="{'is-danger': errors.has('Email')}"
-        :message="errors.first('Email')"
+        :type="{'is-danger': errors.has('email')}"
+        :message="errors.first('email')"
       >
         <b-input
           type="text"
-          v-model.trim="usuario.email"
-          name="Email"
+          v-model.trim="doador.email"
+          name="email"
           v-validate="'required|email'"
         />
       </b-field>
       <b-field
         label="Senha"
-        :type="{'is-danger': errors.has('Senha')}"
-        :message="errors.first('Senha')"
+        :type="{'is-danger': errors.has('senha')}"
+        :message="errors.first('senha')"
       >
         <b-input
           type="password"
-          name="Senha"
-          v-model="usuario.password"
+          name="senha"
+          v-model="doador.password"
           v-validate="'required|min:8'"
-          ref="Senha"
+          ref="senha"
         />
       </b-field>
       <b-field
         label="Confirme sua senha"
-        :type="{'is-danger': errors.has('Confirmação')}"
-        :message="errors.first('Confirmação')"
+        :type="{'is-danger': errors.has('confirmação')}"
+        :message="errors.first('confirmação')"
       >
         <b-input
-          v-validate="'required|confirmed:Senha'"
-          name="Confirmação"
+          v-validate="'required|confirmed:senha'"
+          name="confirmação"
           type="password"
           v-model="passwordConfirm"
         />
@@ -128,7 +128,7 @@
       </div>
     </form>
     <div v-else class="column has-text-centered">
-      <h1>Cadastro realizado com sucesso! Será enviada uma confirmação para seu email.</h1>
+      <h1>Cadastro realizado com successo! Será enviada uma confirmação para seu email.</h1>
       <hr />
     </div>
   </section>
@@ -136,9 +136,13 @@
 <script>
 import cleave from '@/plugins/cleave-directive.js'
 export default {
+  props: {
+    isCadastro: Boolean,
+    isDoador: Boolean
+  },
   data() {
     return {
-      usuario: {
+      doador: {
         nome_completo: null,
         cpf_cnpj: null,
         telefone: {
@@ -150,7 +154,7 @@ export default {
       },
       pessoaFisica: true,
       passwordConfirm: null,
-      sucess: false, //toremove
+      success: false, //toremove
       masks: {
         cpf: {
           delimiters: ['.', '.', '-'],
@@ -170,29 +174,65 @@ export default {
       }
     }
   },
+  created() {
+    !this.isCadastro ? this.getDoador() : {}
+  },
   methods: {
+    async getDoador() {
+      var doador = await this.$UsuarioService.get('id')
+      console.log(doador.data)
+      console.log(doador.data.cpf_cnpj)
+      console.log(doador.data.nome_completo)
+      console.log(doador.data.email)
+      this.doador.cpf_cnpj = doador.data.cpf_cnpj
+      this.doador.nome_completo = doador.data.nome_completo
+      this.doador.email = doador.data.email
+    },
     async register() {
       try {
-        await this.$axios.post('usuarios/', this.usuario).catch(err => {
-          console.error(err)
-          if (!err.response) {
-            err.message = 'Servidor desconectado'
-          } else if (err.response.status === 400) {
-            err.message = err.response.data.non_field_errors[0]
-          }
-          this.$toast.open({
-            message: err.message,
-            type: 'is-danger',
-            position: 'is-bottom'
+        await this.$UsuarioService
+          .create({
+            email: 'emily@gmail.com',
+            password: 'senha123',
+            nome_completo: 'Emily Stefany Barros',
+            ativo: true,
+            ultimo_login: '2019-07-24T22:39:02.543520Z',
+            cpf: '924.670.669-24',
+            vinculo_ong: false,
+            endereco: {
+              id: 1,
+              logradouro: 'Rua das aboboras 2',
+              bairro: 'Leguminosas',
+              cidade: 'Aracaju',
+              estado: 'Sergipe',
+              numero: 2,
+              principal: true
+            },
+            telefone: [
+              {
+                numero: 11111111111,
+                whatsapp: true
+              }
+            ]
           })
-        })
-        /* this.$router.push('/') */
+          .catch(err => {
+            if (!err.response) {
+              err.message = 'Servidor desconectado'
+            } else if (err.response.status === 400) {
+              err.message = err.response.data.non_field_errors[0]
+            }
+            this.$toast.open({
+              message: err.message,
+              type: 'is-danger',
+              position: 'is-bottom'
+            })
+          })
+        this.success = true
       } catch (e) {
         this.error = e.response.data.message
       }
     },
     validateBeforeSubmit() {
-      console.log(this.pessoaFisica)
       this.$validator.validateAll().then(result => {
         if (result) {
           this.register()
