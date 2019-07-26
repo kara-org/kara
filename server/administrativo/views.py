@@ -72,7 +72,7 @@ class UsuarioDetailView(viewsets.ViewSet):
 
     def delete(self, request, pk, *args, **kwargs):
         obj = self.get_object(pk)
-        request.data['desabilitado'] = True
+        request.data['ativo'] = False
         serializer = self.serializer_class(obj, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
