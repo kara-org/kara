@@ -53,13 +53,21 @@ class RecuperarSenhaUsuarioView(viewsets.ViewSet):
         send_mail('Recuperação de senha portal Kara', 'Sua nova senha de acesso é: ' + senha, 'suporte@kara.org.br', [usuario.email], fail_silently=False)
         return Response()
 
-
 @permission_classes((AllowAny, ))
 class UsuarioView(viewsets.ViewSet):
     serializer_class = UsuarioSerializer
+    
+    
+    def retrive(self, request):
+        try:
+            usuario = Usuario.objects.get(pk=request.user.pk)            
+            serializer = self.serializer_class(usuario)
+        except:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data)
 
     def list(self, request):
-
+        print('ola')
         usuarios = Usuario.objects.filter(ativo=True)
         for u in usuarios:
             u.enderecos = Endereco.objects.filter(usuario=u.pk, desabilitado = False)
