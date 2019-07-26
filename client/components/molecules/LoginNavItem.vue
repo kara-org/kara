@@ -23,12 +23,7 @@
         <img class="is-rounded" :src="user.foto">
       </figure>
       <div class="media-content">
-        <span><small>Bem vinda(o)!</small> </span> <span><strong>{{ userName }}</strong></span>
-      </div><div class="navbar-item"/>
-      <div class="navbar-item" v-if="isOng">
-        <nuxt-link class="button is-primary is-rounded" to="/cadastroDemanda" exact-active-class="is-active">
-          Criar demanda
-        </nuxt-link>
+        <span><small>Bem vindo!</small> </span> <span><strong>{{ userName }}</strong></span>
       </div>
       <div class="media-right">
         <a href="#" class="nav-link" @click="logout">
@@ -57,9 +52,6 @@ export default {
       },
       userName (){
         return this.user.nome_completo.split(' ')[0]
-      },
-      isOng (){
-        return this.user.vinculo_ong
       }
     },
     methods: {
