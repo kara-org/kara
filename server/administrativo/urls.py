@@ -7,7 +7,10 @@ urlpatterns = [
     path('login/', obtain_jwt_token),
     path('usuarios/', UsuarioView.as_view({'get': 'list', 'post': 'create'}), name='api-usuarios'),
     path('usuario/<int:pk>/', UsuarioDetailView.as_view({'get': 'get', 'put':'put', 'patch': 'patch', 'delete':'delete'}), name='api-usuario'),
-    path('ong/', ONGView.as_view({'get': 'list', 'post': 'create'}), name='ongs'),
+    path('ong/', OngCreateView.as_view({'post': 'create'}), name='ongs'),
+    path('ongs/', ONGListView.as_view({'get': 'list'}), name='ongs'),
+    path('ong/<int:pk>/', OngDetailView.as_view({'get': 'get', 'put':'put', 'patch': 'patch', 'delete':'delete'}), name='ong'),
+
 ]
 
 # busca_patterns = [

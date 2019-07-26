@@ -4,6 +4,8 @@ from rest_framework import serializers, status
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
+from django.db import transaction
+
 from .models import *
 
 REGEX_PASSWORD = re.compile('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,50}$')
@@ -75,7 +77,6 @@ class UsuarioSerializer(serializers.ModelSerializer):
             return False
             # raise IntegrityError('Usuário já existe.')
 
-
 class OngSerializer(serializers.ModelSerializer):
     usuario = UsuarioSerializer(write_only=True)
     class Meta:
@@ -85,26 +86,30 @@ class OngSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         usuario_data = validated_data.pop('usuario')
         
-        ong, created = Ong.objects.get_or_create(
-                                                **validated_data)
+        ong, created = Ong.objects.get_or_create(**validated_data)
 
         if ong:
-            
-            endereco = usuario_data.pop("endereco")
-            telefone = usuario_data.pop("telefone")
-            
-            end = Endereco(**endereco)
-            end.save()
-            
-            user = Usuario.objects.create_user(endereco= end,  **usuario_data)
-            for t in telefone:
-                fone = Telefone(**t)
-                fone.save()
-                user.telefone.add(fone)
-            user.save()
-    
-            upo = UsuarioPertenceOng(usuario=user, ong=ong)
-            upo.save()
-            print(upo)
+            with transaction.atomic():
+                endereco = usuario_data.pop("endereco")
+                telefone = usuario_data.pop("telefone")
+                
+                end = Endereco(**endereco)
+                end.save()
+                
+                user = Usuario.objects.create_user(endereco= end,  **usuario_data)
+                for t in telefone:
+                    fone = Telefone(**t)
+                    fone.save()
+                    user.telefone.add(fone)
+                user.save()
+        
+                upo = UsuarioPertenceOng(usuario=user, ong=ong)
+                upo.save()
+                print(upo)
 
         return ong
+
+class OngListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ong
+        fields = ['id', 'cnpj', 'historia', 'ativo']
