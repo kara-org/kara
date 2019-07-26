@@ -1,13 +1,13 @@
 <template>
   <div>
     <h1 class="title is-5 has-text-centered">Endereço</h1>
-    <b-field label="CEP" :type="{'is-danger': errors.has('cep')}" :message="errors.first('cep')">
+    <b-field label="CEP" :type="{'is-danger': errors.has('CEP')}" :message="errors.first('CEP')">
       <b-input
         type="text"
         @blur="cepEnter"
         v-model.trim="endereco.cep"
         v-cleave="maskCep"
-        name="cep"
+        name="CEP"
         maxlength="9"
         v-validate="'required|cep'"
       ></b-input>
@@ -67,11 +67,11 @@
         v-validate="'required'"
       ></b-input>
     </b-field>
-    <b-field label="UF" :type="{'is-danger': errors.has('uf')}" :message="errors.first('uf')">
+    <b-field label="UF" :type="{'is-danger': errors.has('UF')}" :message="errors.first('UF')">
       <b-input
         type="text"
         v-model.trim="endereco.uf"
-        name="uf"
+        name="UF"
         v-validate="'required|alpha|length:2'"
       ></b-input>
     </b-field>

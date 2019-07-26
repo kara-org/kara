@@ -1,8 +1,9 @@
 from django.contrib import admin
 from .models import  *
 
-# Register your models here.
-
+@admin.register(Usuario)
+class UsuarioAdmin(admin.ModelAdmin):
+    model = Usuario 
 
 @admin.register(Endereco)
 class EnderecoAdmin(admin.ModelAdmin):
@@ -15,7 +16,6 @@ class TelefoneAdmin(admin.ModelAdmin):
 @admin.register(Ong)
 class OngAdmin(admin.ModelAdmin):
     model = Ong 
-    
     
 @admin.register(Status)
 class StatusAdmin(admin.ModelAdmin):
