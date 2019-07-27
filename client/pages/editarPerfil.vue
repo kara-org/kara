@@ -6,9 +6,7 @@
           <article class="card is-rounded" style="width:600px">
             <div class="card-content">
               <p class="form-section-title">Edite suas informações</p>
-              <hr />
-              <CadastroDoadorForm :isCadastro="false" v-if="user.vinculo_ong" />
-              <CadastroOngForm :isCadastro="false" v-else />
+              <CadastroDoadorForm :isCadastro="false" />
             </div>
           </article>
         </div>
@@ -20,7 +18,6 @@
 <script>
 import CadastroDoadorForm from '@/components/organisms/CadastroDoadorForm'
 import CadastroOngForm from '@/components/organisms/CadastroOngForm'
-import { mapGetters } from 'vuex'
 export default {
   layout: 'default',
   components: {

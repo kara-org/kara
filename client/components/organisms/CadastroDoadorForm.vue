@@ -27,7 +27,7 @@
           <b-input
             :disabled="!isCadastro"
             type="text"
-            v-model.trim="doador.cpf_cnpj"
+            v-model.trim="doador.cpf"
             name="CPF"
             v-cleave="masks.cpf"
             maxlength="14"
@@ -44,7 +44,7 @@
           <b-input
             :disabled="!isCadastro"
             type="text"
-            v-model.trim="doador.cpf_cnpj"
+            v-model.trim="doador.cpf"
             maxlength="18"
             v-cleave="masks.cnpj"
             name="CNPJ"
@@ -59,14 +59,14 @@
       >
         <b-input
           type="text"
-          v-model.trim="doador.telefone.numero"
+          v-model.trim="doador.telefone[0].numero"
           v-cleave="masks.phone"
           maxlength="15"
           name="telefone"
           v-validate="'required|phone'"
         ></b-input>
       </b-field>
-      <b-checkbox v-model="doador.telefone.whatsapp" type="is-black">
+      <b-checkbox v-model="doador.telefone[0].whatsapp" type="is-black">
         Whatsapp?
         <img width="15" src="~assets/wpp-icon.png" />
       </b-checkbox>
@@ -146,18 +146,19 @@ import cleave from '@/plugins/cleave-directive.js'
 export default {
   props: {
     isCadastro: Boolean,
-    isDoador: Boolean,
-    usuarioEditar: Object
+    isDoador: Boolean
   },
   data() {
     return {
       doador: {
         nome_completo: null,
-        cpf_cnpj: null,
-        telefone: {
-          numero: null,
-          whatsapp: false
-        },
+        cpf: null,
+        telefone: [
+          {
+            numero: null,
+            whatsapp: false
+          }
+        ],
         email: null,
         password: null
       },
@@ -184,13 +185,40 @@ export default {
     }
   },
   created() {
-    !this.isCadastro ? (this.doador = this.usuarioEditar) : this.doador
+    !this.isCadastro
+      ? (this.doador = JSON.parse(JSON.stringify(this.$auth.user)))
+      : this.doador
   },
   methods: {
+    async patch() {
+      try {
+        await this.$axios
+          .patch(`/usuario/${this.$auth.user.id}/`, {
+            nome_completo: this.nome_completo,
+            telefone: this.telefone,
+            email: this.email
+          })
+          .catch(err => {
+            if (!err.response) {
+              err.message = 'Servidor desconectado'
+            } else if (err.response.status === 400) {
+              err.message = err.response.data.non_field_errors[0]
+            }
+            this.$toast.open({
+              message: err.message,
+              type: 'is-danger',
+              position: 'is-bottom'
+            })
+          })
+        this.success = true
+      } catch (e) {
+        this.error = e.response.data.message
+      }
+    },
     async register() {
       try {
-        await this.$UsuarioService
-          .create({
+        await this.$axios
+          .post({
             email: 'emily@gmail.com',
             password: 'senha123',
             nome_completo: 'Emily Stefany Barros',
@@ -234,7 +262,12 @@ export default {
     validateBeforeSubmit() {
       this.$validator.validateAll().then(result => {
         if (result) {
-          this.register()
+          var num = this.doador.telefone[0].numero
+          this.doador.telefone[0].numero = Number.parseInt(
+            num.replace(/\D/g, '')
+          )
+          this.isCadastro ? this.register() : this.patch()
+
           return
         }
         this.$toast.open({
