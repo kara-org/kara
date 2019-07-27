@@ -1,6 +1,6 @@
 <template>
   <section>
-    <form v-if="!sucess" @submit.prevent="validateBeforeSubmit" method="post">
+    <form v-if="!success" @submit.prevent="validateBeforeSubmit" method="post">
       <b-field
         label="Razão social"
         :type="{'is-danger': errors.has('razão social')}"
@@ -8,7 +8,7 @@
       >
         <b-input
           type="text"
-          v-model.trim="ong.nome_completo"
+          v-model.trim="ong.razao_social"
           name="razão social"
           v-validate="'required'"
         ></b-input>
@@ -20,11 +20,54 @@
         :message="errors.first('CNPJ')"
       >
         <b-input
+          :disabled="!isCadastro"
           type="text"
-          v-model.trim="ong.cpf_cnpj"
+          v-model.trim="ong.cnpj"
           maxlength="18"
           name="CNPJ"
           v-validate="'required|cnpj'"
+        ></b-input>
+      </b-field>
+      <b-field
+        label="Biografia da ONG"
+        :type="{'is-danger': errors.has('biografia')}"
+        :message="errors.first('biografia')"
+      >
+        <b-input
+          type="textarea"
+          maxlength="200"
+          v-model.trim="ong.historia"
+          name="biografia"
+          v-validate="'required'"
+        ></b-input>
+      </b-field>
+      <hr />
+      <h1 class="title is-5 has-text-centered">Responsável</h1>
+      <b-field
+        label="Nome"
+        :type="{'is-danger': errors.has('nome')}"
+        :message="errors.first('nome')"
+      >
+        <b-input
+          type="text"
+          v-model.trim="ong.usuario.nome_completo"
+          name="nome"
+          v-validate="'required'"
+        ></b-input>
+      </b-field>
+      <b-field
+        label="CPF"
+        v-cleave="masks.cpf"
+        :type="{'is-danger': errors.has('CPF')}"
+        :message="errors.first('CPF')"
+      >
+        <b-input
+          :disabled="!isCadastro"
+          type="text"
+          v-model.trim="ong.usuario.cpf"
+          maxlength="18"
+          name="CPF"
+          v-validate="'required|cpf'"
         ></b-input>
       </b-field>
       <b-field
@@ -35,63 +78,60 @@
       >
         <b-input
           type="text"
-          v-model.trim="ong.telefones[0]"
+          v-model.trim="ong.usuario.telefone[0].numero"
           maxlength="15"
           name="telefone"
           v-validate="'required|phone'"
         ></b-input>
       </b-field>
+      <b-checkbox v-model="ong.usuario.telefone[0].whatsapp" type="is-black">
+        Whatsapp?
+        <img width="15" src="~assets/wpp-icon.png" />
+      </b-checkbox>
       <b-field
         label="Email"
         :type="{'is-danger': errors.has('email')}"
         :message="errors.first('email')"
       >
-        <b-input type="text" v-model.trim="ong.email" name="email" v-validate="'required|email'" />
-      </b-field>
-      <b-field
-        label="Senha"
-        :type="{'is-danger': errors.has('senha')}"
-        :message="errors.first('senha')"
-      >
         <b-input
-          type="password"
-          name="senha"
-          v-model="ong.password"
-          v-validate="'required|min:8'"
-          ref="senha"
+          type="text"
+          v-model.trim="ong.usuario.email"
+          name="email"
+          v-validate="'required|email'"
         />
       </b-field>
-      <b-field
-        label="Confirme sua senha"
-        :type="{'is-danger': errors.has('confirmação')}"
-        :message="errors.first('confirmação')"
-      >
-        <b-input
-          v-validate="'required|confirmed:senha'"
-          v-model="passwordConfirm"
-          name="confirmação"
-          type="password"
-          data-vv-as="senha"
-        />
-      </b-field>
+      <template v-if="isCadastro">
+        <b-field
+          label="Senha"
+          :type="{'is-danger': errors.has('senha')}"
+          :message="errors.first('senha')"
+        >
+          <b-input
+            type="password"
+            name="senha"
+            v-model="ong.usuario.password"
+            v-validate="'required|min:8'"
+            ref="senha"
+          />
+        </b-field>
+        <b-field
+          label="Confirme sua senha"
+          :type="{'is-danger': errors.has('confirmação')}"
+          :message="errors.first('confirmação')"
+        >
+          <b-input
+            v-validate="'required|confirmed:senha'"
+            v-model="passwordConfirm"
+            name="confirmação"
+            type="password"
+            data-vv-as="senha"
+          />
+        </b-field>
+      </template>
       <hr />
-      <EnderecoForm :endereco="ong.endereco" :submitted="submitted" />
+      <EnderecoForm :endereco="ong.usuario.endereco" :submitted="submitted" />
       <hr />
-      <b-field
-        label="Biografia da ONG"
-        :type="{'is-danger': errors.has('biografia')}"
-        :message="errors.first('biografia')"
-      >
-        <b-input
-          type="textarea"
-          maxlength="200"
-          v-model.trim="ong.biografia"
-          name="biografia"
-          v-validate="'required'"
-        ></b-input>
-      </b-field>
-      <hr />
-      <div class="column has-text-centered">
+      <div class="column has-text-centered" v-if="isCadastro">
         Já tem um cadastro?
         <nuxt-link
           class="is-primary is-inverted"
@@ -113,8 +153,12 @@
         >Voltar</nuxt-link>
       </div>
     </form>
-    <div v-else class="column has-text-centered">
+    <div v-else-if="isCadastro" class="column has-text-centered">
       <h1>Cadastro realizado com sucesso! Será enviada uma confirmação para seu email.</h1>
+      <hr />
+    </div>
+    <div v-else class="column has-text-centered">
+      <h1>Atualização realizada com sucesso! Será enviada uma confirmação para seu email.</h1>
       <hr />
     </div>
   </section>
@@ -124,6 +168,7 @@
 import ViaCep from 'vue-viacep'
 import EnderecoForm from '@/components/molecules/EnderecoForm.vue'
 import cleave from '@/plugins/cleave-directive.js'
+import { mapGetters } from 'vuex'
 export default {
   components: { EnderecoForm },
   props: {
@@ -132,25 +177,37 @@ export default {
   data() {
     return {
       ong: {
-        nome_completo: null,
-        cpf_cnpj: '',
-        telefones: [],
-        email: null,
-        password: null,
-        biografia: null,
-        endereco: {
-          cep: null,
-          logradouro: null,
-          numero: null,
-          complemento: null,
-          bairro: null,
-          localidade: null,
-          uf: null,
-          validAdress: null
+        razao_social: null,
+        cnpj: null,
+        historia: null,
+        usuario: {
+          email: null,
+          password: null,
+          nome_completo: null,
+          ativo: true,
+          ultimo_login: '2019-07-24T22:39:02.543520Z',
+          cpf: null,
+          vinculo_ong: true,
+          endereco: {
+            id: 2,
+            logradouro: null,
+            bairro: null,
+            cidade: null,
+            estado: null,
+            numero: null,
+            principal: true,
+            validAdress: null
+          },
+          telefone: [
+            {
+              numero: null,
+              whatsapp: false
+            }
+          ]
         }
       },
       passwordConfirm: null,
-      sucess: false, //toremove
+      success: false, //toremove
       submitted: false,
       masks: {
         phone: {
@@ -162,49 +219,30 @@ export default {
           delimiters: ['.', '.', '/', '-'],
           blocks: [2, 3, 3, 4, 2],
           numericOnly: true
-        }
+        },
+        cpf: {
+          delimiters: ['.', '.', '-'],
+          blocks: [3, 3, 3, 2],
+          numericOnly: true
+        },
       }
     }
   },
-  created() {
+  computed: {
+    user() {
+      return this.$auth.user
+    }
+  },
+  mounted() {
     !this.isCadastro ? this.getOng() : {}
   },
   methods: {
-    async getOng() {
-      this.ong = await this.$OngService.get('id')
-    },
     async register() {
+      var num = this.ong.usuario.telefone[0].numero
+      this.ong.usuario.telefone[0].numero = Number.parseInt(num.replace(/\D/g, ''))
       try {
-        console.log(this.ong)
-        await this.$OngService
-          .create({
-            cnpj: '111111111111',
-            historia: 'bb',
-            usuario: {
-              email: 'emily@hotmail.com',
-              password: 'senha123',
-              nome_completo: 'Emily Stefany Barros',
-              ativo: true,
-              ultimo_login: '2019-07-24T22:39:02.543520Z',
-              cpf: '924.670.669-24',
-              vinculo_ong: true,
-              endereco: {
-                id: 1,
-                logradouro: 'Rua das aboboras 2',
-                bairro: 'Leguminosas',
-                cidade: 'Aracaju',
-                estado: 'Sergipe',
-                numero: 2,
-                principal: true
-              },
-              telefone: [
-                {
-                  numero: 11111111111,
-                  whatsapp: true
-                }
-              ]
-            }
-          })
+        await this.$axios
+          .post('ong/create/', this.ong)
           .catch(err => {
             if (!err.response) {
               err.message = 'Servidor desconectado'
@@ -226,13 +264,13 @@ export default {
     validateBeforeSubmit() {
       this.submitted = true
       var interval = setInterval(() => {
-        if (this.ong.endereco.validAdress != null) {
-          if (!this.ong.endereco.validAdress) {
-            this.ong.endereco.validAdress = null
+        if (this.ong.usuario.endereco.validAdress != null) {
+          if (!this.ong.usuario.endereco.validAdress) {
+            this.ong.usuario.endereco.validAdress = null
             this.submitted = false
           }
           this.$validator.validateAll().then(result => {
-            if (result && this.ong.endereco.validAdress) {
+            if (result && this.ong.usuario.endereco.validAdress) {
               this.register()
               return
             } else {
