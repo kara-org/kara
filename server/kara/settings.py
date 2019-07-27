@@ -25,7 +25,9 @@ SECRET_KEY = 't@ra_es2x+f0+3lri2zp9pidk@=nqdkjm+h6hhv^w-*idz6!02'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+        'api.karadoacoes.tk'
+]
 
 
 # Application definition
@@ -54,11 +56,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_ALLOW_ALL = True
 
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000'
-]
+#CORS_ORIGIN_WHITELIST = [
+#    'http://localhost:3000'
+#    'http://karadoacoes.tk'
+#]
 
 ROOT_URLCONF = 'kara.urls'
 

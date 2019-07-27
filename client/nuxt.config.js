@@ -73,7 +73,9 @@ export default {
         tokenType: 'JWT '
       }
     },
-    plugins: [ '~/plugins/auth.js' ]
+    plugins: [ '~/plugins/auth.js' ],
+    watchLoggedIn: true,
+    rewriteRedirects: true
   },
   /*
   ** Build configuration
