@@ -26,7 +26,9 @@ SECRET_KEY = 't@ra_es2x+f0+3lri2zp9pidk@=nqdkjm+h6hhv^w-*idz6!02'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-        'api.karadoacoes.tk'
+    'localhost',
+    'localhost:8000',
+    'api.karadoacoes.tk'
 ]
 
 
@@ -168,3 +170,4 @@ STATIC_ROOT = os.path.join(BASE_DIR,'app','static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+

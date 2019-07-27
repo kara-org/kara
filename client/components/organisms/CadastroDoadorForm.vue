@@ -1,6 +1,6 @@
 <template>
   <section>
-    <form v-if="!success" @submit.prevent="validateBeforeSubmit" method="post">
+    <form @submit.prevent="validateBeforeSubmit" method="post">
       <div class="block has-text-centered" v-if="isCadastro">
         <b-radio v-model="pessoaFisica" :native-value="true" type="is-black">Física</b-radio>
         <b-radio v-model="pessoaFisica" :native-value="false" type="is-black">Juridíca</b-radio>
@@ -131,18 +131,12 @@
         >Voltar</nuxt-link>
       </div>
     </form>
-    <div v-else-if="isCadastro" class="column has-text-centered">
-      <h1>Cadastro realizado com successo! Será enviada uma confirmação para seu email.</h1>
-      <hr />
-    </div>
-    <div v-else-if="!isCadastro" class="column has-text-centered">
-      <h1>Atualização realizada com successo! Será enviada uma confirmação para seu email.</h1>
-      <hr />
-    </div>
   </section>
 </template>
 <script>
 import cleave from '@/plugins/cleave-directive.js'
+import { ErrorBag } from 'vee-validate';
+
 export default {
   props: {
     isCadastro: Boolean,
@@ -214,7 +208,9 @@ export default {
             if (!err.response) {
               err.message = 'Servidor desconectado'
             } else if (err.response.status === 400) {
-              err.message = err.response.data.non_field_errors[0]
+              if (err.response.data.non_field_errors)
+                err.message = err.response.data.non_field_errors[0]
+
             }
             this.$toast.open({
               message: err.message,
@@ -229,23 +225,39 @@ export default {
     },
     async register() {
       try {
-        await this.$axios.post('usuario/', this.doador).catch(err => {
-          if (!err.response) {
-            err.message = 'Servidor desconectado'
-          } else if (err.response.status === 400) {
-            err.message = err.response.data.non_field_errors[0]
-          }
-          this.$toast.open({
-            message: err.message,
-            type: 'is-danger',
-            position: 'is-bottom'
+        await this.$axios
+          .post('usuario/', this.doador)
+          .then(response => {
+            this.$toast.open({
+              message: this.isCadastro
+                ? 'Cadastro realizado com successo! Será enviada uma confirmação para seu email.'
+                : 'Atualização realizada com successo! Será enviada uma confirmação para seu email.',
+              type: 'is-success',
+              position: 'is-top'
+            })
+            this.$router.push('/login')
           })
-        })
-        this.success = true
+          .catch(err => {
+            console.error(this.errors);
+
+            if (!err.response) {
+              err.message = 'Servidor desconectado'
+            } else if (err.response.status === 400) {
+              if (err.response.data.non_field_errors)
+                err.message = err.response.data.non_field_errors[0]
+              err.message = err.response.data.non_field_errors[0]
+            }
+            this.$toast.open({
+              message: err.message,
+              type: 'is-danger',
+              position: 'is-bottom'
+            })
+          })
       } catch (e) {
         this.error = e.response.data.message
       }
     },
+
     validateBeforeSubmit() {
       this.$validator.validateAll().then(result => {
         if (result) {
