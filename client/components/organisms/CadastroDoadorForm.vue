@@ -1,7 +1,7 @@
 <template>
   <section>
     <form v-if="!success" @submit.prevent="validateBeforeSubmit" method="post">
-      <div class="block has-text-centered">
+      <div class="block has-text-centered" v-if="isCadastro">
         <b-radio v-model="pessoaFisica" :native-value="true" type="is-black">Física</b-radio>
         <b-radio v-model="pessoaFisica" :native-value="false" type="is-black">Juridíca</b-radio>
       </div>
@@ -25,8 +25,9 @@
           :message="errors.first('CPF')"
         >
           <b-input
+            :disabled="!isCadastro"
             type="text"
-            v-model.trim="doador.cpf_cnpj"
+            v-model.trim="doador.cpf"
             name="CPF"
             v-cleave="masks.cpf"
             maxlength="14"
@@ -41,8 +42,9 @@
           :message="errors.first('CNPJ')"
         >
           <b-input
+            :disabled="!isCadastro"
             type="text"
-            v-model.trim="doador.cpf_cnpj"
+            v-model.trim="doador.cpf"
             maxlength="18"
             v-cleave="masks.cnpj"
             name="CNPJ"
@@ -57,14 +59,14 @@
       >
         <b-input
           type="text"
-          v-model.trim="doador.telefone.numero"
+          v-model.trim="doador.telefone[0].numero"
           v-cleave="masks.phone"
           maxlength="15"
           name="telefone"
           v-validate="'required|phone'"
         ></b-input>
       </b-field>
-      <b-checkbox v-model="doador.telefone.whatsapp" type="is-black">
+      <b-checkbox v-model="doador.telefone[0].whatsapp" type="is-black">
         Whatsapp?
         <img width="15" src="~assets/wpp-icon.png" />
       </b-checkbox>
@@ -80,40 +82,42 @@
           v-validate="'required|email'"
         />
       </b-field>
-      <b-field
-        label="Senha"
-        :type="{'is-danger': errors.has('senha')}"
-        :message="errors.first('senha')"
-      >
-        <b-input
-          type="password"
-          name="senha"
-          v-model="doador.password"
-          v-validate="'required|min:8'"
-          ref="senha"
-        />
-      </b-field>
-      <b-field
-        label="Confirme sua senha"
-        :type="{'is-danger': errors.has('confirmação')}"
-        :message="errors.first('confirmação')"
-      >
-        <b-input
-          v-validate="'required|confirmed:senha'"
-          name="confirmação"
-          type="password"
-          v-model="passwordConfirm"
-        />
-      </b-field>
-      <hr />
-      <div class="column has-text-centered">
-        Já tem um cadastro?
-        <nuxt-link
-          class="is-primary is-inverted"
-          to="/login"
-          exact-active-class="is-active"
-        >Logue-se</nuxt-link>
-      </div>
+      <template v-if="isCadastro">
+        <b-field
+          label="Senha"
+          :type="{'is-danger': errors.has('senha')}"
+          :message="errors.first('senha')"
+        >
+          <b-input
+            type="password"
+            name="senha"
+            v-model="doador.password"
+            v-validate="'required|min:8'"
+            ref="senha"
+          />
+        </b-field>
+        <b-field
+          label="Confirme sua senha"
+          :type="{'is-danger': errors.has('confirmação')}"
+          :message="errors.first('confirmação')"
+        >
+          <b-input
+            v-validate="'required|confirmed:senha'"
+            name="confirmação"
+            type="password"
+            v-model="passwordConfirm"
+          />
+        </b-field>
+        <hr />
+        <div class="column has-text-centered">
+          Já tem um cadastro?
+          <nuxt-link
+            class="is-primary is-inverted"
+            to="/login"
+            exact-active-class="is-active"
+          >Logue-se</nuxt-link>
+        </div>
+      </template>
       <hr />
       <button
         type="submit"
@@ -127,8 +131,12 @@
         >Voltar</nuxt-link>
       </div>
     </form>
-    <div v-else class="column has-text-centered">
+    <div v-else-if="isCadastro" class="column has-text-centered">
       <h1>Cadastro realizado com successo! Será enviada uma confirmação para seu email.</h1>
+      <hr />
+    </div>
+    <div v-else-if="!isCadastro" class="column has-text-centered">
+      <h1>Atualização realizada com successo! Será enviada uma confirmação para seu email.</h1>
       <hr />
     </div>
   </section>
@@ -144,10 +152,24 @@ export default {
     return {
       doador: {
         nome_completo: null,
-        cpf_cnpj: null,
-        telefone: {
-          numero: null,
-          whatsapp: false
+        cpf: null,
+        ativo: true,
+        vinculo_ong: false,
+        ultimo_login: '2019-07-24T22:39:02.543520Z',
+        telefone: [
+          {
+            numero: null,
+            whatsapp: false
+          }
+        ],
+        endereco: {
+          cep: '49000000',
+          logradouro: 'logradouro',
+          bairro: 'bairro',
+          cidade: 'cidade',
+          estado: 'estado',
+          numero: 2,
+          principal: true
         },
         email: null,
         password: null
@@ -175,45 +197,18 @@ export default {
     }
   },
   created() {
-    !this.isCadastro ? this.getDoador() : {}
+    !this.isCadastro
+      ? (this.doador = JSON.parse(JSON.stringify(this.$auth.user)))
+      : this.doador
   },
   methods: {
-    async getDoador() {
-      var doador = await this.$UsuarioService.get('id')
-      console.log(doador.data)
-      console.log(doador.data.cpf_cnpj)
-      console.log(doador.data.nome_completo)
-      console.log(doador.data.email)
-      this.doador.cpf_cnpj = doador.data.cpf_cnpj
-      this.doador.nome_completo = doador.data.nome_completo
-      this.doador.email = doador.data.email
-    },
-    async register() {
+    async patch() {
       try {
-        await this.$UsuarioService
-          .create({
-            email: 'emily@gmail.com',
-            password: 'senha123',
-            nome_completo: 'Emily Stefany Barros',
-            ativo: true,
-            ultimo_login: '2019-07-24T22:39:02.543520Z',
-            cpf: '924.670.669-24',
-            vinculo_ong: false,
-            endereco: {
-              id: 1,
-              logradouro: 'Rua das aboboras 2',
-              bairro: 'Leguminosas',
-              cidade: 'Aracaju',
-              estado: 'Sergipe',
-              numero: 2,
-              principal: true
-            },
-            telefone: [
-              {
-                numero: 11111111111,
-                whatsapp: true
-              }
-            ]
+        await this.$axios
+          .patch(`/usuario/${this.$auth.user.id}/`, {
+            nome_completo: this.nome_completo,
+            telefone: this.telefone,
+            email: this.email
           })
           .catch(err => {
             if (!err.response) {
@@ -232,10 +227,34 @@ export default {
         this.error = e.response.data.message
       }
     },
+    async register() {
+      try {
+        await this.$axios.post('usuario/', this.doador).catch(err => {
+          if (!err.response) {
+            err.message = 'Servidor desconectado'
+          } else if (err.response.status === 400) {
+            err.message = err.response.data.non_field_errors[0]
+          }
+          this.$toast.open({
+            message: err.message,
+            type: 'is-danger',
+            position: 'is-bottom'
+          })
+        })
+        this.success = true
+      } catch (e) {
+        this.error = e.response.data.message
+      }
+    },
     validateBeforeSubmit() {
       this.$validator.validateAll().then(result => {
         if (result) {
-          this.register()
+          var num = this.doador.telefone[0].numero
+          this.doador.telefone[0].numero = Number.parseInt(
+            num.replace(/\D/g, '')
+          )
+          this.isCadastro ? this.register() : this.patch()
+
           return
         }
         this.$toast.open({
