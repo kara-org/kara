@@ -29,21 +29,21 @@
         </div>
       </div>
     </section>
+    <section class="hero is-fullheight">
+      <ListagemOngs />
+    </section>
   </div>
 </template>
 
 <script>
+import ListagemOngs from '../components/organisms/ListagemOngs'
+
 export default {
   name: 'HomePage',
-  components: {},
+  components: {
+    ListagemOngs
+  },
   created: function() {
-    // var intro = this.$el.querySelector('.banner');
-    // var introPlayer = this.$el.querySelector('.banner__video');
-    // var iOS = /iPad|iPhone|iPod/.test(navigator.platform);
-    // if (iOS) {
-    //   intro.style.backgroundImage = 'url("' + introPlayer.poster + '")';
-    //   introPlayer.style.display = 'none';
-    // }
   }
 }
 </script>

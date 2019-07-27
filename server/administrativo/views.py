@@ -132,16 +132,9 @@ class UsuarioDetailView(viewsets.ViewSet):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-class ONGListView(viewsets.ViewSet):
-    serializer_class = OngSerializer
-
-    def list(self, request):
-        ongs = Ong.objects.filter(ativo=True)
-        serializer = self.serializer_class(ongs, many=True)
-        return Response(serializer.data)
 
 @permission_classes((AllowAny, ))
-class OngCreateView(viewsets.ViewSet):
+class OngCreateListView(viewsets.ViewSet):
     serializer_class = OngSerializer
 
     def create(self, request, *args, **kwargs):
@@ -153,6 +146,11 @@ class OngCreateView(viewsets.ViewSet):
                 return Response(serializer.data , status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def list(self, request):
+        ongs = Ong.objects.filter(ativo=True)
+        serializer = self.serializer_class(ongs, many=True)
+        return Response(serializer.data)
     
 @permission_classes((AllowAny, ))
 class OngDetailView(viewsets.ViewSet):

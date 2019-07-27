@@ -19,7 +19,7 @@ export const mutations = {
 }
 
 export const actions = {
-  fetchOngs () {
+  fetchOngs (context) {
     context.commit('UPDATE_ONGS', this.$OngService.index())
   },
 
