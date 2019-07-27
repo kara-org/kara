@@ -13,7 +13,7 @@
         >
           <img
             src="~assets/kara-logo.svg"
-            alt="Buefy"
+            alt="kara"
             height="28"
           >
         </a>

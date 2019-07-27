@@ -50,17 +50,15 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 export default {
   data() {
-    return {}
+    return {
+     user: { nome_completo: '' }
+    }
   },
   computed: {
     isAuthenticated() {
       return this.$auth.loggedIn
-    },
-    user() {
-      return this.$auth.user
     },
     userName() {
       return this.user.nome_completo.split(' ')[0]
@@ -78,11 +76,14 @@ export default {
         }
       })
     }
+  },
+  mounted () {
+    this.user = this.$auth.user
   }
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .buttons-auth {
   display: flex;
   height: 100%;

@@ -1,3 +1,4 @@
+const env = require('dotenv').config()
 
 export default {
   mode: 'universal',
@@ -57,7 +58,7 @@ export default {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-    baseURL: "http://localhost:8000/api/",
+    baseURL: process.env.BASE_URL || 'http://localhost:8000/api',
   },
 
   auth: {
@@ -72,11 +73,15 @@ export default {
         tokenType: 'JWT '
       }
     },
-    plugins: [ '~/plugins/auth.js' ]
+    plugins: [ '~/plugins/auth.js' ],
+    watchLoggedIn: true,
+    rewriteRedirects: true
   },
   /*
   ** Build configuration
   */
+  env: env.parsed,
+
   build: {
     /*
     ** You can extend webpack config here
