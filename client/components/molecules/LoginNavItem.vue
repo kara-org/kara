@@ -37,10 +37,17 @@
       <div class="navbar-item" />
       <div class="navbar-item">
         <nuxt-link
-          class="button is-primary is-rounded"
+          class="button is-primary is-outlined is-rounded"
           to="/editarPerfil"
           exact-active-class="is-active"
         >Perfil</nuxt-link>
+      </div>
+      <div class="navbar-item" v-if="user.vinculo_ong">
+        <nuxt-link
+          class="button is-primary is-outlined is-rounded"
+          to="/cadastroDemanda"
+          exact-active-class="is-active"
+        >+Demanda</nuxt-link>
       </div>
       <div class="media-right">
         <a href="#" class="nav-link" @click="logout">sair</a>
