@@ -57,21 +57,21 @@
     </b-field>
     <b-field
       label="Cidade"
-      :type="{'is-danger': errors.has('localidade')}"
-      :message="errors.first('localidade')"
+      :type="{'is-danger': errors.has('cidade')}"
+      :message="errors.first('cidade')"
     >
       <b-input
         type="text"
-        v-model.trim="endereco.localidade"
-        name="localidade"
+        v-model.trim="endereco.cidade"
+        name="cidade"
         v-validate="'required'"
       ></b-input>
     </b-field>
-    <b-field label="UF" :type="{'is-danger': errors.has('UF')}" :message="errors.first('UF')">
+    <b-field label="Estado" :type="{'is-danger': errors.has('estado')}" :message="errors.first('estado')">
       <b-input
         type="text"
-        v-model.trim="endereco.uf"
-        name="UF"
+        v-model.trim="endereco.estado"
+        name="estado"
         v-validate="'required|alpha|length:2'"
       ></b-input>
     </b-field>
@@ -114,8 +114,8 @@ export default {
             console.log(obj)
             this.endereco.logradouro = obj.logradouro
             this.endereco.bairro = obj.bairro
-            this.endereco.localidade = obj.localidade
-            this.endereco.uf = obj.uf
+            this.endereco.cidade = obj.localidade
+            this.endereco.estado = obj.uf
           })
         }
       }
