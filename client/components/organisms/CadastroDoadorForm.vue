@@ -153,12 +153,24 @@ export default {
       doador: {
         nome_completo: null,
         cpf: null,
+        ativo: true,
+        vinculo_ong: false,
+        ultimo_login: '2019-07-24T22:39:02.543520Z',
         telefone: [
           {
             numero: null,
             whatsapp: false
           }
         ],
+        endereco: {
+          cep: '49000000',
+          logradouro: 'logradouro',
+          bairro: 'bairro',
+          cidade: 'cidade',
+          estado: 'estado',
+          numero: 2,
+          principal: true
+        },
         email: null,
         password: null
       },
@@ -217,43 +229,18 @@ export default {
     },
     async register() {
       try {
-        await this.$axios
-          .post({
-            email: 'emily@gmail.com',
-            password: 'senha123',
-            nome_completo: 'Emily Stefany Barros',
-            ativo: true,
-            ultimo_login: '2019-07-24T22:39:02.543520Z',
-            cpf: '924.670.669-24',
-            vinculo_ong: false,
-            endereco: {
-              id: 1,
-              logradouro: 'Rua das aboboras 2',
-              bairro: 'Leguminosas',
-              cidade: 'Aracaju',
-              estado: 'Sergipe',
-              numero: 2,
-              principal: true
-            },
-            telefone: [
-              {
-                numero: 11111111111,
-                whatsapp: true
-              }
-            ]
+        await this.$axios.post('usuario/', this.doador).catch(err => {
+          if (!err.response) {
+            err.message = 'Servidor desconectado'
+          } else if (err.response.status === 400) {
+            err.message = err.response.data.non_field_errors[0]
+          }
+          this.$toast.open({
+            message: err.message,
+            type: 'is-danger',
+            position: 'is-bottom'
           })
-          .catch(err => {
-            if (!err.response) {
-              err.message = 'Servidor desconectado'
-            } else if (err.response.status === 400) {
-              err.message = err.response.data.non_field_errors[0]
-            }
-            this.$toast.open({
-              message: err.message,
-              type: 'is-danger',
-              position: 'is-bottom'
-            })
-          })
+        })
         this.success = true
       } catch (e) {
         this.error = e.response.data.message
