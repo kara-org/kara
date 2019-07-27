@@ -72,7 +72,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .buttons-auth {
   display: flex;
   height: 100%;

@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 let instance = axios.create({
-  baseURL: 'http://localhost:8000/api'
+	baseURL: 'http://api.karadoacoes.tk/api'
 })
 
 export default function ({ $axios, store }) {

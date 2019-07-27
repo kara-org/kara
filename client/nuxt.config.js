@@ -57,7 +57,7 @@ export default {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-    baseURL: "http://localhost:8000/api/",
+    baseURL: "http://api.karadoacoes.tk/api",
   },
 
   auth: {
@@ -72,7 +72,9 @@ export default {
         tokenType: 'JWT '
       }
     },
-    plugins: [ '~/plugins/auth.js' ]
+    plugins: [ '~/plugins/auth.js' ],
+    watchLoggedIn: true,
+    rewriteRedirects: true
   },
   /*
   ** Build configuration
