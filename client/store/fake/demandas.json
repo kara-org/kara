@@ -1,0 +1,10 @@
+[
+  { "nome": "Pão", "quantidade": 270, "imagem": "" },
+  { "nome": "Arroz", "quantidade": 260, "imagem": "" },
+  { "nome": "Feijão", "quantidade": 250, "imagem": "" },
+  { "nome": "Fogão", "quantidade": 1, "imagem": "" },
+  { "nome": "Quilos e ração", "quantidade": 230, "imagem": "" },
+  { "nome": "Laranja", "quantidade": 203, "imagem": "" },
+  { "nome": "Mexerica", "quantidade": 330, "imagem": "" },
+  { "nome": "Sabão", "quantidade": 10, "imagem": "" }
+]

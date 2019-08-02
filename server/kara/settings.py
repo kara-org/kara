@@ -25,7 +25,11 @@ SECRET_KEY = 't@ra_es2x+f0+3lri2zp9pidk@=nqdkjm+h6hhv^w-*idz6!02'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    'localhost:8000',
+    'api.karadoacoes.tk'
+]
 
 
 # Application definition
@@ -40,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'administrativo',
+    'campanhas',
 ]
 
 MIDDLEWARE = [
@@ -53,11 +58,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_ALLOW_ALL = True
 
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000'
-]
+#CORS_ORIGIN_WHITELIST = [
+#    'http://localhost:3000'
+#    'http://karadoacoes.tk'
+#]
 
 ROOT_URLCONF = 'kara.urls'
 
@@ -72,6 +78,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -121,6 +128,15 @@ REST_FRAMEWORK = {
     ),
 }
 
+##################### SMTP EMAIL ###################################
+
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'joao.daltro'
+EMAIL_HOST_PASSWORD = 'jpmd454245'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+#######################################################################
+
 JWT_AUTH = {
     'JWT_VERIFY_EXPIRATION': False,
     #'JWT_PAYLOAD_HANDLER': 'pagueon.utils.jwt_payload_handler',
@@ -145,3 +161,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR,'app','static')
+
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR,"app", "static"),
+#     '/var/www/static/',
+# ]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+

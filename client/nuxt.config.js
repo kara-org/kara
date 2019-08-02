@@ -1,3 +1,4 @@
+const env = require('dotenv').config()
 
 export default {
   mode: 'universal',
@@ -27,13 +28,17 @@ export default {
   ],
 
   styleResources: {
-    scss: ['~assets/styles/main.scss'] 
+    scss: ['~assets/styles/main.scss']
   },
   /*
   ** Plugins to load before mounting the App
   */
   plugins: [
-    {src: '~/plugins/vee-validate'},
+    { src: '~/plugins/vee-validate' },
+    { src: '~/plugins/via-cep' },
+    { src: '~/plugins/axios' },
+    { src: '~/plugins/services' },
+
   ],
   /*
   ** Nuxt.js modules
@@ -53,25 +58,30 @@ export default {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-    baseURL: "http://localhost:8000/api/"
+    baseURL: process.env.BASE_URL || 'http://localhost:8000/api',
   },
 
   auth: {
     strategies: {
       local: {
         endpoints: {
-          login: { url: 'login/', method: 'post', propertyName: 'data.token' },
+          login: { url: 'login/', method: 'post', propertyName: 'token' },
           logout: false,
-          user: { url: 'usuarios/', method: 'get', propertyName: false }
+          user: { url: 'auth/usuario/', method: 'get', propertyName: false },
         },
-        // tokenRequired: true,
-        // tokenType: 'bearer'
+        tokenRequired: true,
+        tokenType: 'JWT '
       }
-    }
+    },
+    plugins: [ '~/plugins/auth.js' ],
+    watchLoggedIn: true,
+    rewriteRedirects: true
   },
   /*
   ** Build configuration
   */
+  env: env.parsed,
+
   build: {
     /*
     ** You can extend webpack config here
