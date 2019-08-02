@@ -87,7 +87,7 @@ export default {
     this.fetchDemandas()
   },
   methods: {
-    ...mapActions('ongs', ['fetchDemandas'])
+ ...mapActions('ongs', ['fetchDemandas'])
   },
 }
 </script>

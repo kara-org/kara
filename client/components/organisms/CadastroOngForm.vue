@@ -224,7 +224,7 @@ export default {
           delimiters: ['.', '.', '-'],
           blocks: [3, 3, 3, 2],
           numericOnly: true
-        },
+        }
       }
     }
   },
@@ -239,22 +239,22 @@ export default {
   methods: {
     async register() {
       var num = this.ong.usuario.telefone[0].numero
-      this.ong.usuario.telefone[0].numero = Number.parseInt(num.replace(/\D/g, ''))
+      this.ong.usuario.telefone[0].numero = Number.parseInt(
+        num.replace(/\D/g, '')
+      )
       try {
-        await this.$axios
-          .post('ong/create/', this.ong)
-          .catch(err => {
-            if (!err.response) {
-              err.message = 'Servidor desconectado'
-            } else if (err.response.status === 400) {
-              err.message = err.response.data.non_field_errors[0]
-            }
-            this.$toast.open({
-              message: err.message,
-              type: 'is-danger',
-              position: 'is-bottom'
-            })
+        await this.$OngService.create(this.ong).catch(err => {
+          if (!err.response) {
+            err.message = 'Servidor desconectado'
+          } else if (err.response.status === 400) {
+            err.message = err.response.data.non_field_errors[0]
+          }
+          this.$toast.open({
+            message: err.message,
+            type: 'is-danger',
+            position: 'is-bottom'
           })
+        })
         this.success = true
       } catch (e) {
         this.error = e.response.data.message
