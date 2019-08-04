@@ -21,6 +21,7 @@
 </template>
 <script>
 import { mapActions } from 'vuex'
+
 export default {
   props: {
     to: {
@@ -31,15 +32,16 @@ export default {
    data () {
     return {
       palavraChave: '',
-      tipo: 'demanda'
+      tipo: 'demanda',
     }
   },
   methods: {
     ...mapActions('global', ['startLoading']),
-    ...mapActions('busca', ['fetchBusca']),
-    send() {
+    ...mapActions('busca', ['fetchBusca', 'buscar']),
+    send () {
       this.startLoading()
       this.fetchBusca({ tipo: this.tipo, palavraChave: this.palavraChave})
+
       if (this.to)
         this.$router.push(this.to)
     }
@@ -48,6 +50,16 @@ export default {
     loading () {
       return this.$store.state.global.loading
     }
+  },
+  watch: {
+    palavraChave () {
+      this.buscar({ tipo: this.tipo, palavraChave: this.palavraChave})
+    }
+  },
+  created () {
+    if (!this.$store.state.busca.list.length)
+      this.fetchBusca({ tipo: this.tipo, palavraChave: this.palavraChave})
+    this.palavraChave =  this.$store.state.busca.searchTerm
   }
 }
 </script>

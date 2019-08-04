@@ -1,10 +1,12 @@
 [
-  { "titulo": "Pão", "quantidade": 270, "imagem": "", "ong":{"titulo": "almir do picolé", "id":1}},
-  { "titulo": "Arroz", "quantidade": 260, "imagem": "", "ong":{"titulo": "Parque do falcões", "id":2}},
-  { "titulo": "Feijão", "quantidade": 250, "imagem": "", "ong":{"titulo": "almir do picolé", "id":12}},
-  { "titulo": "Fogão", "quantidade": 1, "imagem": "", "ong":{"titulo": "almir do picolé", "id":122}},
-  { "titulo": "Quilos e ração", "quantidade": 230, "imagem": "", "ong":{"titulo": "Adasfa", "id":132}},
-  { "titulo": "Laranja", "quantidade": 203, "imagem": "", "ong":{"titulo": "batata", "id":11}},
-  { "titulo": "Mexerica", "quantidade": 330, "imagem": "", "ong":{"titulo": "almir do picolé", "id":3}},
-  { "titulo": "Sabão", "quantidade": 10, "imagem": "", "ong":{"titulo": "almir do picolé", "id":4}}
+  {"id":1, "titulo": "Pão", "quantidade": 270, "imagem": "", "ong":{"titulo": "almir do picolé", "id":1}},
+  {"id":2, "titulo": "Arroz", "quantidade": 260, "imagem": "", "ong":{"titulo": "Parque do falcões", "id":2}},
+  {"id":3, "titulo": "Feijão", "quantidade": 250, "imagem": "", "ong":{"titulo": "almir do picolé", "id":12}},
+  {"id":4, "titulo": "Fogão", "quantidade": 1, "imagem": "", "ong":{"titulo": "almir do picolé", "id":122}},
+  {"id":5, "titulo": "Quilos e ração", "quantidade": 230, "imagem": "", "ong":{"titulo": "Adasfa", "id":132}},
+  {"id":6, "titulo": "Laranja", "quantidade": 203, "imagem": "", "ong":{"titulo": "batata", "id":11}},
+  {"id":7, "titulo": "Mexerica", "quantidade": 330, "imagem": "", "ong":{"titulo": "almir do picolé", "id":3}},
+  {"id":8, "titulo": "Sabão", "quantidade": 10, "imagem": "", "ong":{"titulo": "almir do picolé", "id":4}},
+  {"id":9, "titulo": "Feijão tropeiro", "quantidade": 10, "imagem": "", "ong":{"titulo": "almir do picolé", "id":4}}
 ]
+

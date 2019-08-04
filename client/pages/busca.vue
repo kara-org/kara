@@ -7,8 +7,8 @@
         </div>
       </div>
     </section>
-    <section class="hero">
-      <div class="hero-body">
+    <section class="hero is-fullheight">
+      <div class="hero-head">
         <div class="container">
           <h1 class="title is-4">Demandas</h1>
           <div class="level">
