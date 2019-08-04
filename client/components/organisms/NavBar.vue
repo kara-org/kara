@@ -1,7 +1,7 @@
 <template>
   <div>
     <nav
-      class="navbar header is-white"
+      class="navbar header is-transparent"
       role="navigation"
       aria-label="main navigation"
     >
@@ -47,15 +47,19 @@
 <script>
 import LoginNavItem from '../molecules/LoginNavItem'
 export default {
+  props: ['items'],
   components: {
     LoginNavItem
   },
-  props: ['items'],
   asyncData () {
     return {
-
     }
+  },
+  mounted () {
+    var root = document.getElementsByTagName( 'html' )[0]; // '0' to assign the first (and only `HTML` tag)
+    // root.setAttribute( 'class', 'has-navbar-fixed-top' );
   }
+
 }
 </script>
 <style lang="scss">
