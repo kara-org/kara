@@ -84,7 +84,7 @@ export default {
     }
   },
   beforeCreate () {
-    this.fetchDemandas()
+    //this.fetchDemandas()
   },
   methods: {
  ...mapActions('ongs', ['fetchDemandas'])
