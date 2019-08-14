@@ -10,12 +10,15 @@ urlpatterns = [
     path('recuperar-senha/', RecuperarSenhaUsuarioView.as_view({'post': 'create'}), name='api-usuarios'),
 
     path('usuario/', UsuarioView.as_view({'get': 'list', 'post': 'create'}), name='api-usuarios'),
-    path('usuario/<int:pk>/', UsuarioDetailView.as_view({'get': 'get', 'put':'put', 'patch': 'patch', 'delete':'delete'}), name='api-usuario'),
-    path('ong/', OngCreateListView.as_view({'get': 'list', 'post': 'create'}), name='ongs'),
-    
-    path('ong/<int:pk>/', OngDetailView.as_view({'get': 'get', 'put':'put', 'patch': 'patch', 'delete':'delete'}), name='ong'),
-    
-    path('usuario/<int:pk_usr>/telefones/', TelefoneView.as_view({'get': 'list', 'post': 'create'}), name='api-usuario-telefone'),
-    path('usuario/<int:pk_usr>/telefones/<int:pk>/', TelefoneViewDetail.as_view({'get': 'get', 'put':'put', 'patch': 'patch', 'delete':'delete'}), name='api-usuario-telefone'),
+    path('usuario/<int:pk>/', UsuarioDetailView.as_view({'get': 'get', 'put': 'put', 'patch': 'patch',
+                                                         'delete': 'delete'}), name='api-usuario'),
+    path('usuario/<int:pk_usr>/telefones/', TelefoneView.as_view({'get': 'list', 'post': 'create'}),
+         name= 'api-usuario-telefone'),
+    path('usuario/<int:pk_usr>/telefones/<int:pk>/', TelefoneViewDetail.as_view({'get': 'get', 'put':'put',
+                                                                                 'patch': 'patch', 'delete':'delete'}),
+         name='api-usuario-telefone'),
 
+    path('ong/', OngCreateListView.as_view({'get': 'list', 'post': 'create'}), name='ongs'),
+    path('ong/<int:pk>/', OngDetailView.as_view({'get': 'get', 'put':'put', 'patch': 'patch',
+                                                 'delete': 'delete'}), name='ong'),
 ]
