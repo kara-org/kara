@@ -7,7 +7,6 @@
           to="/login"
           exact-active-class="is-active"
         >
-          <!-- <b-icon :icon="item.icon" /> {{ item.title }} -->
           Entrar
         </nuxt-link>
       </div>
