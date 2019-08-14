@@ -1,19 +1,22 @@
 <template>
   <div class="columns">
     <PerfilONG class="column is-one-fifth" />
-    <ListagemONG class="column auto" />
+    <div class="column is-three-fifth">
+      <h1 class="title is-5 has-text-centered">Demandas de Almir do Picolé</h1>
+      <ListagemCards :isBusca="false" />
+    </div>
     <CarrinhoONG class="column is-one-fifth" />
   </div>
 </template>
 
 <script>
 import PerfilONG from '../components/organisms/ColunmPerfilONG'
-import ListagemONG from '../components/organisms/ColunmListagemONG'
+import ListagemCards from '../components/organisms/ListagemCards.vue'
 import CarrinhoONG from '../components/organisms/ColunmCarrinhoONG'
 export default {
   components: {
     PerfilONG,
-    ListagemONG,
+    ListagemCards,
     CarrinhoONG
   },
   data() {
@@ -23,7 +26,7 @@ export default {
 </script>
 
 <style lang="scss">
-.columns:last-child {
-  margin: auto;
+.columns {
+  margin: 5px;
 }
 </style>

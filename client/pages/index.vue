@@ -23,7 +23,7 @@
       <div class="hero-body">
         <div class="container">
           <div class="level">
-            <ListagemOngs />
+            <ListagemOngs :isBusca="true"/>
           </div>
         </div>
       </div>

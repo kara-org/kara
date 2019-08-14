@@ -11,9 +11,9 @@
       <div class="hero-head">
         <div class="container">
           <h1 class="title is-4">Demandas</h1>
-          <div class="level">
-            <ListagemOngs />
-          </div>
+          <!-- <div class="level"> -->
+            <ListagemOngs :isBusca="true"/>
+          <!-- </div> -->
         </div>
       </div>
     </section>

@@ -1,46 +1,64 @@
 <template>
-  <article class="card is-rounded">
-    <div class="card-content">
-      <h class="title is-size-5">Demandas selecionadas</h>
-      <hr />
-
+  <article class="card">
+    <h1 class="title is-size-5 has-text-centered">Demandas selecionadas</h1>
+    <div class="columns">
       <p v-if="demandas.length<1">Demandas aparecerão aqui a medida que você for selecionando.</p>
     </div>
-    <div v-for="(item, key) of demandas" :key="key" class="card">
-      <div class="card-content">
-        <div class="media">
-          <div class="media-content">
-            <p class="title is-4">{{item.nome}}</p>
-            <p class="subtitle is-6">Acaba em {{item.data}}</p>
-          </div>
-        </div>
-        <div class="content">
-          <p>{{item.progresso}}% concluído</p>
-        </div>
-      </div>
+    <div v-for="item in demandas" :key="item.id" class="column is-full">
+      <CardOng
+        :titulo="item.titulo"
+        :quantidade="item.quantidade"
+        :ongTitulo="item.ong.titulo"
+        :ongId="item.ong.id"
+        :isCarrinho="true"
+      />
     </div>
   </article>
 </template>
 
 <script>
+import CardOng from '../molecules/CardDemanda'
 export default {
+  components: {
+    CardOng
+  },
   data() {
     return {
       demandas: [
-        { nome: 'Feijão', progresso: 23, data: '10/10/2019' },
-        { nome: 'Arroz', progresso: 13, data: '31/21/2019' },
-        { nome: 'Sal', progresso: 5, data: '22/09/2019' },
-        { nome: 'Água', progresso: 19, data: '14/02/2019' }
+        {
+          titulo: 'Feijão',
+          quantidade: 23,
+          ong: {
+            id: 1,
+            titulo: 'ALMIR DO PICOLÉ'
+          }
+        },
+        {
+          titulo: 'Arroz',
+          quantidade: 13,
+          ong: {
+            id: 1,
+            titulo: 'ALMIR DO PICOLÉ'
+          }
+        },
+        {
+          titulo: 'Sal',
+          quantidade: 5,
+          ong: {
+            id: 1,
+            titulo: 'ALMIR DO PICOLÉ'
+          }
+        },
+        {
+          titulo: 'Água',
+          quantidade: 19,
+          ong: {
+            id: 1,
+            titulo: 'ALMIR DO PICOLÉ'
+          }
+        }
       ]
     }
   }
 }
 </script>
-<style lang="scss">
-.card-content {
-  text-align: -webkit-center;
-}
-.card-content p {
-  text-align: justify;
-}
-</style>

@@ -1,6 +1,6 @@
 <template>
-  <article class="card">
-    <div class="card-content">
+  <div class="card">
+    <div class="card-content" style="text-align: -webkit-center;">
       <h class="title is-size-5">Almir do Picolé</h>
       <hr />
       <figure class="image is-128x128">
@@ -23,13 +23,5 @@
         <br />Email: almir@mail.com.br
       </p>
     </div>
-  </article>
+  </div>
 </template>
-<style lang="scss">
-.card-content {
-  text-align: -webkit-center;
-}
-.card-content p {
-  text-align: justify;
-}
-</style>

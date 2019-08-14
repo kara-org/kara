@@ -32,7 +32,7 @@
           </div>
         </div>
         <div class="media-right">
-          <a href="#" class="card-footer-item button is-primary is-medium">Doar</a>
+          <a href="/carrinho" class="card-footer-item button is-primary is-medium">Doar</a>
         </div>
       </div>
     </div>
