@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from administrativo.views import *
+from doacoes.views import *
 from campanhas.views import *
 from rest_framework_jwt.views import obtain_jwt_token
 
@@ -14,11 +15,13 @@ urlpatterns = [
                                                          'delete': 'delete'}), name='api-usuario'),
     path('usuario/<int:pk_usr>/telefones/', TelefoneView.as_view({'get': 'list', 'post': 'create'}),
          name= 'api-usuario-telefone'),
-    path('usuario/<int:pk_usr>/telefones/<int:pk>/', TelefoneViewDetail.as_view({'get': 'get', 'put':'put',
-                                                                                 'patch': 'patch', 'delete':'delete'}),
+    path('usuario/<int:pk_usr>/telefones/<int:pk>/', TelefoneViewDetail.as_view({'get': 'get', 'put': 'put',
+                                                                                 'patch': 'patch', 'delete': 'delete'}),
          name='api-usuario-telefone'),
 
     path('ong/', OngCreateListView.as_view({'get': 'list', 'post': 'create'}), name='ongs'),
-    path('ong/<int:pk>/', OngDetailView.as_view({'get': 'get', 'put':'put', 'patch': 'patch',
+    path('ong/<int:pk>/', OngDetailView.as_view({'get': 'get', 'put': 'put', 'patch': 'patch',
                                                  'delete': 'delete'}), name='ong'),
+
+    path('ong/<int:id_ong>/demandas/', DemandaView.as_view({'get': 'list', 'post': 'create'}), name='demanda'),
 ]
