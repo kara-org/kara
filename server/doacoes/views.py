@@ -21,6 +21,13 @@ from django.utils.decorators import method_decorator
 class DemandaView(viewsets.ViewSet):
     serializer_class = DemandaSerializer
     serializer_retorno_class = DemandaSerializerRetorno
+    serializer_class_alteracao = DemandaSerializerAlteracao
+
+    def get_object(self, id):
+        try:
+            return Demanda.objects.get(id=id, ativo=True)
+        except Demanda.DoesNotExist:
+            raise Http404
 
     def list(self, request, id_ong):
         print(id_ong)
@@ -35,5 +42,53 @@ class DemandaView(viewsets.ViewSet):
         if serializer.is_valid():
             demanda = serializer.save()
             serializer = self.serializer_retorno_class(demanda)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, pk, *args, **kwargs):
+        obj = self.get_object(pk)
+        serializer = self.serializer_class_alteracao(obj, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, pk, *args, **kwargs):
+        obj = self.get_object(pk)
+        serializer = self.serializer_class_alteracao(obj, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, *args, **kwargs):
+        obj = self.get_object(pk)
+        # if not obj.ativo:
+        #     return Response("Demanda já cancelada", status=status.HTTP_400_BAD_REQUEST)
+        request.data['ativo'] = False
+        serializer = self.serializer_class_alteracao(obj, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class DemandaListView(viewsets.ViewSet):
+    serializer_class = DemandaSerializer
+    serializer_retorno_class = DemandaSerializerRetorno
+
+    def list(self, request):
+        demandas = Demanda.objects.all()
+        serializer = self.serializer_retorno_class(demandas, many=True)
+        return Response(serializer.data)
+
+class DoacaoView(viewsets.ViewSet):
+    serializer_class = DoacaoSerializer
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        serializer = self.serializer_class(data=data)
+        if serializer.is_valid():
+            doacao = serializer.save()
+            serializer = self.serializer_class(doacao)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

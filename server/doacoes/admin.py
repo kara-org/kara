@@ -1,9 +1,13 @@
 from django.contrib import admin
 from .models import  *
 
-@admin.register(Status)
-class StatusAdmin(admin.ModelAdmin):
-    model = Status
+@admin.register(StatusDoacao)
+class StatusDoacaoAdmin(admin.ModelAdmin):
+    model = StatusDoacao
+
+@admin.register(StatusItemDoacao)
+class StatusItemDoacaoAdmin(admin.ModelAdmin):
+    model = StatusItemDoacao
 
 @admin.register(Demanda)
 class DemandaAdmin(admin.ModelAdmin):
@@ -16,3 +20,7 @@ class DoacaoAdmin(admin.ModelAdmin):
 @admin.register(Categoria)
 class CategoriaAdmin(admin.ModelAdmin):
     model = Categoria
+
+@admin.register(ItemDoacao)
+class ItemDoacaoAdmin(admin.ModelAdmin):
+    model = ItemDoacao

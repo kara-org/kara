@@ -64,7 +64,6 @@ class UsuarioSerializer(serializers.ModelSerializer):
                 )
         
     def create(self, validated_data):
-    
         print(validated_data)
         endereco = validated_data.pop("endereco")
         telefone = validated_data.pop("telefone")
