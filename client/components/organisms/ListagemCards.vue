@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="columns is-multiline">
-      <div v-for="item in list" :key="item.id" class="column" :class="isBusca ? 'is-one-fifth' : 'is-one-quarter'">
+      <div v-for="item in list" :key="item.id" class="column" :class="isBusca ? 'is-one-third' : 'is-half'">
         <CardOng
           :titulo="item.titulo"
           :quantidade="item.quantidade"
@@ -10,7 +10,7 @@
           :isCarrinho="false"
         />
       </div>
-      <div v-for="item in list" :key="item.id"  class="column" :class="isBusca ? 'is-one-fifth' : 'is-one-quarter'">
+      <div v-for="item in list" :key="item.id"  class="column" :class="isBusca ? 'is-one-third' : 'is-half'">
         <CardOng
           :titulo="item.titulo"
           :quantidade="item.quantidade"
@@ -19,7 +19,7 @@
           :isCarrinho="false"
         />
       </div>
-      <div v-for="item in list" :key="item.id"  class="column" :class="isBusca ? 'is-one-fifth' : 'is-one-quarter'">
+      <div v-for="item in list" :key="item.id"  class="column" :class="isBusca ? 'is-one-third' : 'is-half'">
         <CardOng
           :titulo="item.titulo"
           :quantidade="item.quantidade"

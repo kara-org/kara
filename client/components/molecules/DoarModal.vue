@@ -1,6 +1,6 @@
 <template>
   <section>
-    <button class="button is-primary is-small" @click="isComponentModalActive = true">{{text}}</button>
+    <button class="button is-primary is-medium" @click="isComponentModalActive = true">{{text}}</button>
 
     <b-modal :active.sync="isComponentModalActive" has-modal-card>
       <form action>
