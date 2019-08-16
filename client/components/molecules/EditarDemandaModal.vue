@@ -1,7 +1,7 @@
 <template>
   <span>
     <a @click="isComponentModalActive = true">
-      <b-icon class="button is-medium" icon="menu"></b-icon>
+      <b-icon class="button is-medium is-outlined is-primary" icon="settings"></b-icon>
     </a>
     <b-modal :active.sync="isComponentModalActive" has-modal-card>
       <form action>

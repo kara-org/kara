@@ -34,7 +34,7 @@ export default {
 
 <style lang="scss" scoped>
 .hero-body {
-  padding-top: 2em !important;
+  padding-top: 1em !important;
 }
 body {
   margin: 10px !important;

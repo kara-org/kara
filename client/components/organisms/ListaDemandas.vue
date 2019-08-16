@@ -38,7 +38,7 @@
           centered
         >
           <span
-            class="tag is-success"
+            class="tag is-primary"
           >{{ Math.round(( props.row.doado / props.row.esperado) * 100) }}%</span>
         </b-table-column>
 
@@ -48,9 +48,9 @@
           :label="columnsVisible['acao'].title"
           centered
         >
-          <EditarModal :text="Editar"/>
-          <b-icon class="button is-danger is-medium" icon="cancel"></b-icon>
-          <b-icon class="button is-success is-medium" icon="check"></b-icon>
+          <EditarModal :text="'Editar'" />
+          <b-icon class="button is-danger is-outlined is-medium" icon="cancel"></b-icon>
+          <b-icon class="button is-primary is-outlined is-medium" icon="check"></b-icon>
         </b-table-column>
       </template>
     </b-table>
@@ -91,11 +91,6 @@ export default {
         acao: { title: 'Editar/Cancelar/Finalizar', display: true },
         progresso: { title: 'Progresso', display: true }
       }
-    }
-  },
-  methods: {
-    toggle(row) {
-      this.$refs.table.toggleDetails(row)
     }
   }
 }

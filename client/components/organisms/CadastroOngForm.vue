@@ -1,6 +1,16 @@
 <template>
   <section>
     <form v-if="!success" @submit.prevent="validateBeforeSubmit" method="post">
+      <hr />
+      <b-field class="file is-centered" style="margin:10px;">
+        <b-upload v-model="ong.foto">
+          <img
+            class="profile-image"
+            :src="ong.foto != null ? loadFoto() : 'https://bulma.io/images/placeholders/128x128.png'"
+          />
+        </b-upload>
+      </b-field>
+      <hr />
       <b-field
         label="Razão social"
         :type="{'is-danger': errors.has('razão social')}"
@@ -42,65 +52,65 @@
         ></b-input>
       </b-field>
       <hr />
-      <h1 class="title is-5 has-text-centered">Responsável</h1>
-      <b-field
-        label="Nome"
-        :type="{'is-danger': errors.has('nome')}"
-        :message="errors.first('nome')"
-      >
-        <b-input
-          type="text"
-          v-model.trim="ong.usuario.nome_completo"
-          name="nome"
-          v-validate="'required'"
-        ></b-input>
-      </b-field>
-      <b-field
-        label="CPF"
-        v-cleave="masks.cpf"
-        :type="{'is-danger': errors.has('CPF')}"
-        :message="errors.first('CPF')"
-      >
-        <b-input
-          :disabled="!isCadastro"
-          type="text"
-          v-model.trim="ong.usuario.cpf"
-          maxlength="18"
-          name="CPF"
-          v-validate="'required|cpf'"
-        ></b-input>
-      </b-field>
-      <b-field
-        label="Telefone"
-        v-cleave="masks.phone"
-        :type="{'is-danger': errors.has('telefone')}"
-        :message="errors.first('telefone')"
-      >
-        <b-input
-          type="text"
-          v-model.trim="ong.usuario.telefone[0].numero"
-          maxlength="15"
-          name="telefone"
-          v-validate="'required|phone'"
-        ></b-input>
-      </b-field>
-      <b-checkbox v-model="ong.usuario.telefone[0].whatsapp" type="is-black">
-        Whatsapp?
-        <img width="15" src="~assets/wpp-icon.png" />
-      </b-checkbox>
-      <b-field
-        label="Email"
-        :type="{'is-danger': errors.has('email')}"
-        :message="errors.first('email')"
-      >
-        <b-input
-          type="text"
-          v-model.trim="ong.usuario.email"
-          name="email"
-          v-validate="'required|email'"
-        />
-      </b-field>
       <template v-if="isCadastro">
+        <h1 class="title is-5 has-text-centered">Responsável</h1>
+        <b-field
+          label="Nome"
+          :type="{'is-danger': errors.has('nome')}"
+          :message="errors.first('nome')"
+        >
+          <b-input
+            type="text"
+            v-model.trim="ong.usuario.nome_completo"
+            name="nome"
+            v-validate="'required'"
+          ></b-input>
+        </b-field>
+        <b-field
+          label="CPF"
+          v-cleave="masks.cpf"
+          :type="{'is-danger': errors.has('CPF')}"
+          :message="errors.first('CPF')"
+        >
+          <b-input
+            :disabled="!isCadastro"
+            type="text"
+            v-model.trim="ong.usuario.cpf"
+            maxlength="18"
+            name="CPF"
+            v-validate="'required|cpf'"
+          ></b-input>
+        </b-field>
+        <b-field
+          label="Telefone"
+          v-cleave="masks.phone"
+          :type="{'is-danger': errors.has('telefone')}"
+          :message="errors.first('telefone')"
+        >
+          <b-input
+            type="text"
+            v-model.trim="ong.usuario.telefone[0].numero"
+            maxlength="15"
+            name="telefone"
+            v-validate="'required|phone'"
+          ></b-input>
+        </b-field>
+        <b-checkbox v-model="ong.usuario.telefone[0].whatsapp" type="is-black">
+          Whatsapp?
+          <img width="15" src="~assets/wpp-icon.png" />
+        </b-checkbox>
+        <b-field
+          label="Email"
+          :type="{'is-danger': errors.has('email')}"
+          :message="errors.first('email')"
+        >
+          <b-input
+            type="text"
+            v-model.trim="ong.usuario.email"
+            name="email"
+            v-validate="'required|email'"
+          />
+        </b-field>
         <b-field
           label="Senha"
           :type="{'is-danger': errors.has('senha')}"
@@ -127,11 +137,11 @@
             data-vv-as="senha"
           />
         </b-field>
+        <hr />
       </template>
-      <hr />
       <EnderecoForm :endereco="ong.usuario.endereco" :submitted="submitted" />
       <hr />
-      <div class="column has-text-centered" v-if="isCadastro">
+      <div class="has-text-centered" style="margin: 10px;" v-if="isCadastro">
         Já tem um cadastro?
         <nuxt-link
           class="is-primary is-inverted"
@@ -139,13 +149,11 @@
           exact-active-class="is-active"
         >Logue-se</nuxt-link>
       </div>
-      <hr />
-
       <button
         type="submit"
         class="button is-primary is-outlined is-medium is-rounded is-fullwidth"
       >Confirmar</button>
-      <div class="column has-text-centered">
+      <div class="has-text-centered">
         <nuxt-link
           class="voltar is-primary is-inverted"
           to="/"
@@ -177,6 +185,7 @@ export default {
   data() {
     return {
       ong: {
+        foto: null,
         razao_social: null,
         cnpj: null,
         historia: null,
@@ -234,9 +243,12 @@ export default {
     }
   },
   mounted() {
-    !this.isCadastro ? this.getOng() : {}
+    /* !this.isCadastro ? this.getOng() : {} */
   },
   methods: {
+    loadFoto() {
+      return URL.createObjectURL(this.ong.foto)
+    },
     async register() {
       var num = this.ong.usuario.telefone[0].numero
       this.ong.usuario.telefone[0].numero = Number.parseInt(
@@ -289,3 +301,12 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.profile-image {
+  border-radius: 50% !important;
+  width: 128px;
+  height: 128px;
+  object-fit: cover;
+}
+</style>

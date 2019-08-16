@@ -31,8 +31,8 @@
           :label="columnsVisible['acao'].title"
           centered
         >
-          <b-icon class="button is-danger is-medium" icon="cancel"></b-icon>
-          <b-icon class="button is-success is-medium" icon="check"></b-icon>
+          <b-icon class="button is-danger is-outlined is-medium" icon="cancel"></b-icon>
+          <b-icon class="button is-primary is-outlined is-medium" icon="check"></b-icon>
         </b-table-column>
       </template>
     </b-table>
@@ -64,7 +64,7 @@ export default {
         demanda: { title: 'Demanda', display: true },
         quantidade: { title: 'Quantidade', display: true },
         doador: { title: 'Doador', display: true },
-        acao: { title: 'Cancelar/Confirmar', display: true },
+        acao: { title: 'Cancelar/Confirmar', display: true }
       }
     }
   },

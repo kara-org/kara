@@ -1,10 +1,23 @@
 <template>
   <section>
     <form @submit.prevent="validateBeforeSubmit" method="post">
-      <div class="block has-text-centered" v-if="isCadastro">
-        <b-radio v-model="pessoaFisica" :native-value="true" type="is-black">Física</b-radio>
-        <b-radio v-model="pessoaFisica" :native-value="false" type="is-black">Juridíca</b-radio>
-      </div>
+      <template v-if="isCadastro">
+        <b-field class="has-text-centered">
+          <b-switch
+            type="is-black"
+            v-model="pessoaFisica"
+          >{{ pessoaFisica ? "Pessoa Física" : "Pessoa Juridíca" }}</b-switch>
+        </b-field>
+      </template>
+      <hr />
+      <b-field class="file is-centered" style="margin:10px;">
+        <b-upload v-model="doador.foto">
+          <img
+            class="profile-image"
+            :src="doador.foto != null ? loadFoto() : 'https://bulma.io/images/placeholders/128x128.png'"
+          />
+        </b-upload>
+      </b-field>
       <hr />
       <b-field
         label="Nome/Razão social"
@@ -135,7 +148,7 @@
 </template>
 <script>
 import cleave from '@/plugins/cleave-directive.js'
-import { ErrorBag } from 'vee-validate';
+import { ErrorBag } from 'vee-validate'
 
 export default {
   props: {
@@ -145,6 +158,7 @@ export default {
   data() {
     return {
       doador: {
+        foto: null,
         nome_completo: null,
         cpf: null,
         ativo: true,
@@ -196,6 +210,9 @@ export default {
       : this.doador
   },
   methods: {
+    loadFoto() {
+      return URL.createObjectURL(this.doador.foto)
+    },
     async patch() {
       try {
         await this.$axios
@@ -210,7 +227,6 @@ export default {
             } else if (err.response.status === 400) {
               if (err.response.data.non_field_errors)
                 err.message = err.response.data.non_field_errors[0]
-
             }
             this.$toast.open({
               message: err.message,
@@ -238,7 +254,7 @@ export default {
             this.$router.push('/login')
           })
           .catch(err => {
-            console.error(this.errors);
+            console.error(this.errors)
 
             if (!err.response) {
               err.message = 'Servidor desconectado'
@@ -279,3 +295,11 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.profile-image {
+  border-radius: 50% !important;
+  width: 128px;
+  height: 128px;
+  object-fit: cover;
+}
+</style>

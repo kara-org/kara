@@ -5,7 +5,7 @@
     <div class="hero-body">
       <div class="container">
         <div class="columns is-centered">
-          <article class="card is-rounded" style="width:400px">
+          <article class="card is-rounded" style="width:600px">
             <div class="card-content">
               <p class="form-section-title">Cadastre uma demanda</p>
               <CadastroDemandaForm :isCadastro="true" />
@@ -33,7 +33,7 @@ export default {
 
 <style lang="scss" scoped>
 .hero-body {
-  padding-top: 2em !important;
+  padding-top: 1em !important;
 }
 body {
   margin: 10px !important;
