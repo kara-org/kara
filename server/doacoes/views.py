@@ -83,12 +83,14 @@ class DemandaListView(viewsets.ViewSet):
 
 class DoacaoView(viewsets.ViewSet):
     serializer_class = DoacaoSerializer
+    serializer_retorno_class = DoacaoSerializerRetornoCadastro
 
     def create(self, request, *args, **kwargs):
         data = request.data
         serializer = self.serializer_class(data=data)
         if serializer.is_valid():
             doacao = serializer.save()
-            serializer = self.serializer_class(doacao)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            if doacao:
+                serializer = self.serializer_retorno_class(doacao)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

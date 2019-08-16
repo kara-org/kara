@@ -23,7 +23,7 @@ class Demanda(models.Model):
     ativo = models.BooleanField("Ativo", default=True)
 
 class Doacao(models.Model):
-    usuario = models.OneToOneField("administrativo.Usuario", on_delete=models.DO_NOTHING)
+    usuario = models.ForeignKey("administrativo.Usuario", on_delete=models.DO_NOTHING)
     data_agendamento = models.DateField("Data agendamento")
     data_confimacao = models.DateField("Data agendamento", blank=True, null=True)
 

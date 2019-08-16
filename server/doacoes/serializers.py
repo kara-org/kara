@@ -82,12 +82,12 @@ class ItemDoacaoCadastroSerializer(serializers.ModelSerializer):
 
 class DoacaoSerializer(serializers.ModelSerializer):
     item_doacao = ItemDoacaoCadastroSerializer(many=True)
+    id_usuario = serializers.IntegerField()
 
     class Meta:
         model = Doacao
         fields = [
                     'id_usuario',
-                    'quantidade_reservada',
                     'data_agendamento',
                     'item_doacao'
                   ]
@@ -97,16 +97,27 @@ class DoacaoSerializer(serializers.ModelSerializer):
         id_usuario = validated_data.pop("id_usuario")
 
         usuario = Usuario.objects.get(pk=id_usuario)
-        demanda = Demanda.objects.get(pk=itens_doacao[0].id_demanda)
         status = StatusItemDoacao.objects.get(pk=1)
+        with transaction.atomic():
+            doacao = Doacao.objects.create(usuario=usuario, **validated_data)
 
-        doacao = Doacao.objects.create(usuario=usuario, **validated_data)
-
-        try:
-            for item_doacao in itens_doacao:
-                item = ItemDoacao(doacao=doacao, demanda=demanda, status=status, **item_doacao)
-                item.save()
-            return doacao
-        except Exception as e:
-            print(e)
+            try:
+                for item_doacao in itens_doacao:
+                    id = int(item_doacao['id_demanda'])
+                    quantidade = int(item_doacao['quantidade_prometida'])
+                    demanda = Demanda.objects.get(pk=id)
+                    item = ItemDoacao(doacao=doacao, demanda=demanda, status=status, quantidade_prometida=quantidade)
+                    item.save()
+                return doacao
+            except Exception as e:
+                print(e)
             return False
+
+class DoacaoSerializerRetornoCadastro(serializers.ModelSerializer):
+#    item_doacao = ItemDoacaoCadastroSerializer(many=True)
+
+    class Meta:
+        model = Doacao
+        fields = [
+                    'id'
+                  ]
