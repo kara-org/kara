@@ -1,9 +1,6 @@
 from django.contrib import admin
 from .models import  *
 
-@admin.register(StatusDoacao)
-class StatusDoacaoAdmin(admin.ModelAdmin):
-    model = StatusDoacao
 
 @admin.register(StatusItemDoacao)
 class StatusItemDoacaoAdmin(admin.ModelAdmin):

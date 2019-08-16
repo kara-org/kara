@@ -84,6 +84,7 @@ class DemandaListView(viewsets.ViewSet):
 class DoacaoView(viewsets.ViewSet):
     serializer_class = DoacaoSerializer
     serializer_retorno_class = DoacaoSerializerRetornoCadastro
+    serializer_lista_class = DoacaoSerializerLista
 
     def create(self, request, *args, **kwargs):
         data = request.data
@@ -92,5 +93,34 @@ class DoacaoView(viewsets.ViewSet):
             doacao = serializer.save()
             if doacao:
                 serializer = self.serializer_retorno_class(doacao)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def list(self, request, id_ong):
+        doacoes = Doacao.objects.filter(item_doacao__demanda__ong__id=id_ong)
+        for doacao in doacoes:
+            itens_doacao = ItemDoacao.objects.filter(doacao=doacao)
+            doacao.itens_doacao = itens_doacao
+        serializer = self.serializer_lista_class(doacoes, many=True)
+        return Response(serializer.data)
+
+class DoacaoViewUser(viewsets.ViewSet):
+    serializer_lista_class = DoacaoSerializerLista
+    serializer_confirmacao_class = DoacaoConfirmacaoSerializer
+
+    def list(self, request, id_user):
+        doacoes = Doacao.objects.filter(usuario__id=id_user)
+        for doacao in doacoes:
+            itens_doacao = ItemDoacao.objects.filter(doacao=doacao)
+            doacao.itens_doacao = itens_doacao
+        serializer = self.serializer_lista_class(doacoes, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, pk, *args, **kwargs):
+        doacao = Doacao.objects.get(pk=pk)
+        serializer = self.serializer_confirmacao_class(data=request.data, context={'doacao': doacao})
+        if serializer.is_valid():
+            if serializer.save():
+                serializer = self.serializer_lista_class(data=request.data)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

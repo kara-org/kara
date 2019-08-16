@@ -119,5 +119,80 @@ class DoacaoSerializerRetornoCadastro(serializers.ModelSerializer):
     class Meta:
         model = Doacao
         fields = [
-                    'id'
+                    "id"
                   ]
+
+class ItemDoacaoListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ItemDoacao
+        fields = [
+            "id",
+            "quantidade_prometida",
+            "quantidade_efetivada",
+            "data_atualizacao",
+            "doacao_id",
+            "demanda_id",
+            "status_id"
+        ]
+
+class DoacaoSerializerLista(serializers.ModelSerializer):
+#    item_doacao = ItemDoacaoCadastroSerializer(many=True)
+    itens_doacao = serializers.ListField(child=ItemDoacaoListSerializer())
+    class Meta:
+        model = Doacao
+        fields = [
+                    "id",
+                    "usuario",
+                    "data_agendamento",
+                    "data_confimacao",
+                    "itens_doacao"
+                  ]
+
+class ItemDoacaoConfirmacaoSerializer(serializers.ModelSerializer):
+    id_item = serializers.IntegerField()
+
+    class Meta:
+        model = ItemDoacao
+        fields = [
+                    'id_item',
+                    'quantidade_efetivada',
+                  ]
+
+class DoacaoConfirmacaoSerializer(serializers.ModelSerializer):
+    item_doacao = ItemDoacaoConfirmacaoSerializer(many=True)
+
+    class Meta:
+        model = Doacao
+        fields = [
+                    "id",
+                    "data_confimacao",
+                    "item_doacao"
+                  ]
+
+    def create(self, validated_data):
+        itens_doacao = validated_data.pop("item_doacao")
+        doacao = self.context.get("doacao")
+
+        #usuario = Usuario.objects.get(pk=id_usuario)
+        status = StatusItemDoacao.objects.get(pk=3)
+        with transaction.atomic():
+            try:
+                for item_doacao in itens_doacao:
+                    #Captura os identificadores
+                    id_item = int(item_doacao['id_item'])
+                    #Consulta os objetos
+                    item = ItemDoacao.objects.get(pk=id_item)
+                    demanda = Demanda.objects.get(pk=item.demanda.id)
+                    #Salva a quantidade do item doada e incrementa a quantidade alcançada da demanda
+                    item.quantidade_efetivada = int(item_doacao['quantidade_efetivada'])
+                    if demanda.quantidade_alcancada:
+                        demanda.quantidade_alcancada += int(item_doacao['quantidade_efetivada'])
+                    else:
+                        demanda.quantidade_alcancada = int(item_doacao['quantidade_efetivada'])
+                    item.status = status
+                    item.save()
+                    demanda.save()
+                return True
+            except Exception as e:
+                print(e)
+            return False
