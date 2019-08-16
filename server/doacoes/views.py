@@ -124,3 +124,12 @@ class DoacaoViewUser(viewsets.ViewSet):
                 serializer = self.serializer_lista_class(data=request.data)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class BuscaDemandasView(viewsets.ViewSet):
+    serializer_class = DemandaSerializerRetorno
+
+    def list(self, request):
+        
+        demanda = Demanda.objects.filter(ativo=True)
+        serializer = self.serializer_class(demanda, many=True)
+        return Response(serializer.data)
