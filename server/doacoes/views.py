@@ -16,7 +16,8 @@ from random import randint
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-
+from datetime import datetime
+from django.db.models import Q
 
 class DemandaView(viewsets.ViewSet):
     serializer_class = DemandaSerializer
@@ -130,6 +131,6 @@ class BuscaDemandasView(viewsets.ViewSet):
 
     def list(self, request):
         
-        demanda = Demanda.objects.filter(ativo=True)
+        demanda = Demanda.objects.filter(Q(data_fim__gte = datetime.now().date()), Q(ativo=True))
         serializer = self.serializer_class(demanda, many=True)
         return Response(serializer.data)
