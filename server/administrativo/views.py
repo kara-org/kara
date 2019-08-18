@@ -4,8 +4,6 @@ from django.db.models import Q
 from django.http import Http404, HttpResponse
 import random
 from random import randint
-from .models import Usuario
-from .serializers import UsuarioSerializer
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 from django.core.mail import send_mail
