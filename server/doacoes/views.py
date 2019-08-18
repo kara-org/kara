@@ -17,8 +17,9 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from datetime import datetime
-from django.db.models import Q
+from .doacao import *
 
+@permission_classes((AllowAny, ))
 class DemandaView(viewsets.ViewSet):
     serializer_class = DemandaSerializer
     serializer_retorno_class = DemandaSerializerRetorno
@@ -73,6 +74,7 @@ class DemandaView(viewsets.ViewSet):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@permission_classes((AllowAny, ))
 class DemandaListView(viewsets.ViewSet):
     serializer_class = DemandaSerializer
     serializer_retorno_class = DemandaSerializerRetorno
@@ -125,12 +127,17 @@ class DoacaoViewUser(viewsets.ViewSet):
                 serializer = self.serializer_lista_class(data=request.data)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    
+    def destroy(self, request, pk):
+        resposta = DoacaoDo(request)
+        return resposta.cancelarDoacao(pk)
+        
+        
+@permission_classes((AllowAny, ))  
 class BuscaDemandasView(viewsets.ViewSet):
     serializer_class = DemandaSerializerRetorno
 
     def list(self, request):
-        
         demanda = Demanda.objects.filter(Q(data_fim__gte = datetime.now().date()), Q(ativo=True))
         serializer = self.serializer_class(demanda, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
