@@ -176,7 +176,7 @@
 import ViaCep from 'vue-viacep'
 import EnderecoForm from '@/components/molecules/EnderecoForm.vue'
 import cleave from '@/plugins/cleave-directive.js'
-import { mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
 export default {
   components: { EnderecoForm },
   props: {
@@ -242,10 +242,11 @@ export default {
       return this.$auth.user
     }
   },
-  mounted() {
-    /* !this.isCadastro ? this.getOng() : {} */
+  async mounted() {
+    console.log(await this.fetchPerfilOng(1))
   },
   methods: {
+    ...mapActions('ongs', ['fetchPerfilOng']),
     loadFoto() {
       return URL.createObjectURL(this.ong.foto)
     },

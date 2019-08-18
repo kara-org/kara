@@ -1,22 +1,22 @@
 <template>
-<body class="columns is-fullheight">
-  <MenuLateral />
-  <section class="column is-main-content hero is-medium is-bold">
-    <div class="hero-body">
-      <div class="container">
-        <div class="columns is-centered">
-          <article class="card is-rounded" style="width:800px">
-            <div class="card-content">
-              <p class="form-section-title">Demandas da ONG</p>
-              <hr />
-              <ListaDemandas />
-            </div>
-          </article>
+  <div class="columns is-fullheight">
+    <MenuLateral />
+    <section class="column is-main-content hero is-medium is-bold">
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns is-centered">
+            <article class="card is-rounded" style="width:800px">
+              <div class="card-content">
+                <p class="form-section-title">Demandas da ONG</p>
+                <hr />
+                <ListaDemandas />
+              </div>
+            </article>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
-</body>
+    </section>
+  </div>
 </template>
 
 <script>
@@ -36,7 +36,7 @@ export default {
 .hero-body {
   padding-top: 1em !important;
 }
-body {
+.columns div {
   margin: 10px !important;
 }
 </style>

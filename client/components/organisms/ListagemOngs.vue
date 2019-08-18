@@ -24,6 +24,7 @@ export default {
   },
   mounted() {
     this.fetchOngs()
+    console.log(this.$store.state.ongs.ongs)
   }
 }
 </script>

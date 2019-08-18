@@ -1,6 +1,6 @@
 <template>
-<body class="columns is-fullheight">
-  <MenuLateral />
+<div class="columns is-fullheight">
+  <MenuLateral :isDoador="!this.$auth.user.vinculo_ong" />
   <section class="column is-main-content hero is-medium is-bold" style="align-items:center;">
     <div class="hero-body">
       <article class="card is-rounded" style="width:600px">
@@ -11,7 +11,7 @@
       </article>
     </div>
   </section>
-</body>
+</div>
 </template>
 
 <script>
@@ -30,7 +30,7 @@ export default {
 .hero-body {
   padding-top: 1em !important;
 }
-body {
+.columns div {
   margin: 10px !important;
 }
 </style>

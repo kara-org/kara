@@ -9,7 +9,7 @@ export default $axios => resource => ({
   },
 
   show(id) {
-    return $axios.$get(`/${resource}/${id}`)
+    return $axios.$get(resource,id)
   },
 
 

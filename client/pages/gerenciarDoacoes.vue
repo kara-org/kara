@@ -1,22 +1,22 @@
 <template>
-<body class="columns is-fullheight">
-  <MenuLateral />
-  <section class="column is-main-content hero is-medium is-bold">
-    <div class="hero-body">
-      <div class="container">
-        <div class="columns is-centered">
-          <article class="card is-rounded" style="width:800px">
-            <div class="card-content">
-              <p class="form-section-title">Doações da ONG</p>
-              <hr />
-              <ListaDoacoes />
-            </div>
-          </article>
+  <div class="columns is-fullheight">
+    <MenuLateral :isDoador="isDoador" />
+    <section class="column is-main-content hero is-medium is-bold">
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns is-centered">
+            <article class="card is-rounded" style="width:800px">
+              <div class="card-content">
+                <p class="form-section-title">Doações {{isDoador ? 'marcadas' : 'da ONG'}}</p>
+                <hr />
+                <ListaDoacoes :isDoador="isDoador" />
+              </div>
+            </article>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
-</body>
+    </section>
+  </div>
 </template>
 
 <script>
@@ -28,6 +28,14 @@ export default {
   components: {
     ListaDoacoes,
     MenuLateral
+  },
+  data() {
+    return {
+      isDoador: null
+    }
+  },
+  created() {
+    this.isDoador = !this.$auth.user.vinculo_ong
   }
 }
 </script>
@@ -36,7 +44,7 @@ export default {
 .hero-body {
   padding-top: 1em !important;
 }
-body {
+.columns div {
   margin: 10px !important;
 }
 </style>

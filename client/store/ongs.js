@@ -1,33 +1,35 @@
 import demandas from './fake/demandas'
 
-export const states = {
-  ongs: [],
-  perfil: {},
-  demandas: []
-}
-
-export const mutations = {
-  UPDATE_ONGS (state, payload) {
-    state.ongs = payload
+export default {
+  state() {
+    return {
+      ongs: [],
+      perfil: {},
+      demandas: []
+    }
   },
-  UPDATE_PERFIL (state, payload) {
-    state.ongs = payload
+  mutations: {
+    UPDATE_ONGS(state, payload) {
+      state.ongs = payload
+    },
+    UPDATE_PERFIL(state, payload) {
+      state.ongs = payload
+    },
+    UPDATE_DEMANDAS(state, payload) {
+      state.demandas = payload
+    },
   },
-  UPDATE_DEMANDAS (state, payload) {
-    state.demandas = payload
-  }
-}
+  actions: {
+    fetchOngs(context) {
+      context.commit('UPDATE_ONGS', this.$OngService.index())
+    },
 
-export const actions = {
-  fetchOngs (context) {
-    context.commit('UPDATE_ONGS', this.$OngService.index())
-  },
+    fetchPerfilOng(context, id) {
+      context.commit('UPDATE_PERFIL', this.$OngService.show(id))
+    },
 
-  fetchPerfilOng (id) {
-    context.commit('UPDATE_PERFIL', this.$OngService.show(id))
-  },
-
-  fetchDemandas (id) {
-    context.commit('UPDATE_DEMANDAS', demandas)
+    fetchDemandas(context) {
+      context.commit('UPDATE_DEMANDAS', demandas)
+    }
   }
 }

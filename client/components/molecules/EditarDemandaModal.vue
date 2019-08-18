@@ -1,7 +1,9 @@
 <template>
   <span>
     <a @click="isComponentModalActive = true">
-      <b-icon class="button is-medium is-outlined is-primary" icon="settings"></b-icon>
+      <b-tooltip class="is-success" label="Editar demanda" position="is-right">
+        <b-icon class="button is-medium is-outlined is-success" icon="settings"></b-icon>
+      </b-tooltip>
     </a>
     <b-modal :active.sync="isComponentModalActive" has-modal-card>
       <form action>
@@ -27,8 +29,8 @@
             </b-field>
           </section>
           <footer class="modal-card-foot">
-            <button class="button" type="button" @click="isComponentModalActive = false">Cancelar</button>
-            <button class="button is-primary">Confirmar</button>
+            <button class="button" @click="isComponentModalActive = false">Cancelar</button>
+            <button class="button is-primary" @click="confirm()">Confirmar</button>
           </footer>
         </div>
       </form>
@@ -38,21 +40,50 @@
 
 <script>
 export default {
+  props: { demanda: Object },
   data() {
     return {
       isComponentModalActive: false,
       quantidade: 1,
       nome: '',
       categoria: '',
-      dataInicio: '22/07/2019',
-      dataFim: '22/08/2019'
+      dataInicio: '',
+      dataFim: ''
+    }
+  },
+  mounted() {
+    this.quantidade = this.demanda.quantidade
+    this.nome = this.demanda.nome
+    this.categoria = this.demanda.categoria
+    this.dataInicio = this.demanda.dataInicio
+    this.dataFim = this.demanda.dataFim
+  },
+  methods: {
+    confirm() {
+      if (this.quantidade > 0) {
+        this.demanda.quantidade = this.quantidade
+        this.demanda.esperado = this.quantidade
+      }
+      if (!this.nome) {
+        this.demanda.nome = this.nome
+      }
+      if (!this.categoria) {
+        this.demanda.categoria = this.categoria
+      }
+      if (!this.dataInicio) {
+        this.demanda.dataInicio = this.dataInicio
+      }
+      if (!this.dataFim) {
+        this.demanda.dataFim = this.dataFim
+      }
+      this.isComponentModalActive = false
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
-  .modal-card-body{
-    text-align: initial;
-  }
+.modal-card-body {
+  text-align: initial;
+}
 </style>

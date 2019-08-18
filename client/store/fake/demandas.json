@@ -1,10 +1,10 @@
 [
-  { "nome": "Pão", "quantidade": 270, "imagem": "" },
-  { "nome": "Arroz", "quantidade": 260, "imagem": "" },
-  { "nome": "Feijão", "quantidade": 250, "imagem": "" },
-  { "nome": "Fogão", "quantidade": 1, "imagem": "" },
-  { "nome": "Quilos e ração", "quantidade": 230, "imagem": "" },
-  { "nome": "Laranja", "quantidade": 203, "imagem": "" },
-  { "nome": "Mexerica", "quantidade": 330, "imagem": "" },
-  { "nome": "Sabão", "quantidade": 10, "imagem": "" }
+  { "nome": "Pão", "quantidade": 270, "esperado": 270, "doado": 132, "imagem": "" },
+  { "nome": "Arroz", "quantidade": 260, "esperado": 260, "doado": 13, "imagem": "" },
+  { "nome": "Feijão", "quantidade": 250, "esperado": 250, "doado": 95, "imagem": "" },
+  { "nome": "Fogão", "quantidade": 1, "esperado": 1, "doado": 0, "imagem": "" },
+  { "nome": "Quilos e ração", "quantidade": 230, "esperado": 230, "doado": 220, "imagem": "" },
+  { "nome": "Laranja", "quantidade": 203, "esperado": 203, "doado": 133, "imagem": "" },
+  { "nome": "Mexerica", "quantidade": 330, "esperado": 330, "doado": 123, "imagem": "" },
+  { "nome": "Sabão", "quantidade": 10, "esperado": 10, "doado": 3, "imagem": "" }
 ]
