@@ -127,30 +127,5 @@ class Ong(models.Model):
     historia = models.TextField(blank=True, null=True)
     ativo = models.BooleanField(default=True)
     ultimo_login = models.DateTimeField(auto_now_add=True)
-    
-class Status(models.Model):
-    codigo_status = models.IntegerField("Código status")
-    mensagem = models.CharField("Mensagem", max_length=255)
-    
-class Demanda(models.Model):
-    ong = models.OneToOneField("Ong", on_delete=models.DO_NOTHING)
-    produto = models.CharField("Produto", max_length=255)
-    quantidade_esperada = models.CharField("Quantidade", max_length=20)
-    quantidade_alcancada = models.CharField("Quantidade alcançada", max_length=20)
-    unidade = models.CharField("Unidade", max_length=5)
-    data_inicio = models.DateField("Data inicial")
-    data_fim = models.DateField("Data fim")
-    sem_limite = models.BooleanField(default=True)
-    status = models.ForeignKey("Status", on_delete=models.DO_NOTHING)
 
 
-class Doacao(models.Model):
-    usuario = models.OneToOneField("Usuario", on_delete=models.DO_NOTHING)
-    ong = models.OneToOneField("Ong", on_delete=models.DO_NOTHING)    
-    demanda = models.OneToOneField("Demanda", on_delete=models.DO_NOTHING) 
-    quantidade_reservada = models.CharField("Quantidade reservada", max_length=20)
-    data_agendamento = models.DateField("Data agendamento")
-    status = models.ForeignKey("Status", on_delete=models.DO_NOTHING)
-
-
-     

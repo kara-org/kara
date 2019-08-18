@@ -1,30 +1,18 @@
-
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from django.db.models import Q
 from django.http import Http404, HttpResponse
+import random
 from random import randint
-
-from .models import Usuario
-from .serializers import UsuarioSerializer
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 from django.core.mail import send_mail
-
 from .models import *
 from .serializers import *
-
-from rest_framework.decorators import permission_classes
-from rest_framework.permissions import AllowAny
 import string
-import random
-from random import randint
 from django.contrib.auth.hashers import make_password, check_password
-
-
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-
 
 def gerar_senha():
     senha_numerica = randint(1000, 9999)
@@ -77,11 +65,11 @@ class UsuarioView(viewsets.ViewSet):
 
     def create(self, request, *args, **kwargs):
         data = request.data
-        serializer = self.serializer_class(data= data)
+        serializer = self.serializer_class(data=data)
         if serializer.is_valid():
             sucesso = serializer.save()
             if sucesso:
-                return Response(serializer.data , status=status.HTTP_201_CREATED)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -131,7 +119,6 @@ class UsuarioDetailView(viewsets.ViewSet):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
 
 @permission_classes((AllowAny, ))
 class OngCreateListView(viewsets.ViewSet):
@@ -151,7 +138,7 @@ class OngCreateListView(viewsets.ViewSet):
         ongs = Ong.objects.filter(ativo=True)
         serializer = self.serializer_class(ongs, many=True)
         return Response(serializer.data)
-    
+
 @permission_classes((AllowAny, ))
 class OngDetailView(viewsets.ViewSet):
 
@@ -218,8 +205,7 @@ class OngDetailView(viewsets.ViewSet):
                 return Response(serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response({"message":"Este usuário não tem acesso a esta ong."}, status=status.HTTP_403_FORBIDDEN)
-      
-      
+
 class TelefoneView(viewsets.ViewSet):
     serializer_class = TelefoneSerializer
 
@@ -236,7 +222,7 @@ class TelefoneView(viewsets.ViewSet):
         else:
             usuario_id = None
 
-        telefones = Telefone.objects.filter(usuario = usuario_id, ativo=True)
+        telefones = Telefone.objects.filter(usuario=usuario_id, ativo=True)
         serializer = TelefoneSerializer(telefones, many=True)
       
         return Response(serializer.data)
@@ -294,3 +280,12 @@ class TelefoneViewDetail(viewsets.ViewSet):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class BuscaOngsView(viewsets.ViewSet):
+    serializer_class = OngSerializer
+
+    def list(self, request):
+
+        ongs = Ong.objects.filter(ativo=True)
+        serializer = self.serializer_class(ongs, many=True)
+        return Response(serializer.data)
