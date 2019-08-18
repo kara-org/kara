@@ -1,35 +1,35 @@
 <template>
   <section>
     <b-table :data="data" ref="table">
-      <template slot-scope="props">
+      <template slot-scope="props" v-if="props.row.ativo">
         <b-table-column
-          field="nome"
-          :visible="columnsVisible['nome'].display"
-          :label="columnsVisible['nome'].title"
+          field="descricao"
+          :visible="columnsVisible['descricao'].display"
+          :label="columnsVisible['descricao'].title"
           sortable
-        >{{ props.row.nome }}</b-table-column>
+        >{{ props.row.descricao }}</b-table-column>
         <b-table-column
-          field="esperado"
-          :visible="columnsVisible['esperado'].display"
-          :label="columnsVisible['esperado'].title"
+          field="quantidade_solicitada"
+          :visible="columnsVisible['quantidade_solicitada'].display"
+          :label="columnsVisible['quantidade_solicitada'].title"
           sortable
           centered
-        >{{ props.row.esperado }}</b-table-column>
+        >{{ props.row.quantidade_solicitada }}</b-table-column>
 
         <b-table-column
-          field="doado"
-          :visible="columnsVisible['doado'].display"
-          :label="columnsVisible['doado'].title"
+          field="quantidade_alcancada"
+          :visible="columnsVisible['quantidade_alcancada'].display"
+          :label="columnsVisible['quantidade_alcancada'].title"
           sortable
           centered
-        >{{ props.row.doado }}</b-table-column>
+        >{{ !props.row.quantidade_alcancada ? 0 : props.row.quantidade_alcancada }}</b-table-column>
 
         <b-table-column
           field="restante"
           :visible="columnsVisible['restante'].display"
           :label="columnsVisible['restante'].title"
           centered
-        >{{ props.row.esperado - props.row.doado }}</b-table-column>
+        >{{ props.row.quantidade_solicitada - !props.row.quantidade_alcancada ? 0 : props.row.quantidade_alcancada }}</b-table-column>
         <b-table-column
           :visible="columnsVisible['progresso'].display"
           :label="columnsVisible['progresso'].title"
@@ -37,9 +37,8 @@
         >
           <span
             class="tag is-success"
-          >{{ Math.round(( props.row.doado / props.row.esperado) * 100) }}%</span>
+          >{{ Math.round(( !props.row.quantidade_alcancada ? 0 : props.row.quantidade_alcancada / props.row.quantidade_solicitada) * 100) }}%</span>
         </b-table-column>
-
         <b-table-column
           field="acao"
           :visible="columnsVisible['acao'].display"
@@ -47,11 +46,20 @@
           centered
         >
           <EditarModal :demanda="props.row" />
-          <b-tooltip class="is-danger" label="Cancelar demanda" position="is-right">
-            <b-icon class="button is-danger is-outlined is-medium" icon="cancel"></b-icon>
+          <b-tooltip
+            v-if="props.row.ativo"
+            class="is-danger"
+            label="Inativar demanda"
+            position="is-right"
+          >
+            <b-button class="is-danger is-outlined is-small" @click="inativar(props.row.id)">
+              <b-icon icon="cancel"></b-icon>
+            </b-button>
           </b-tooltip>
-          <b-tooltip class="is-success" label="Finalizar demanda" position="is-right">
-            <b-icon class="button is-success is-outlined is-medium" icon="check"></b-icon>
+          <b-tooltip v-else class="is-success" label="Reativar demanda" position="is-right">
+            <b-button class="is-success is-outlined is-small" @click="reativar(props.row.id)">
+              <b-icon icon="replay"></b-icon>
+            </b-button>
           </b-tooltip>
         </b-table-column>
       </template>
@@ -65,22 +73,28 @@ import { mapActions } from 'vuex'
 export default {
   components: { EditarModal },
   async mounted() {
-    this.fetchDemandas()
-    this.data = await this.$store.state.ongs.demandas
+    this.data = await this.$axios.$get(`/ong/${1}/demandas/`)
     console.log(this.data)
   },
   methods: {
-    ...mapActions('ongs', ['fetchDemandas'])
+    async reativar(id) {
+      this.$axios.$patch(`/demanda/${id}/`, { ativo: true });
+      this.data = await this.$axios.$get(`/ong/${1}/demandas/`);
+    },
+    async inativar(id) {
+      this.$axios.$delete(`/demanda/${id}/cancelar`);
+      this.data = await this.$axios.$get(`/ong/${1}/demandas/`);
+    }
   },
   data() {
     return {
       data: [],
       columnsVisible: {
-        nome: { title: 'Nome', display: true },
-        esperado: { title: 'Esperado', display: true },
-        doado: { title: 'Doado', display: true },
+        descricao: { title: 'Título', display: true },
+        quantidade_solicitada: { title: 'Esperado', display: true },
+        quantidade_alcancada: { title: 'Doado', display: true },
         restante: { title: 'Restante', display: true },
-        acao: { title: 'Editar/Cancelar/Finalizar', display: true },
+        acao: { title: 'Ação', display: true },
         progresso: { title: 'Progresso', display: true }
       }
     }
