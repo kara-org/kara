@@ -52,8 +52,8 @@ class SolicitacaoRecuperarSenhaUsuarioSerializer(serializers.ModelSerializer):
 
 class UsuarioSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=128, write_only=True)
-    endereco = EnderecoSerializer()
-    telefone = TelefoneSerializer(many=True)
+    endereco = EnderecoSerializer(allow_null=True)
+    telefone = TelefoneSerializer(many=True, allow_null=True)
 
     class Meta:
         model = Usuario
@@ -87,9 +87,11 @@ class UsuarioSerializer(serializers.ModelSerializer):
 
 class OngSerializer(serializers.ModelSerializer):
     usuario = UsuarioSerializer(write_only=True)
+    endereco = EnderecoSerializer(allow_null=True)
+
     class Meta:
         model = Ong
-        fields = ['id', 'cnpj', 'historia', 'ativo' , 'usuario']
+        fields = ['id', 'cnpj', 'historia', 'ativo' , 'usuario', 'endereco']
 
     def create(self, validated_data):
         usuario_data = validated_data.pop('usuario')
@@ -118,6 +120,7 @@ class OngSerializer(serializers.ModelSerializer):
         return ong
 
 class OngListSerializer(serializers.ModelSerializer):
+    endereco = EnderecoSerializer(allow_null=True)
     class Meta:
         model = Ong
-        fields = ['id', 'cnpj', 'historia', 'ativo']
+        fields = ['id', 'cnpj', 'historia', 'ativo', 'endereco']
