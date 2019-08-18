@@ -12,7 +12,7 @@ class Demanda(models.Model):
     ong = models.ForeignKey("administrativo.Ong", related_name='demanda', on_delete=models.DO_NOTHING)
     categoria = models.ForeignKey("Categoria", related_name='demanda',on_delete=models.DO_NOTHING)
     quantidade_solicitada = models.IntegerField("Quantidade solicitada")
-    quantidade_alcancada = models.IntegerField("Quantidade alcançada", blank=True, null=True)
+    quantidade_alcancada = models.IntegerField("Quantidade alcançada", blank=True, null=True, default=0)
     unidade = models.CharField("Unidade", max_length=5)
     data_inicio = models.DateField("Data inicial")
     data_fim = models.DateField("Data fim")
