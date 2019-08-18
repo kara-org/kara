@@ -7,56 +7,46 @@
           loop
           muted
           class="banner__video"
-          poster="https://pawelgrzybek.com/photos/2015-12-06-codepen.jpg"
+          poster=""
         >
-          <!-- <source src="https://pawelgrzybek.com/photos/2015-12-06-codepen.webm" type="video/webm"> -->
-          <!-- <source src="https://pawelgrzybek.com/photos/2015-12-06-codepen.mp4" type="video/mp4"> -->
           <source src="~assets/video/video-bg.mp4" type="video/mp4" />
         </video>
         <div class="container">
-          <h2 class="subtitle"> <span> Ajude o próximo</span></h2>
-          <h1 class="title">Encontre uma ONG e faça sua doação!</h1>
-          <b-field class="filtro">
-            <b-input
-              :expanded="true"
-              icon="magnify"
-              placeholder="Buscar..."
-              size="is-large"
-              type="search"
-            ></b-input>
-            <b-button class="is-primary" size="is-large">Buscar</b-button>
-          </b-field>
+          <h2 class="subtitle">
+            <span>Ajude o próximo</span>
+          </h2>
+          <Buscar to="busca" />
         </div>
       </div>
     </section>
     <section class="hero is-fullheight">
-      <ListagemOngs />
+      <div class="hero-body">
+        <div class="container">
+          <div class="level">
+            <ListagemOngs :isBusca="true"/>
+          </div>
+        </div>
+      </div>
     </section>
+    <section></section>
   </div>
 </template>
 
 <script>
-import ListagemOngs from '../components/organisms/ListagemOngs'
+import ListagemOngs from '../components/organisms/ListagemCards'
+import Buscar from '../components/molecules/BuscarForm'
 
 export default {
   name: 'HomePage',
   components: {
-    ListagemOngs
+    ListagemOngs,
+    Buscar
   },
-  created: function() {
-  }
+  created: function() {}
 }
 </script>
 <style lang="scss" scoped>
-.filtro input {
-  border-radius: 50px;
-}
-.button {
-  border-top-right-radius: 25px;
-  border-bottom-right-radius: 25px;
-  border-top-left-radius: 0px;
-  border-bottom-left-radius: 0px;
-}
+
 
 .title,
 .subtitle {

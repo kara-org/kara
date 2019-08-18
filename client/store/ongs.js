@@ -1,17 +1,17 @@
 import demandas from './fake/demandas'
 
-export const states = {
-  ongs: [],
+export const state = () => ({
+  list: [],
   perfil: {},
   demandas: []
-}
+})
 
 export const mutations = {
   UPDATE_ONGS (state, payload) {
-    state.ongs = payload
+    state.list = payload
   },
   UPDATE_PERFIL (state, payload) {
-    state.ongs = payload
+    state.list = payload
   },
   UPDATE_DEMANDAS (state, payload) {
     state.demandas = payload
@@ -20,7 +20,9 @@ export const mutations = {
 
 export const actions = {
   fetchOngs (context) {
-    context.commit('UPDATE_ONGS', this.$OngService.index())
+    this.$OngService.index()
+      .then((response) => context.commit('UPDATE_ONGS', response))
+      .catch((err) => console.log(err))
   },
 
   fetchPerfilOng (id) {

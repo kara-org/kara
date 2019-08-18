@@ -22,7 +22,7 @@ import Logo from '../components/atoms/Logo'
 import LoginForm from '../components/organisms/LoginForm'
 
 export default {
-  layout: 'empty',
+
   components: {
     LoginForm,
     Logo
