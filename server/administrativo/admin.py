@@ -16,18 +16,6 @@ class TelefoneAdmin(admin.ModelAdmin):
 @admin.register(Ong)
 class OngAdmin(admin.ModelAdmin):
     model = Ong 
-    
-@admin.register(Status)
-class StatusAdmin(admin.ModelAdmin):
-    model = Status 
-
-@admin.register(Demanda)
-class DemandaAdmin(admin.ModelAdmin):
-    model = Demanda 
-
-@admin.register(Doacao)
-class DoacaoAdmin(admin.ModelAdmin):
-    model = Doacao 
 
 @admin.register(UsuarioPertenceOng)
 class UsuarioPertenceOngAdmin(admin.ModelAdmin):
