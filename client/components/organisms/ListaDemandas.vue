@@ -1,6 +1,6 @@
 <template>
   <section>
-    <b-table :data="data" ref="table" :default-sort="['nome', 'asc']">
+    <b-table :data="data" ref="table">
       <template slot-scope="props">
         <b-table-column
           field="nome"
@@ -8,7 +8,6 @@
           :label="columnsVisible['nome'].title"
           sortable
         >{{ props.row.nome }}</b-table-column>
-
         <b-table-column
           field="esperado"
           :visible="columnsVisible['esperado'].display"
@@ -29,9 +28,8 @@
           field="restante"
           :visible="columnsVisible['restante'].display"
           :label="columnsVisible['restante'].title"
-          sortable
           centered
-        >{{ props.row.restante }}</b-table-column>
+        >{{ props.row.esperado - props.row.doado }}</b-table-column>
         <b-table-column
           :visible="columnsVisible['progresso'].display"
           :label="columnsVisible['progresso'].title"
@@ -48,9 +46,13 @@
           :label="columnsVisible['acao'].title"
           centered
         >
-          <EditarModal :text="Editar"/>
-          <b-icon class="button is-danger is-medium" icon="cancel"></b-icon>
-          <b-icon class="button is-success is-medium" icon="check"></b-icon>
+          <EditarModal :demanda="props.row" />
+          <b-tooltip class="is-danger" label="Cancelar demanda" position="is-right">
+            <b-icon class="button is-danger is-outlined is-medium" icon="cancel"></b-icon>
+          </b-tooltip>
+          <b-tooltip class="is-success" label="Finalizar demanda" position="is-right">
+            <b-icon class="button is-success is-outlined is-medium" icon="check"></b-icon>
+          </b-tooltip>
         </b-table-column>
       </template>
     </b-table>
@@ -59,30 +61,20 @@
 
 <script>
 import EditarModal from '@/components/molecules/EditarDemandaModal.vue'
+import { mapActions } from 'vuex'
 export default {
   components: { EditarModal },
+  async mounted() {
+    this.fetchDemandas()
+    this.data = await this.$store.state.ongs.demandas
+    console.log(this.data)
+  },
+  methods: {
+    ...mapActions('ongs', ['fetchDemandas'])
+  },
   data() {
     return {
-      data: [
-        {
-          nome: 'Arroz',
-          esperado: 442,
-          doado: 131,
-          restante: 301
-        },
-        {
-          nome: 'Feijao',
-          esperado: 255,
-          doado: 88,
-          restante: 167
-        },
-        {
-          nome: 'Livro',
-          esperado: 1155,
-          doado: 434,
-          restante: 721
-        }
-      ],
+      data: [],
       columnsVisible: {
         nome: { title: 'Nome', display: true },
         esperado: { title: 'Esperado', display: true },
@@ -91,11 +83,6 @@ export default {
         acao: { title: 'Editar/Cancelar/Finalizar', display: true },
         progresso: { title: 'Progresso', display: true }
       }
-    }
-  },
-  methods: {
-    toggle(row) {
-      this.$refs.table.toggleDetails(row)
     }
   }
 }

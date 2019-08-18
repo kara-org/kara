@@ -1,12 +1,22 @@
-export const getters = {
+export default {
+  namespaced: true,
+  state() {
+    return {
+      auth: {
+        loggedIn: {},
+        user: {},
+      },
+    }
+  }
+  /* getters: {
     isAuthenticated(state) {
-      console.log(state.auth)
-      if (!state.auth) return false
+      if (state.auth)
       return state.auth.loggedIn
     },
 
     loggedInUser(state) {
-      if (!state.auth) return false
+      if (state.auth)
       return state.auth.user
-    }
+    },
+  }, */
 }
