@@ -20,7 +20,7 @@ class DoacaoDo():
             itens_doacao.update(status=2)
             
             retorno = {
-                'usuario' : self.request.user,
+                # 'usuario' : self.request.user,
                 'doacao' : doacao,
                 'data_cancelamento' : datetime.now().date()
             }

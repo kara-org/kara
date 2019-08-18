@@ -6,6 +6,7 @@ from django.db import IntegrityError
 
 from django.db import transaction
 
+from doacoes.serializers import DemandaSerializer
 from .models import *
 
 REGEX_PASSWORD = re.compile('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,50}$')
@@ -141,3 +142,11 @@ class OngListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ong
         fields = ['id', 'nome', 'cnpj', 'historia', 'telefone', 'ativo', 'endereco']
+        
+class OngDemandas(serializers.ModelSerializer):
+    demandas = serializers.ListField(child=DemandaSerializer())
+    telefone = TelefoneSerializer(many=True)
+    
+    class Meta:
+        model = Ong
+        fields = ['id', 'nome', 'cnpj', 'historia', 'telefone', 'ativo', 'endereco', 'demandas']

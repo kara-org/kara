@@ -9,7 +9,6 @@ from django.db import transaction
 from .models import *
 import datetime
 
-from administrativo.serializers import UsuarioSerializer
 
 class StatusItemDoacaoSerializer(serializers.ModelSerializer):
     
@@ -20,13 +19,22 @@ class StatusItemDoacaoSerializer(serializers.ModelSerializer):
                     'mensagem',
                   ]
 
+class CategoriaItemDoacaoSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Categoria
+        fields = [
+                    'descricao',
+                  ]
+
 
 class DemandaSerializer(serializers.ModelSerializer):
-    id_categoria = serializers.IntegerField()
+    categoria = CategoriaItemDoacaoSerializer(required=False)
+    
     class Meta:
         model = Demanda
         fields = ['id',
-                  'id_categoria',
+                  'categoria',
                   'quantidade_solicitada',
                   'quantidade_alcancada',
                   'data_inicio',
@@ -127,7 +135,7 @@ class DoacaoSerializer(serializers.ModelSerializer):
             return False
 
 class DoacaoSerializerRetornoCadastro(serializers.ModelSerializer):
-#    item_doacao = ItemDoacaoCadastroSerializer(many=True)
+    # item_doacao = ItemDoacaoCadastroSerializer(many=True)
 
     class Meta:
         model = Doacao
@@ -215,7 +223,6 @@ class DoacaoConfirmacaoSerializer(serializers.ModelSerializer):
             return False
 
 class DoacaoCancelamentoSerializer(serializers.Serializer):
-    usuario = UsuarioSerializer()
     doacao = DoacaoSerializerLista()
     data_cancelamento = serializers.DateField(initial=datetime.date.today)
     
