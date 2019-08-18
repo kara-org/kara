@@ -102,6 +102,7 @@ class DoacaoView(viewsets.ViewSet):
         return Response(serializer.data)
 
 class DoacaoViewUser(viewsets.ViewSet):
+    serializer_class = DoacaoSerializer
     serializer_lista_class = DoacaoSerializerLista
     serializer_confirmacao_class = DoacaoConfirmacaoSerializer
 
@@ -121,7 +122,15 @@ class DoacaoViewUser(viewsets.ViewSet):
                 serializer = self.serializer_lista_class(data=request.data)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+    # def patch(self, request, pk, *args, **kwargs):
+    #     doacao = Doacao.objects.get(pk=pk)
+    #     serializer = self.serializer_class(doacao, data=request.data, partial=True)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def destroy(self, request, pk):
         resposta = DoacaoDo(request)
         return resposta.cancelarDoacao(pk)
@@ -134,6 +143,3 @@ class BuscaDemandasView(viewsets.ViewSet):
         demanda = Demanda.objects.filter(Q(data_fim__gte = datetime.now().date()), Q(ativo=True))
         serializer = self.serializer_class(demanda, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-# class ItemDoacao(viewsets.ViewSet):
-#
