@@ -96,6 +96,7 @@ class Endereco(models.Model):
 
 class Telefone(models.Model):
     usuario = models.ForeignKey("Usuario", related_name="telefone", on_delete=models.DO_NOTHING, blank=True, null=True)
+    ong = models.ForeignKey("Ong", related_name="telefone", on_delete=models.DO_NOTHING, blank=True, null=True)
     numero = models.IntegerField("Número")
     whatsapp = models.BooleanField("Principal?")
     desabilitado = models.BooleanField(default=False, blank=True, null=True)

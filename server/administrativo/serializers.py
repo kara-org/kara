@@ -86,32 +86,40 @@ class UsuarioSerializer(serializers.ModelSerializer):
             # raise IntegrityError('Usuário já existe.')
 
 class OngSerializer(serializers.ModelSerializer):
-    usuario = UsuarioSerializer(write_only=True)
+    usuario = UsuarioSerializer(write_only=True, required=False)
     endereco = EnderecoSerializer(allow_null=True, required=False)
+    telefone = TelefoneSerializer(many=True, allow_null=True, required=False)
 
     class Meta:
         model = Ong
-        fields = ['id', 'nome', 'cnpj', 'historia', 'ativo' , 'usuario', 'endereco']
+        fields = ['id', 'nome', 'cnpj', 'historia', 'telefone', 'ativo' , 'usuario', 'endereco']
 
     def create(self, validated_data):
         usuario_data = validated_data.pop('usuario')
         
         endereco = validated_data.pop("endereco")
-        # telefone = validated_data.pop("telefone")
+        telefone = validated_data.pop("telefone")
+        
+        ong, created = Ong.objects.get_or_create(cnpj = validated_data['cnpj'], defaults= validated_data)
         
         end, created = Endereco.objects.get_or_create(**endereco)
-        ong, created = Ong.objects.get_or_create(cnpj = validated_data['cnpj'], defaults= validated_data)
         if created:
             ong.endereco = end
-            ong.save()
+            
+        for t in telefone:
+            fone = Telefone(**t)
+            fone.save()
+            ong.telefone.add(fone)
+        
+        ong.save()
+        
 
         if ong:
             with transaction.atomic():
                 endereco = usuario_data.pop("endereco")
                 telefone = usuario_data.pop("telefone")
                 
-                end = Endereco(**endereco)
-                end.save()
+                end, created = Endereco.objects.get_or_create(**endereco)
                 
                 user = Usuario.objects.create_user(endereco= end,  **usuario_data)
                 for t in telefone:
@@ -128,6 +136,8 @@ class OngSerializer(serializers.ModelSerializer):
 
 class OngListSerializer(serializers.ModelSerializer):
     endereco = EnderecoSerializer(allow_null=True)
+    telefone = TelefoneSerializer(many=True, allow_null=True)
+
     class Meta:
         model = Ong
-        fields = ['id', 'nome', 'cnpj', 'historia', 'ativo', 'endereco']
+        fields = ['id', 'nome', 'cnpj', 'historia', 'telefone', 'ativo', 'endereco']
