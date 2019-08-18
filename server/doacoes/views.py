@@ -8,15 +8,9 @@ from rest_framework.permissions import AllowAny
 from django.core.mail import send_mail
 from .models import *
 from .serializers import *
+from administrativo.models import Ong
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
-import string
-import random
-from random import randint
-from django.contrib.auth.hashers import make_password, check_password
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from datetime import datetime
 from .doacao import *
 
 @permission_classes((AllowAny, ))
@@ -131,8 +125,7 @@ class DoacaoViewUser(viewsets.ViewSet):
     def destroy(self, request, pk):
         resposta = DoacaoDo(request)
         return resposta.cancelarDoacao(pk)
-        
-        
+
 @permission_classes((AllowAny, ))  
 class BuscaDemandasView(viewsets.ViewSet):
     serializer_class = DemandaSerializerRetorno
@@ -141,3 +134,6 @@ class BuscaDemandasView(viewsets.ViewSet):
         demanda = Demanda.objects.filter(Q(data_fim__gte = datetime.now().date()), Q(ativo=True))
         serializer = self.serializer_class(demanda, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+# class ItemDoacao(viewsets.ViewSet):
+#
