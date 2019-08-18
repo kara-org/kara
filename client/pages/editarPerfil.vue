@@ -1,5 +1,7 @@
 <template>
-  <section class="hero is-medium is-bold" v-if="isAuthenticated">
+<body class="columns is-fullheight">
+  <MenuLateral />
+  <section class="column is-main-content hero is-medium is-bold" v-if="isAuthenticated">
     <div class="hero-body">
       <div class="container">
         <div class="columns is-centered">
@@ -13,16 +15,19 @@
       </div>
     </div>
   </section>
+</body>
 </template>
 
 <script>
 import CadastroDoadorForm from '@/components/organisms/CadastroDoadorForm'
 import CadastroOngForm from '@/components/organisms/CadastroOngForm'
+import MenuLateral from '@/components/organisms/MenuLateral'
 export default {
   layout: 'default',
   components: {
     CadastroDoadorForm,
-    CadastroOngForm
+    CadastroOngForm,
+    MenuLateral
   },
   computed: {
     isAuthenticated() {
@@ -37,6 +42,9 @@ export default {
 
 <style lang="scss" scoped>
 .hero-body {
-  padding-top: 8rem !important;
+  padding-top: 2em !important;
+}
+body {
+  margin: 10px !important;
 }
 </style>
