@@ -1,12 +1,12 @@
 <template>
 <div class="columns is-fullheight">
-  <MenuLateral :isDoador="!this.$auth.user.vinculo_ong" />
+  <MenuLateral />
   <section class="column is-main-content hero is-medium is-bold" style="align-items:center;">
     <div class="hero-body">
       <article class="card is-rounded" style="width:600px">
         <div class="card-content">
-          <p class="form-section-title">Edite suas informações</p>
-          <CadastroDoadorForm :isCadastro="false" />
+          <p class="form-section-title">Edite os dados da ONG</p>
+          <CadastroOngForm :isCadastro="false" />
         </div>
       </article>
     </div>
@@ -15,12 +15,12 @@
 </template>
 
 <script>
-import CadastroDoadorForm from '@/components/organisms/CadastroDoadorForm'
+import CadastroOngForm from '@/components/organisms/CadastroOngForm'
 import MenuLateral from '@/components/organisms/MenuLateral'
 export default {
   layout: 'default',
   components: {
-    CadastroDoadorForm,
+    CadastroOngForm,
     MenuLateral
   }
 }

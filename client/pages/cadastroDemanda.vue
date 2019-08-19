@@ -1,11 +1,11 @@
 <template>
-<body class="columns is-fullheight">
+<div class="columns is-fullheight">
   <MenuLateral />
   <section class="column is-main-content hero is-medium is-bold">
     <div class="hero-body">
       <div class="container">
         <div class="columns is-centered">
-          <article class="card is-rounded" style="width:400px">
+          <article class="card is-rounded" style="width:600px">
             <div class="card-content">
               <p class="form-section-title">Cadastre uma demanda</p>
               <CadastroDemandaForm :isCadastro="true" />
@@ -15,7 +15,7 @@
       </div>
     </div>
   </section>
-</body>
+</div>
 </template>
 
 <script>
@@ -33,9 +33,9 @@ export default {
 
 <style lang="scss" scoped>
 .hero-body {
-  padding-top: 2em !important;
+  padding-top: 1em !important;
 }
-body {
+.columns div {
   margin: 10px !important;
 }
 </style>
