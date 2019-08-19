@@ -1,6 +1,13 @@
 <template>
   <section>
-    <b-table :data="data" ref="table">
+    <b-table
+      :data="data"
+      ref="table"
+      :paginated="isPaginated"
+      :per-page="perPage"
+      :current-page.sync="currentPage"
+      :pagination-position="paginationPosition"
+    >
       <template slot-scope="props">
         <b-table-column
           field="descricao"
@@ -117,7 +124,11 @@ export default {
         restante: { title: 'Restante', display: true },
         acao: { title: 'Ação', display: true },
         progresso: { title: 'Progresso', display: true }
-      }
+      },
+      isPaginated: true,
+      paginationPosition: 'bottom',
+      currentPage: 1,
+      perPage: 5
     }
   }
 }

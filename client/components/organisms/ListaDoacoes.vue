@@ -1,6 +1,13 @@
 <template>
   <section>
-    <b-table :data="data" ref="table">
+    <b-table
+      :data="data"
+      ref="table"
+      :paginated="isPaginated"
+      :per-page="perPage"
+      :current-page.sync="currentPage"
+      :pagination-position="paginationPosition"
+    >
       <template slot-scope="fProps">
         <b-table :data="fProps.row.itens_doacao">
           <template slot-scope="props">
@@ -57,11 +64,19 @@
               <template v-if="props.row.status_id==3">
                 <EditarModal v-if="isDoador" :doacao="props.row" />
                 <b-tooltip class="is-danger" label="Cancelar doação" position="is-right">
-                  <b-button class="is-danger is-outlined is-small" @click="confirm(props.row.id, 'cancelar')">
+                  <b-button
+                    class="is-danger is-outlined is-small"
+                    @click="confirm(props.row.id, 'cancelar')"
+                  >
                     <b-icon icon="cancel"></b-icon>
                   </b-button>
                 </b-tooltip>
-                <b-tooltip class="is-success" label="Confirmar doação" position="is-right">
+                <b-tooltip
+                  v-if="!isDoador"
+                  class="is-success"
+                  label="Confirmar doação"
+                  position="is-right"
+                >
                   <b-button
                     class="is-success is-outlined is-small"
                     @click="confirm(props.row.id, 'confirmar')"
@@ -131,7 +146,11 @@ export default {
         ong: { title: 'ONG', display: this.isDoador ? true : false },
         data: { title: 'Data agendada', display: true },
         acao: { title: 'Ação', display: true }
-      }
+      },
+      isPaginated: true,
+      paginationPosition: 'bottom',
+      currentPage: 1,
+      perPage: 1
     }
   }
 }
