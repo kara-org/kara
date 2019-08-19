@@ -7,6 +7,7 @@
       :per-page="perPage"
       :current-page.sync="currentPage"
       :pagination-position="paginationPosition"
+      :pagination-simple="isPaginationSimple"
     >
       <template slot-scope="props">
         <b-table-column
@@ -128,7 +129,8 @@ export default {
       isPaginated: true,
       paginationPosition: 'bottom',
       currentPage: 1,
-      perPage: 5
+      perPage: 5,
+      isPaginationSimple: true
     }
   }
 }

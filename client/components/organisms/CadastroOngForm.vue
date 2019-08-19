@@ -139,7 +139,7 @@
         </b-field>
         <hr />
       </template>
-      <EnderecoForm :endereco="ong.usuario.endereco" :submitted="submitted" />
+      <EnderecoForm :endereco="ong.endereco" :submitted="submitted" />
       <hr />
       <div class="has-text-centered" style="margin: 10px;" v-if="isCadastro">
         Já tem um cadastro?
@@ -162,11 +162,11 @@
       </div>
     </form>
     <div v-else-if="isCadastro" class="column has-text-centered">
-      <h1>Cadastro realizado com sucesso! Será enviada uma confirmação para seu email.</h1>
+      <h1>Cadastro realizado com sucesso!</h1>
       <hr />
     </div>
     <div v-else class="column has-text-centered">
-      <h1>Atualização realizada com sucesso! Será enviada uma confirmação para seu email.</h1>
+      <h1>Atualização realizada com sucesso!</h1>
       <hr />
     </div>
   </section>
@@ -189,24 +189,29 @@ export default {
         razao_social: null,
         cnpj: null,
         historia: null,
+        email: null,
+        endereco: {
+          id: 2,
+          logradouro: null,
+          bairro: null,
+          cidade: null,
+          estado: null,
+          numero: null,
+          principal: true,
+          validAdress: null
+        },
+        telefone: [
+          {
+            numero: null,
+            whatsapp: false
+          }
+        ],
         usuario: {
           email: null,
           password: null,
           nome_completo: null,
-          ativo: true,
-          ultimo_login: '2019-07-24T22:39:02.543520Z',
           cpf: null,
           vinculo_ong: true,
-          endereco: {
-            id: 2,
-            logradouro: null,
-            bairro: null,
-            cidade: null,
-            estado: null,
-            numero: null,
-            principal: true,
-            validAdress: null
-          },
           telefone: [
             {
               numero: null,
@@ -216,7 +221,7 @@ export default {
         }
       },
       passwordConfirm: null,
-      success: false, //toremove
+      success: false,
       submitted: false,
       masks: {
         phone: {
@@ -243,7 +248,15 @@ export default {
     }
   },
   async mounted() {
-    console.log(await this.fetchPerfilOng(1))
+    //id = this.$auth.user.id_ong
+    var ong = await this.$axios.$get(`ong/${1}`)
+    console.log(ong)
+    this.ong.cnpj = ong.cnpj
+    this.ong.historia = ong.historia
+    //this.ong.endereco = ong.endereco
+    //this.ong.telefone = ong.telefone
+    //this.ong.email = ong.email
+    //console.log(await this.fetchPerfilOng(1))
   },
   methods: {
     ...mapActions('ongs', ['fetchPerfilOng']),
@@ -251,12 +264,31 @@ export default {
       return URL.createObjectURL(this.ong.foto)
     },
     async register() {
-      var num = this.ong.usuario.telefone[0].numero
-      this.ong.usuario.telefone[0].numero = Number.parseInt(
-        num.replace(/\D/g, '')
-      )
+      var num = this.ong.telefone[0].numero
+      this.ong.telefone[0].numero = Number.parseInt(num.replace(/\D/g, ''))
       try {
         await this.$OngService.create(this.ong).catch(err => {
+          if (!err.response) {
+            err.message = 'Servidor desconectado'
+          } else if (err.response.status === 400) {
+            err.message = err.response.data.non_field_errors[0]
+          }
+          this.$toast.open({
+            message: err.message,
+            type: 'is-danger',
+            position: 'is-bottom'
+          })
+        })
+        this.success = true
+      } catch (e) {
+        this.error = e.response.data.message
+      }
+    },
+    async change() {
+      var num = this.ong.telefone[0].numero
+      this.ong.telefone[0].numero = Number.parseInt(num.replace(/\D/g, ''))
+      try {
+        await this.$axios.$put(this.ong).catch(err => {
           if (!err.response) {
             err.message = 'Servidor desconectado'
           } else if (err.response.status === 400) {
@@ -277,14 +309,19 @@ export default {
     validateBeforeSubmit() {
       this.submitted = true
       var interval = setInterval(() => {
-        if (this.ong.usuario.endereco.validAdress != null) {
-          if (!this.ong.usuario.endereco.validAdress) {
-            this.ong.usuario.endereco.validAdress = null
+        if (this.ong.endereco.validAdress != null) {
+          if (!this.ong.endereco.validAdress) {
+            this.ong.endereco.validAdress = null
             this.submitted = false
           }
           this.$validator.validateAll().then(result => {
-            if (result && this.ong.usuario.endereco.validAdress) {
-              this.register()
+            if (result && this.ong.endereco.validAdress) {
+              this.ong.telefone[0].numero = this.ong.telefone[0].numero.replace(
+                /\D/g,
+                ''
+              )
+              this.ong.cnpj = this.ong.cnpj.replace(/\D/g, '')
+              isCadastro ? this.register() : this.change()
               return
             } else {
               this.submitted = false

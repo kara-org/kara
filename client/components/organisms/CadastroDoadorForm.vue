@@ -74,7 +74,7 @@
           type="text"
           v-model.trim="doador.telefone[0].numero"
           v-cleave="masks.phone"
-          maxlength="15"
+          maxlength="14"
           name="telefone"
           v-validate="'required|phone'"
         ></b-input>
@@ -221,7 +221,7 @@ export default {
             nome_completo: this.doador.nome_completo,
             telefone: this.doador.telefone,
             email: this.doador.email,
-            foto: this.doador.foto
+            //foto: this.doador.foto
           })
           .catch(err => {
             if (!err.response) {
