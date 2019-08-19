@@ -3,8 +3,8 @@
     <h1 class="title">Encontre uma {{ tipo }} e faça sua doação!</h1>
     <b-field class="filtro">
       <b-select v-model="tipo" placeholder="Tipo da busca" size="is-large">
-        <option value="demanda">Demanda</option>
-        <option value="ONG">ONG</option>
+        <option value="demandas">Demanda</option>
+        <option value="ongs" disabled>ONG</option>
       </b-select>
 
       <b-input
@@ -32,7 +32,7 @@ export default {
    data () {
     return {
       palavraChave: '',
-      tipo: 'demanda',
+      tipo: 'demandas',
     }
   },
   methods: {
@@ -40,7 +40,7 @@ export default {
     ...mapActions('busca', ['fetchBusca', 'buscar']),
     send () {
       this.startLoading()
-      this.fetchBusca({ tipo: this.tipo, palavraChave: this.palavraChave})
+      this.fetchBusca(this.tipo)
 
       if (this.to)
         this.$router.push(this.to)
@@ -59,7 +59,7 @@ export default {
   },
   created () {
     if (!this.$store.state.busca.list.length)
-      this.fetchBusca({ tipo: this.tipo, palavraChave: this.palavraChave})
+      this.fetchBusca(this.tipo)
     this.palavraChave =  this.$store.state.busca.searchTerm
   }
 }

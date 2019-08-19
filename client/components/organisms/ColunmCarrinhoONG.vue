@@ -1,7 +1,7 @@
 <template>
   <article class="has-background-white">
     <h1 class="title is-size-5 has-text-centered">Demandas selecionadas</h1>
-    <b-button class="is-primary is-fullwidth is-rounded is-stick-botton" size="is-medium" fullwidth="true" @click="send" icon="magnify">Finalizar doação</b-button>
+    <b-button class="is-primary is-fullwidth is-rounded is-stick-botton" size="is-medium" fullwidth="true"  icon="magnify">Finalizar doação</b-button>
     <br>
     <div class="columns">
       <p v-if="demandas && demandas.length == 0 ">Demandas aparecerão aqui a medida que você for selecionando.</p>

@@ -18,6 +18,8 @@ import PerfilONG from '../components/organisms/ColunmPerfilONG'
 import ListagemCards from '../components/organisms/ListagemCards'
 import CarrinhoONG from '../components/organisms/ColunmCarrinhoONG'
 
+import { mapGetters } from 'vuex'
+
 export default {
   components: {
     PerfilONG,
@@ -28,9 +30,7 @@ export default {
     return {}
   },
   computed: {
-    list () {
-      return this.$store.state.carrinho.ong.itens
-    }
+    ...mapGetters({ list: 'carrinho/itensForaDoCarrinho' })
   },
 }
 </script>

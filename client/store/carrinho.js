@@ -12,7 +12,7 @@ export const mutations = {
   },
   REMOVE_ITEM (state, item) {
     state.itensSelecionados = state.itensSelecionados.filter(i => i.item.id !== item.id)
-  }
+  },
 }
 
 export const actions = {
@@ -24,12 +24,10 @@ export const actions = {
 
   adicionarItemNoCarrinho (context, item) {
     context.commit('ADD_ITEM', item)
-    context.commit('busca/REMOVE_RESULTADO', item.item, { root: true })
   },
 
   removerItemNoCarrinho (context, item) {
     context.commit('REMOVE_ITEM', item)
-    context.commit('busca/ADD_RESULTADO', item, { root: true })
   },
 }
 
@@ -37,7 +35,10 @@ export const getters = {
   isEmpty: (state) => {
     return state.itensSelecionados.length > 0
   },
-  itensNoCarrinho: (state) =>{
+  itensNoCarrinho: (state) => {
     return state.itensSelecionados ? state.itensSelecionados.map(i => i.item) : []
+  },
+  itensForaDoCarrinho: (state, getters) => {
+    return state.ong.demandas.filter(x => ! getters.itensNoCarrinho.map(y => y.id).includes(x.id));
   }
 }

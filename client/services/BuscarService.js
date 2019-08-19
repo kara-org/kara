@@ -25,11 +25,11 @@ export default $axios => ({
       limit: 10
     });
   },
-  async fetch(params) {
+  async fetch(tipo) {
     // return new Promise(function(resolve){
     //   resolve(data)
     // }).then(response => { index.add(response); console.log(index); return (response) })
-    return await $axios.$get('/buscar', { params: params });
+    return await $axios.$get(`/busca/${tipo}`);
   },
 
   getResource () {
