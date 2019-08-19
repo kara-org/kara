@@ -13,6 +13,7 @@ import string
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from doacoes.models import *
 
 def gerar_senha():
     senha_numerica = randint(1000, 9999)
@@ -143,6 +144,7 @@ class OngCreateListView(viewsets.ViewSet):
 class OngDetailView(viewsets.ViewSet):
 
     serializer_class = OngListSerializer
+    serializer_class_retorno = OngDemandas
     queryset = Ong.objects.all()
     
     def valida_acesso(self, pk):
@@ -162,10 +164,11 @@ class OngDetailView(viewsets.ViewSet):
     def get(self, request, pk, formar=True):
         try:
             ong = self.get_object(pk)
-            serializer = self.serializer_class(ong)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except:
-            return Response({"message":"Esta ong não existe."}, status=status.HTTP_404_NOT_FOUND)
+            ong.demandas = Demanda.objects.filter(ong=pk)
+            serializer = self.serializer_class_retorno(ong)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"message":print(e)}, status=status.HTTP_404_NOT_FOUND)
             
 
     def put(self, request, pk, *args, **kwargs):

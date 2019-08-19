@@ -1,19 +1,28 @@
-from rest_framework import serializers, status
-from .models import *
-from administrativo.models import Ong, Usuario
-from django.core.exceptions import ValidationError
-from django.db import IntegrityError
-
+from rest_framework import serializers
+from administrativo.models import Usuario
 from django.db import transaction
-
 from .models import *
+import datetime
 
+from administrativo.serializers import UsuarioSerializer, OngSerializer
+
+class CategoriaItemDoacaoSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Categoria
+        fields = [
+                "id",
+                "descricao"
+            ]
+
+#region Demanda
 class DemandaSerializer(serializers.ModelSerializer):
-    id_categoria = serializers.IntegerField()
+    categoria = CategoriaItemDoacaoSerializer(required=False)
+    
     class Meta:
         model = Demanda
         fields = ['id',
-                  'id_categoria',
+                  'categoria',
                   'quantidade_solicitada',
                   'quantidade_alcancada',
                   'data_inicio',
@@ -30,8 +39,8 @@ class DemandaSerializer(serializers.ModelSerializer):
         return Demanda.objects.none()
 
 class DemandaSerializerRetorno(serializers.ModelSerializer):
-    #cnpj_ong = serializers.IntegerField()
-    #id_categoria = serializers.IntegerField()
+    categoria = CategoriaSerializer()
+    ong = OngSerializer()
     class Meta:
         model = Demanda
         fields = ['id',
@@ -58,6 +67,8 @@ class DemandaSerializerAlteracao(serializers.ModelSerializer):
                   'ativo']
 
 class DemandaSerializerList(serializers.ModelSerializer):
+    categoria = CategoriaSerializer()
+    ong = OngSerializer()
     class Meta:
         model = Demanda
         fields = ['id',
@@ -69,17 +80,56 @@ class DemandaSerializerList(serializers.ModelSerializer):
                   'data_fim',
                   'descricao',
                   'ativo']
+#endregion
+
+#region Item Doação
+class StatusItemDoacaoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StatusItemDoacao
+        fields = [
+            'codigo_status',
+            'mensagem',
+        ]
 
 class ItemDoacaoCadastroSerializer(serializers.ModelSerializer):
-    id_demanda = serializers.IntegerField()
+    demanda = DemandaSerializerRetorno()
 
     class Meta:
         model = ItemDoacao
         fields = [
                     'quantidade_prometida',
-                    'id_demanda'
+                    'demanda'
                   ]
 
+class ItemDoacaoListSerializer(serializers.ModelSerializer):
+    demanda = DemandaSerializerRetorno()
+    status = StatusItemDoacaoSerializer()
+
+    class Meta:
+        model = ItemDoacao
+        fields = [
+            "id",
+            "quantidade_prometida",
+            "quantidade_efetivada",
+            "data_atualizacao",
+            "doacao",
+            "demanda",
+            "status"
+        ]
+
+class ItemDoacaoConfirmacaoSerializer(serializers.ModelSerializer):
+    id_item = serializers.IntegerField()
+    item_doacao = StatusItemDoacaoSerializer(read_only=True)
+
+    class Meta:
+        model = ItemDoacao
+        fields = [
+                    'id_item',
+                    'quantidade_efetivada',
+                  ]
+#endregion
+
+#region Doação
 class DoacaoSerializer(serializers.ModelSerializer):
     item_doacao = ItemDoacaoCadastroSerializer(many=True)
     id_usuario = serializers.IntegerField()
@@ -114,7 +164,7 @@ class DoacaoSerializer(serializers.ModelSerializer):
             return False
 
 class DoacaoSerializerRetornoCadastro(serializers.ModelSerializer):
-#    item_doacao = ItemDoacaoCadastroSerializer(many=True)
+    # item_doacao = ItemDoacaoCadastroSerializer(many=True)
 
     class Meta:
         model = Doacao
@@ -122,22 +172,10 @@ class DoacaoSerializerRetornoCadastro(serializers.ModelSerializer):
                     "id"
                   ]
 
-class ItemDoacaoListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ItemDoacao
-        fields = [
-            "id",
-            "quantidade_prometida",
-            "quantidade_efetivada",
-            "data_atualizacao",
-            "doacao_id",
-            "demanda_id",
-            "status_id"
-        ]
-
 class DoacaoSerializerLista(serializers.ModelSerializer):
-#    item_doacao = ItemDoacaoCadastroSerializer(many=True)
-    itens_doacao = serializers.ListField(child=ItemDoacaoListSerializer())
+    item_doacao = ItemDoacaoListSerializer(many=True)
+    usuario = UsuarioSerializer()
+    # itens_doacao = serializers.ListField(child=ItemDoacaoListSerializer())
     class Meta:
         model = Doacao
         fields = [
@@ -145,17 +183,7 @@ class DoacaoSerializerLista(serializers.ModelSerializer):
                     "usuario",
                     "data_agendamento",
                     "data_confimacao",
-                    "itens_doacao"
-                  ]
-
-class ItemDoacaoConfirmacaoSerializer(serializers.ModelSerializer):
-    id_item = serializers.IntegerField()
-
-    class Meta:
-        model = ItemDoacao
-        fields = [
-                    'id_item',
-                    'quantidade_efetivada',
+                    "item_doacao"
                   ]
 
 class DoacaoConfirmacaoSerializer(serializers.ModelSerializer):
@@ -196,3 +224,9 @@ class DoacaoConfirmacaoSerializer(serializers.ModelSerializer):
             except Exception as e:
                 print(e)
             return False
+
+class DoacaoCancelamentoSerializer(serializers.Serializer):
+    doacao = DoacaoSerializerLista()
+    data_cancelamento = serializers.DateField(initial=datetime.date.today)
+    
+#endregion

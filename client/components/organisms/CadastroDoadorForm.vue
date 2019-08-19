@@ -74,7 +74,7 @@
           type="text"
           v-model.trim="doador.telefone[0].numero"
           v-cleave="masks.phone"
-          maxlength="15"
+          maxlength="14"
           name="telefone"
           v-validate="'required|phone'"
         ></b-input>
@@ -211,15 +211,17 @@ export default {
   },
   methods: {
     loadFoto() {
+      console.log(URL.createObjectURL(this.doador.foto))
       return URL.createObjectURL(this.doador.foto)
     },
     async patch() {
       try {
         await this.$axios
           .patch(`/usuario/${this.$auth.user.id}/`, {
-            nome_completo: this.nome_completo,
-            telefone: this.telefone,
-            email: this.email
+            nome_completo: this.doador.nome_completo,
+            telefone: this.doador.telefone,
+            email: this.doador.email,
+            //foto: this.doador.foto
           })
           .catch(err => {
             if (!err.response) {
@@ -281,6 +283,7 @@ export default {
           this.doador.telefone[0].numero = Number.parseInt(
             num.replace(/\D/g, '')
           )
+          this.doador.cpf = this.doador.cpf.replace(/\D/g, '')
           this.isCadastro ? this.register() : this.patch()
 
           return
