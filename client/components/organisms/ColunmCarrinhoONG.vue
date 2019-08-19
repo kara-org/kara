@@ -1,64 +1,43 @@
 <template>
-  <article class="card">
+  <article class="has-background-white">
     <h1 class="title is-size-5 has-text-centered">Demandas selecionadas</h1>
+    <b-button class="is-primary is-fullwidth is-rounded is-stick-botton" size="is-medium" fullwidth="true" @click="send" icon="magnify">Finalizar doação</b-button>
+    <br>
     <div class="columns">
-      <p v-if="demandas.length<1">Demandas aparecerão aqui a medida que você for selecionando.</p>
+      <p v-if="demandas && demandas.length == 0 ">Demandas aparecerão aqui a medida que você for selecionando.</p>
     </div>
-    <div v-for="item in demandas" :key="item.id" class="column is-full">
-      <CardOng
-        :titulo="item.titulo"
-        :quantidade="item.quantidade"
-        :ongTitulo="item.ong.titulo"
-        :ongId="item.ong.id"
-        :isCarrinho="true"
-      />
+    <div class="cards is-scroll-y">
+      <div v-for="item in demandas" :key="item.id" class="column is-full">
+        <CardDemanda
+          :demanda="item"
+          :isCarrinho="true"
+        />
+      </div>
     </div>
   </article>
 </template>
 
 <script>
-import CardOng from '../molecules/CardDemanda'
+import CardDemanda from '../molecules/CardDemanda'
+import { mapGetters } from 'vuex'
+
 export default {
   components: {
-    CardOng
+    CardDemanda
   },
   data() {
     return {
-      demandas: [
-        {
-          titulo: 'Feijão',
-          quantidade: 23,
-          ong: {
-            id: 1,
-            titulo: 'ALMIR DO PICOLÉ'
-          }
-        },
-        {
-          titulo: 'Arroz',
-          quantidade: 13,
-          ong: {
-            id: 1,
-            titulo: 'ALMIR DO PICOLÉ'
-          }
-        },
-        {
-          titulo: 'Sal',
-          quantidade: 5,
-          ong: {
-            id: 1,
-            titulo: 'ALMIR DO PICOLÉ'
-          }
-        },
-        {
-          titulo: 'Água',
-          quantidade: 19,
-          ong: {
-            id: 1,
-            titulo: 'ALMIR DO PICOLÉ'
-          }
-        }
-      ]
     }
+  },
+  computed: {
+    ...mapGetters({ demandas: 'carrinho/itensNoCarrinho' }),
   }
 }
 </script>
+
+<style lang="css" scoped>
+.is-stick-botton{
+  position: sticky;
+  bottom: 0;
+}
+</style>

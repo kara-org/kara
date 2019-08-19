@@ -1,7 +1,6 @@
 <template>
   <section>
     <button class="button is-primary is-medium" @click="isComponentModalActive = true">{{text}}</button>
-
     <b-modal :active.sync="isComponentModalActive" has-modal-card>
       <form action>
         <div class="modal-card" style="width: auto">
@@ -15,7 +14,7 @@
           </section>
           <footer class="modal-card-foot">
             <button class="button" type="button" @click="isComponentModalActive = false">Cancelar</button>
-            <button class="button is-primary">Confirmar</button>
+            <button class="button is-primary"  type="button"  @click="confirmado">Confirmar</button>
           </footer>
         </div>
       </form>
@@ -24,17 +23,39 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
 export default {
   props: {
     text: {
       type: String,
       required: true
+    },
+    idOng: {
+      type: Number
+    },
+    item: {
+      type: Object
     }
   },
   data() {
     return {
       isComponentModalActive: false,
       quantidade: 1
+    }
+  },
+  computed:{
+     ...mapGetters({ carrinhoVazio: 'carrinho/isEmpty' }),
+  },
+  methods: {
+    ...mapActions('carrinho', ['fetchOng', 'adicionarItemNoCarrinho']),
+    ...mapActions('busca', ['fetchOng', 'adicionarItemNoCarrinho']),
+    confirmado () {
+      this.isComponentModalActive = false
+      this.fetchOng(1)
+      this.adicionarItemNoCarrinho({ item: this.item, quantidade: this.quantidade })
+      if (this.carrinhoVazio)
+
+        this.$router.push('/carrinho')
     }
   }
 }

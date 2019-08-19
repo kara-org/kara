@@ -23,7 +23,7 @@
       <div class="hero-body">
         <div class="container">
           <div class="level">
-            <ListagemOngs :isBusca="true"/>
+            <ListagemOngs :list="list" :isBusca="true"/>
           </div>
         </div>
       </div>
@@ -41,6 +41,11 @@ export default {
   components: {
     ListagemOngs,
     Buscar
+  },
+  computed: {
+    list (){
+      return this.$store.state.busca.list
+    }
   },
   created: function() {}
 }

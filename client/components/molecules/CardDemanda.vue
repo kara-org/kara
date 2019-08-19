@@ -1,20 +1,19 @@
 <template>
   <transition name="fade" appear>
-    <div class="card">
+    <div class="box">
       <div class="card-content">
-        <p class="title is-4 heading" style="font-weight: bold!important;">{{titulo}}</p>
+        <p class="title is-4 heading" style="font-weight: bold!important;">{{ demanda.titulo }}</p>
         <p class="is-size-5 heading">
-          <nuxt-link :to="'/ong/'+ongId" exact-active-class="is-active">{{ ongTitulo }}</nuxt-link>
+          <nuxt-link :to="`/ong/${ demanda.ong.id }`" exact-active-class="is-active">{{ demanda.ong.nome }}</nuxt-link>
         </p>
         <p class="is-size-5 heading">
           Restam
-          <strong>{{ quantidade }}</strong>
+          <strong>{{ demanda.quantidade }}</strong>
           para a meta
         </p>
         <div class="level-right" v-if="!isCarrinho">
-          <DoarModal :text="'Doar'" />
+          <DoarModal :text="'Doar'" :idOng="demanda.ong.id" :item="demanda" />
         </div>
-
         <div class="level" v-else>
           <button class="delete is-medium" @click="remover">Remover</button>
           <DoarModal :text="'Editar'" />
@@ -24,26 +23,28 @@
   </transition>
 </template>
 <script>
+
 import DoarModal from '@/components/molecules/DoarModal.vue'
+import { mapActions } from 'vuex';
+
 export default {
   components: { DoarModal },
   props: [
-    'imagem',
-    'titulo',
-    'quantidade',
-    'ongId',
-    'ongTitulo',
-    'to',
+    'demanda',
     'isCarrinho'
   ],
   methods: {
+    ...mapActions('carrinho', ['removerItemNoCarrinho']),
     remover: function() {
       this.$dialog.confirm({
         message: 'Tem certeza que deseja remover este item?',
         confirmText: 'Sim',
-        onConfirm: () => {}
+        onConfirm: () => {
+          this.removerItemNoCarrinho(this.demanda)
+        }
       })
-    }
+    },
+
   }
 }
 </script>

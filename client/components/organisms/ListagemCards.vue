@@ -3,28 +3,7 @@
     <div class="columns is-multiline">
       <div v-for="item in list" :key="item.id" class="column" :class="isBusca ? 'is-one-third' : 'is-half'">
         <CardOng
-          :titulo="item.titulo"
-          :quantidade="item.quantidade"
-          :ongTitulo="item.ong.titulo"
-          :ongId="item.ong.id"
-          :isCarrinho="false"
-        />
-      </div>
-      <div v-for="item in list" :key="item.id"  class="column" :class="isBusca ? 'is-one-third' : 'is-half'">
-        <CardOng
-          :titulo="item.titulo"
-          :quantidade="item.quantidade"
-          :ongTitulo="item.ong.titulo"
-          :ongId="item.ong.id"
-          :isCarrinho="false"
-        />
-      </div>
-      <div v-for="item in list" :key="item.id"  class="column" :class="isBusca ? 'is-one-third' : 'is-half'">
-        <CardOng
-          :titulo="item.titulo"
-          :quantidade="item.quantidade"
-          :ongTitulo="item.ong.titulo"
-          :ongId="item.ong.id"
+          :demanda="item"
           :isCarrinho="false"
         />
       </div>
@@ -35,10 +14,11 @@
 <script>
 import CardOng from '../molecules/CardDemanda'
 
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   props: {
-    isBusca: Boolean
+    isBusca: Boolean,
+    list: Array
   },
   components: {
     CardOng
@@ -47,20 +27,12 @@ export default {
     return {}
   },
   computed: {
-    list() {
-      if (!this.$store.state.busca.list.length)
-        this.fetchBusca({
-          tipo: 'demanda',
-          palavraChave: 'this.palavraChave'
-        })
-      var list = this.$store.state.busca.list
-      return list != null ? list : this.$store.state.busca.default
-    }
   },
   methods: {
     ...mapActions('busca', ['fetchBusca', 'buscar'])
   },
-  mounted() {}
+  mounted () {
+  }
 }
 </script>
 

@@ -6,6 +6,9 @@ export const state = () => ({
 })
 
 export const mutations = {
+  ORDER_ITENS(state){
+    state.list.sort((a, b) => a.titulo.localeCompare(b.titulo))
+  },
   UPDATE_TIPO(state, payload) {
     state.tipo = payload
   },
@@ -14,6 +17,14 @@ export const mutations = {
   },
   UPDATE_RESULTADOS(state, payload) {
     state.list = payload
+  },
+  REMOVE_RESULTADO (state, item) {
+    state.list = state.list.filter(r => r.id !== item.id)
+    state.list.sort((a, b) => a.titulo.localeCompare(b.titulo))
+  },
+  ADD_RESULTADO (state, item) {
+    state.list.push(item)
+    state.list.sort((a, b) => a.titulo.localeCompare(b.titulo))
   },
   TO_DEFEAULT_RESULTADOS(state) {
     state.list = state.default
@@ -33,6 +44,7 @@ export const actions = {
       } else {
         commit('TO_DEFEAULT_RESULTADOS')
       }
+      commit('ORDER_ITENS')
     })
   },
   async fetchBusca({ commit, dispatch }, params) {
@@ -41,8 +53,10 @@ export const actions = {
       .then(response => {
         commit('UPDATE_RESULTADOS', response)
         commit('SET_DEFEAULT_RESULTADOS', response)
+        commit('ORDER_ITENS')
       })
       .catch(err => {
+        console.log(err);
         dispatch('global/addErro', err, { root: true })
       })
       .then(() => dispatch('global/stopLoading', null, { root: true }))

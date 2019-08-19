@@ -7,7 +7,8 @@ import buscarServiceBase from '~/services/BuscarService'
 export default (ctx, inject) => {
   // inject the repository in the context (ctx.app.$repository)
   // And in the Vue instances (this.$repository in your components)
-  const serviceDefault = createService(ctx.$axios)
+
+  const serviceDefault = createService({ $axios: ctx.$axios, $store: ctx.app.$store })
   const buscarService  = buscarServiceBase(ctx.$axios)
 
   const serviceOng = composite(serviceDefault('/ong/'), "$doacoes", doacoesService)

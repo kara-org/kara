@@ -111,6 +111,17 @@ DATABASES = {
     }
 } """
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'kara',
+#         'USER': 'postgres',
+#         'PASSWORD': '123',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
+
 AUTH_USER_MODEL = 'administrativo.Usuario'
 
 # Password validation
