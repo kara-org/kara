@@ -39,7 +39,8 @@ doacao_patterns = [
     path('doacao/', DoacaoView.as_view({'post': 'create'}), name='doacao'),
     path('ong/<int:id_ong>/doacoes/', DoacaoView.as_view({'get': 'list'}), name='lista_doacao'),
     path('doador/<int:id_user>/doacoes/', DoacaoViewUser.as_view({'get': 'list'}), name='lista_doacao_user'),
-    path('doacao/<int:pk>/confirmar/', DoacaoViewUser.as_view({'post': 'post'}), name='confirmar_doacao')
+    path('doacao/<int:pk>/confirmar/', DoacaoViewUser.as_view({'post': 'post'}), name='confirmar_doacao'),
+    path('doacao/<int:pk>/cancelar/', DoacaoViewUser.as_view({'delete': 'destroy'}), name='cancelar_doacao')
 ]
 
 busca_patterns = [
