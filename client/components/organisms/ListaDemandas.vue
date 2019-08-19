@@ -1,7 +1,7 @@
 <template>
   <section>
     <b-table :data="data" ref="table">
-      <template slot-scope="props" v-if="props.row.ativo">
+      <template slot-scope="props">
         <b-table-column
           field="descricao"
           :visible="columnsVisible['descricao'].display"
@@ -52,12 +52,18 @@
             label="Inativar demanda"
             position="is-right"
           >
-            <b-button class="is-danger is-outlined is-small" @click="inativar(props.row.id)">
+            <b-button
+              class="is-danger is-outlined is-small"
+              @click="confirm(props.row.id, 'inativar')"
+            >
               <b-icon icon="cancel"></b-icon>
             </b-button>
           </b-tooltip>
           <b-tooltip v-else class="is-success" label="Reativar demanda" position="is-right">
-            <b-button class="is-success is-outlined is-small" @click="reativar(props.row.id)">
+            <b-button
+              class="is-success is-outlined is-small"
+              @click="confirm(props.row.id, 'reativar')"
+            >
               <b-icon icon="replay"></b-icon>
             </b-button>
           </b-tooltip>
@@ -77,13 +83,28 @@ export default {
     console.log(this.data)
   },
   methods: {
-    async reativar(id) {
-      this.$axios.$patch(`/demanda/${id}/`, { ativo: true });
-      this.data = await this.$axios.$get(`/ong/${1}/demandas/`);
+    /* async reativar(id) {
+      this.$axios.$patch(`/demanda/${id}/`, { ativo: true })
+      this.data = await this.$axios.$get(`/ong/${1}/demandas/`)
     },
     async inativar(id) {
-      this.$axios.$delete(`/demanda/${id}/cancelar`);
-      this.data = await this.$axios.$get(`/ong/${1}/demandas/`);
+      this.$axios.$delete(`/demanda/${id}/cancelar`)
+      this.data = await this.$axios.$get(`/ong/${1}/demandas/`)
+    }, */
+    async confirm(id, acao) {
+      this.$dialog.confirm({
+        message: `Tem certeza que deseja ${acao} essa demanda?`,
+        confirmText: 'Sim',
+        cancelText: 'Não',
+
+        onConfirm: () => {
+          if (acao == 'inativar') {
+            this.$axios.$delete(`/demanda/${id}/cancelar`)
+          } else {
+            this.$axios.$patch(`/demanda/${id}/`, { ativo: true })
+          }
+        }
+      })
     }
   },
   data() {
