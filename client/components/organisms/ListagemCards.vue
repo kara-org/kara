@@ -64,7 +64,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 .columns {
   display: flex;
   flex-wrap: wrap;
