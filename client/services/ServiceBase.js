@@ -1,6 +1,4 @@
-import { nextTick } from 'q'
-
-export default $axios => resource => ({
+export default ({ $axios, $store }) => resource => ({
   async index() {
     return await $axios.$get(resource).catch(err => {
       dispatch('global/addErro', err, { root: true })
@@ -13,10 +11,8 @@ export default $axios => resource => ({
     })
   },
 
-  show(id) {
-    return $axios.$get(`/${resource}/${id}`).catch(err => {
-      dispatch('global/addErro', err, { root: true })
-    })
+  async show(id) {
+    return await $axios.$get(`${resource}${id}`)
   },
 
   update(payload) {

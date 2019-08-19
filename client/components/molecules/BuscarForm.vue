@@ -27,7 +27,7 @@ export default {
     to: {
       type: String,
       default: null
-    }
+    },
   },
    data () {
     return {
@@ -50,6 +50,7 @@ export default {
     loading () {
       return this.$store.state.global.loading
     }
+
   },
   watch: {
     palavraChave () {
