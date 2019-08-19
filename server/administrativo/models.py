@@ -96,6 +96,7 @@ class Endereco(models.Model):
 
 class Telefone(models.Model):
     usuario = models.ForeignKey("Usuario", related_name="telefone", on_delete=models.DO_NOTHING, blank=True, null=True)
+    ong = models.ForeignKey("Ong", related_name="telefone", on_delete=models.DO_NOTHING, blank=True, null=True)
     numero = models.IntegerField("Número")
     whatsapp = models.BooleanField("Principal?")
     desabilitado = models.BooleanField(default=False, blank=True, null=True)
@@ -124,8 +125,11 @@ class UsuarioPertenceOng(models.Model):
         
 class Ong(models.Model):
     cnpj = models.CharField("CPF", max_length=20, blank=True, null=True)
+    nome = models.CharField("Nome", max_length=255)
     historia = models.TextField(blank=True, null=True)
     ativo = models.BooleanField(default=True)
     ultimo_login = models.DateTimeField(auto_now_add=True)
+    endereco = models.ForeignKey("Endereco", on_delete=models.DO_NOTHING, blank=True, null=True)
+
 
 

@@ -12,9 +12,6 @@
             <p class="modal-card-title">Edição de Doação</p>
           </header>
           <section class="modal-card-body">
-            <b-field label="Demanda">
-              <b-input type="text" v-model="doacao.demanda" placeholder="Açucar" required disabled></b-input>
-            </b-field>
             <b-field label="Quantidade">
               <b-input type="number" v-model="quantidade" placeholder="Quantidade a doar" required></b-input>
             </b-field>
@@ -35,16 +32,20 @@ export default {
   data() {
     return {
       isComponentModalActive: false,
-      quantidade: 1
+      quantidade: null
     }
   },
   mounted() {
-    this.quantidade = this.doacao.quantidade
+    this.quantidade = this.doacao.quantidade_prometida
   },
   methods: {
-    confirm() {
-      if (this.quantidade > 0) {
-        this.doacao.quantidade = this.quantidade
+    async confirm() {
+      if (this.quantidade && this.quantidade > 0) {
+        console.log(
+          await this.$axios.$patch(`/doacao/${this.doacao.id}/`, {
+            quantidade_prometida: this.quantidade
+          })
+        )
       }
       this.isComponentModalActive = false
     }

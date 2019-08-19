@@ -26,7 +26,9 @@ SECRET_KEY = 't@ra_es2x+f0+3lri2zp9pidk@=nqdkjm+h6hhv^w-*idz6!02'
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    '127.0.0.1',
     'localhost',
+    '127.0.0.1:8000',
     'localhost:8000',
     'api.karadoacoes.tk'
 ]
@@ -96,7 +98,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
-}
+} """
 
 # DATABASES = {
 #     'default': {

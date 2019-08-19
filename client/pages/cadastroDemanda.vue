@@ -1,10 +1,10 @@
 <template>
-<div class="columns is-fullheight">
+<div class="columns has-margin is-fullheight">
   <MenuLateral />
   <section class="column is-main-content hero is-medium is-bold">
     <div class="hero-body">
       <div class="container">
-        <div class="columns is-centered">
+        <div class="columns has-no-margin is-centered">
           <article class="card is-rounded" style="width:600px">
             <div class="card-content">
               <p class="form-section-title">Cadastre uma demanda</p>
@@ -35,7 +35,7 @@ export default {
 .hero-body {
   padding-top: 1em !important;
 }
-.columns div {
-  margin: 10px !important;
+.has-margin {
+  margin: 10px;
 }
 </style>
