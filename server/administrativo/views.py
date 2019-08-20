@@ -14,6 +14,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from doacoes.models import *
+from doacoes.serializers import OngDemandas
 
 def gerar_senha():
     senha_numerica = randint(1000, 9999)
