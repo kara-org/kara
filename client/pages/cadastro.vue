@@ -22,7 +22,6 @@
             <article class="card is-rounded" style="width:600px">
               <div class="card-content">
                 <p class="form-section-title">Crie uma conta {{isDoador ? 'para doador' : 'para ONG'}}</p>
-                <hr>
                 <CadastroDoadorForm :isCadastro="true" :isDoador="true" v-if="isDoador" />
                 <CadastroOngForm :isCadastro="true" v-else />
               </div>

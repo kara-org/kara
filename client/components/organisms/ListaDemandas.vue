@@ -37,7 +37,7 @@
           :visible="columnsVisible['restante'].display"
           :label="columnsVisible['restante'].title"
           centered
-        >{{ props.row.quantidade_solicitada - !props.row.quantidade_alcancada ? 0 : props.row.quantidade_alcancada }}</b-table-column>
+        >{{ props.row.quantidade_solicitada - (!props.row.quantidade_alcancada ? 0 : props.row.quantidade_alcancada) }}</b-table-column>
         <b-table-column
           :visible="columnsVisible['progresso'].display"
           :label="columnsVisible['progresso'].title"
@@ -68,7 +68,7 @@
             </b-button>
           </b-tooltip>
           <b-tooltip v-else class="is-success" label="Reativar demanda" position="is-right">
-            <b-button
+            <b-button disabled
               class="is-success is-outlined is-small"
               @click="confirm(props.row.id, 'reativar')"
             >
