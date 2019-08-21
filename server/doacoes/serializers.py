@@ -18,11 +18,13 @@ class CategoriaItemDoacaoSerializer(serializers.ModelSerializer):
 #region Demanda
 class DemandaSerializer(serializers.ModelSerializer):
     categoria = CategoriaItemDoacaoSerializer(required=False)
+    id_categoria = serializers.IntegerField(required=False)
     
     class Meta:
         model = Demanda
         fields = ['id',
                   'categoria',
+                  'id_categoria',
                   'quantidade_solicitada',
                   'quantidade_alcancada',
                   'data_inicio',
