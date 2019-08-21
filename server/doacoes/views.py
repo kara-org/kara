@@ -94,10 +94,10 @@ class DoacaoView(viewsets.ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def list(self, request, id_ong):
-        doacoes = Doacao.objects.filter(item_doacao__demanda__ong__id=id_ong).distinct()
-        # for doacao in doacoes:
-        #         #     itens_doacao = ItemDoacao.objects.filter(doacao=doacao)
-        #         #     doacao.itens_doacao = itens_doacao
+        doacoes = Doacao.objects.filter(item_doacao__demanda__ong__id=id_ong)
+        for doacao in doacoes:
+            itens_doacao = ItemDoacao.objects.filter(doacao=doacao)
+            doacao.itens_doacao = itens_doacao
         serializer = self.serializer_lista_class(doacoes, many=True)
         return Response(serializer.data)
 
