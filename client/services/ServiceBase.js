@@ -7,7 +7,7 @@ export default ({ $axios, $store }) => resource => ({
 
   create(payload) {
     return $axios.$post(resource, payload).catch(err => {
-      dispatch('global/addErro', err, { root: true })
+      console.log(err)
     })
   },
 

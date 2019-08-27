@@ -16,6 +16,7 @@ export default (ctx, inject) => {
 
   inject('UsuarioService', serviceDefault('/usuario/'))
   inject('NovoService', serviceDefault('/url/'))
+  inject('DoacaoService', serviceDefault('/doacao/'))
   inject('OngService', serviceOng)
   inject('DoadorService', serviceDoador)
   inject('BuscarService', buscarService)

@@ -7,7 +7,7 @@ export const state = () => ({
 
 export const mutations = {
   ORDER_ITENS(state){
-    state.list.sort((a, b) => a.titulo.localeCompare(b.titulo))
+    state.list.sort((a, b) => a.descricao.localeCompare(b.descricao))
   },
   UPDATE_TIPO(state, payload) {
     state.tipo = payload
