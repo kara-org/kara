@@ -102,7 +102,7 @@ class DoacaoView(viewsets.ViewSet):
         return Response(serializer.data)
 
 class DoacaoViewUser(viewsets.ViewSet):
-    serializer_class = DoacaoSerializer
+    #serializer_class = DoacaoSerializer
     serializer_lista_class = DoacaoSerializerLista
     serializer_confirmacao_class = DoacaoConfirmacaoSerializer
 
