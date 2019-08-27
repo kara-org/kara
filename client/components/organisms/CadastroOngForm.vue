@@ -16,12 +16,7 @@
         :type="{'is-danger': errors.has('razão social')}"
         :message="errors.first('razão social')"
       >
-        <b-input
-          type="text"
-          v-model.trim="ong.razao_social"
-          name="razão social"
-          v-validate="'required'"
-        ></b-input>
+        <b-input type="text" v-model.trim="ong.nome" name="razão social" v-validate="'required'"></b-input>
       </b-field>
       <b-field
         label="CNPJ"
@@ -89,13 +84,13 @@
         >
           <b-input
             type="text"
-            v-model.trim="ong.usuario.telefone[0].numero"
+            v-model.trim="ong.telefone[0].numero"
             maxlength="15"
             name="telefone"
             v-validate="'required|phone'"
           ></b-input>
         </b-field>
-        <b-checkbox v-model="ong.usuario.telefone[0].whatsapp" type="is-black">
+        <b-checkbox v-model="ong.telefone[0].whatsapp" type="is-black">
           Whatsapp?
           <img width="15" src="~assets/wpp-icon.png" />
         </b-checkbox>
@@ -139,8 +134,10 @@
         </b-field>
         <hr />
       </template>
-      <EnderecoForm :endereco="ong.endereco" :submitted="submitted" />
-      <hr />
+      <template v-if="isCadastro">
+        <EnderecoForm :endereco="ong.endereco" :submitted="submitted" />
+        <hr />
+      </template>
       <div class="has-text-centered" style="margin: 10px;" v-if="isCadastro">
         Já tem um cadastro?
         <nuxt-link
@@ -186,7 +183,7 @@ export default {
     return {
       ong: {
         foto: null,
-        razao_social: null,
+        nome: null,
         cnpj: null,
         historia: null,
         email: null,
@@ -249,10 +246,13 @@ export default {
   },
   async mounted() {
     //id = this.$auth.user.id_ong
-    var ong = await this.$axios.$get(`ong/${1}`)
-    console.log(ong)
-    this.ong.cnpj = ong.cnpj
-    this.ong.historia = ong.historia
+    if (this.$auth.user && this.$auth.user.vinculo_ong) {
+      var ong = await this.$axios.$get(`ong/${1}`)
+      console.log(ong)
+      this.ong.cnpj = ong.cnpj
+      this.ong.historia = ong.historia
+      this.ong.nome = ong.nome
+    }
     //this.ong.endereco = ong.endereco
     //this.ong.telefone = ong.telefone
     //this.ong.email = ong.email
@@ -264,31 +264,40 @@ export default {
       return URL.createObjectURL(this.ong.foto)
     },
     async register() {
-      var num = this.ong.telefone[0].numero
-      this.ong.telefone[0].numero = Number.parseInt(num.replace(/\D/g, ''))
       try {
-        await this.$OngService.create(this.ong).catch(err => {
-          if (!err.response) {
-            err.message = 'Servidor desconectado'
-          } else if (err.response.status === 400) {
-            err.message = err.response.data.non_field_errors[0]
-          }
-          this.$toast.open({
-            message: err.message,
-            type: 'is-danger',
-            position: 'is-bottom'
+        await this.$axios.post('ong/', this.ong).catch(err => {
+            this.$toast.open({
+              message: this.isCadastro
+                ? 'Cadastro realizado com successo! Será enviada uma confirmação para seu email.'
+                : 'Atualização realizada com successo! Será enviada uma confirmação para seu email.',
+              type: 'is-success',
+              position: 'is-top'
+            })
+            this.$router.push('/login')
           })
-        })
-        this.success = true
+          .catch(err => {
+            console.error(this.errors)
+
+            if (!err.response) {
+              err.message = 'Servidor desconectado'
+            } else if (err.response.status === 400) {
+              if (err.response.data.non_field_errors)
+                err.message = err.response.data.non_field_errors[0]
+              err.message = err.response.data.non_field_errors[0]
+            }
+            this.$toast.open({
+              message: err.message,
+              type: 'is-danger',
+              position: 'is-bottom'
+            })
+          })
       } catch (e) {
         this.error = e.response.data.message
       }
     },
     async change() {
-      var num = this.ong.telefone[0].numero
-      this.ong.telefone[0].numero = Number.parseInt(num.replace(/\D/g, ''))
       try {
-        await this.$axios.$put(this.ong).catch(err => {
+        await this.$axios.$patch(`ong/${1}/`,{ nome: this.ong.nome, historia: this.ong.historia }).catch(err => {
           if (!err.response) {
             err.message = 'Servidor desconectado'
           } else if (err.response.status === 400) {
@@ -308,33 +317,50 @@ export default {
     //todo
     validateBeforeSubmit() {
       this.submitted = true
-      var interval = setInterval(() => {
-        if (this.ong.endereco.validAdress != null) {
-          if (!this.ong.endereco.validAdress) {
-            this.ong.endereco.validAdress = null
+      if (!this.isCadastro) {
+        this.$validator.validateAll().then(result => {
+          if (result) {
+            this.change()
+            return
+          } else {
             this.submitted = false
+            this.$toast.open({
+              message: 'Formulário inválido, verifique os campos em vermelho',
+              type: 'is-danger',
+              position: 'is-bottom'
+            })
           }
-          this.$validator.validateAll().then(result => {
-            if (result && this.ong.endereco.validAdress) {
-              this.ong.telefone[0].numero = this.ong.telefone[0].numero.replace(
-                /\D/g,
-                ''
-              )
-              this.ong.cnpj = this.ong.cnpj.replace(/\D/g, '')
-              isCadastro ? this.register() : this.change()
-              return
-            } else {
+        })
+      } else
+        var interval = setInterval(() => {
+          if (this.ong.endereco.validAdress != null) {
+            if (!this.ong.endereco.validAdress) {
+              this.ong.endereco.validAdress = null
               this.submitted = false
-              this.$toast.open({
-                message: 'Formulário inválido, verifique os campos em vermelho',
-                type: 'is-danger',
-                position: 'is-bottom'
-              })
             }
-          })
-          clearInterval(interval)
-        }
-      }, 500)
+            this.$validator.validateAll().then(result => {
+              if (result && this.ong.endereco.validAdress) {
+                this.ong.telefone[0].numero = this.ong.telefone[0].numero.replace(
+                  /\D/g,
+                  ''
+                )
+                this.ong.usuario.telefone[0].numero = this.ong.telefone[0].numero
+                this.ong.cnpj = this.ong.cnpj.replace(/\D/g, '')
+                this.isCadastro ? this.register() : this.change()
+                return
+              } else {
+                this.submitted = false
+                this.$toast.open({
+                  message:
+                    'Formulário inválido, verifique os campos em vermelho',
+                  type: 'is-danger',
+                  position: 'is-bottom'
+                })
+              }
+            })
+            clearInterval(interval)
+          }
+        }, 500)
     }
   }
 }

@@ -77,14 +77,14 @@ class Endereco(models.Model):
     principal = models.BooleanField("Principal?")
     desabilitado = models.BooleanField(default=False, blank=True, null=True)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         if self.principal == True:
             query = Endereco.objects.filter(principal=True)
             if query.exists:
                 for elemento in query:
                     elemento.principal = False
                     elemento.save()
-        super(Endereco, self).save()
+        super(Endereco, self).save(*args, **kwargs)
             
 
     def __str__(self):
@@ -97,7 +97,7 @@ class Endereco(models.Model):
 class Telefone(models.Model):
     usuario = models.ForeignKey("Usuario", related_name="telefone", on_delete=models.DO_NOTHING, blank=True, null=True)
     ong = models.ForeignKey("Ong", related_name="telefone", on_delete=models.DO_NOTHING, blank=True, null=True)
-    numero = models.IntegerField("Número")
+    numero = models.CharField("Número", max_length=15,)
     whatsapp = models.BooleanField("Principal?")
     desabilitado = models.BooleanField(default=False, blank=True, null=True)
 

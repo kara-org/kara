@@ -1,10 +1,12 @@
 from rest_framework import serializers
-from administrativo.models import Usuario
+from administrativo.models import Usuario, Ong
 from django.db import transaction
 from .models import *
 import datetime
 
-# from administrativo.serializers import UsuarioSerializer, OngSerializer
+
+from administrativo.serializers import UsuarioSerializer, OngSerializer, TelefoneSerializer
+
 
 class CategoriaItemDoacaoSerializer(serializers.ModelSerializer):
     
@@ -18,11 +20,13 @@ class CategoriaItemDoacaoSerializer(serializers.ModelSerializer):
 #region Demanda
 class DemandaSerializer(serializers.ModelSerializer):
     categoria = CategoriaItemDoacaoSerializer(required=False)
+    id_categoria = serializers.IntegerField(required=False)
     
     class Meta:
         model = Demanda
         fields = ['id',
                   'categoria',
+                  'id_categoria',
                   'quantidade_solicitada',
                   'quantidade_alcancada',
                   'data_inicio',
@@ -40,7 +44,9 @@ class DemandaSerializer(serializers.ModelSerializer):
 
 class DemandaSerializerRetorno(serializers.ModelSerializer):
     categoria = CategoriaItemDoacaoSerializer()
-    # ong = OngSerializer()
+
+    ong = OngSerializer()
+
     class Meta:
         model = Demanda
         fields = ['id',
@@ -68,7 +74,9 @@ class DemandaSerializerAlteracao(serializers.ModelSerializer):
 
 class DemandaSerializerList(serializers.ModelSerializer):
     categoria = CategoriaItemDoacaoSerializer()
-    # ong = OngSerializer()
+
+    ong = OngSerializer()
+
     class Meta:
         model = Demanda
         fields = ['id',
@@ -230,3 +238,11 @@ class DoacaoCancelamentoSerializer(serializers.Serializer):
     data_cancelamento = serializers.DateField(initial=datetime.date.today)
     
 #endregion
+
+class OngDemandas(serializers.ModelSerializer):
+    demandas = serializers.ListField(child=DemandaSerializer())
+    telefone = TelefoneSerializer(many=True)
+
+    class Meta:
+        model = Ong
+        fields = ['id', 'nome', 'cnpj', 'historia', 'telefone', 'ativo', 'endereco', 'demandas']

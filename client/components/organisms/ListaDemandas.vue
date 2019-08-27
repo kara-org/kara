@@ -37,7 +37,7 @@
           :visible="columnsVisible['restante'].display"
           :label="columnsVisible['restante'].title"
           centered
-        >{{ props.row.quantidade_solicitada - !props.row.quantidade_alcancada ? 0 : props.row.quantidade_alcancada }}</b-table-column>
+        >{{ props.row.quantidade_solicitada - (!props.row.quantidade_alcancada ? 0 : props.row.quantidade_alcancada) }}</b-table-column>
         <b-table-column
           :visible="columnsVisible['progresso'].display"
           :label="columnsVisible['progresso'].title"
@@ -53,22 +53,20 @@
           :label="columnsVisible['acao'].title"
           centered
         >
-          <EditarModal :demanda="props.row" />
-          <b-tooltip
-            v-if="props.row.ativo"
-            class="is-danger"
-            label="Inativar demanda"
-            position="is-right"
-          >
-            <b-button
-              class="is-danger is-outlined is-small"
-              @click="confirm(props.row.id, 'inativar')"
-            >
-              <b-icon icon="cancel"></b-icon>
-            </b-button>
-          </b-tooltip>
+          <template v-if="props.row.ativo">
+            <EditarModal :demanda="props.row" />
+            <b-tooltip class="is-danger" label="Inativar demanda" position="is-right">
+              <b-button
+                class="is-danger is-outlined is-small"
+                @click="confirm(props.row.id, 'inativar')"
+              >
+                <b-icon icon="cancel"></b-icon>
+              </b-button>
+            </b-tooltip>
+          </template>
           <b-tooltip v-else class="is-success" label="Reativar demanda" position="is-right">
             <b-button
+              disabled
               class="is-success is-outlined is-small"
               @click="confirm(props.row.id, 'reativar')"
             >

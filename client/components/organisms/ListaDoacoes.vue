@@ -105,9 +105,12 @@ export default {
   },
   async mounted() {
     if (this.isDoador) {
-      this.data = await this.$axios.$get(`/doador/${1}/doacoes/`)
+      this.data = await this.$axios.$get(`/doador/${this.$auth.user.id}/doacoes/`)
       console.log(this.data)
     } else {
+      /* var user = (await this.$axios.$get(
+        `/usuario/${this.$auth.user.id}`
+      )) */
       this.data = await this.$axios.$get(`/ong/${1}/doacoes/`)
       console.log(this.data)
     }

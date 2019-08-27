@@ -29,7 +29,7 @@ class Doacao(models.Model):
 
 class ItemDoacao(models.Model):
     quantidade_prometida = models.IntegerField("Quantidade prometida")
-    quantidade_efetivada = models.IntegerField("Quantidade efetivada", blank=True, null=True)
+    quantidade_efetivada = models.IntegerField("Quantidade efetivada", blank=True, null=True, default=0)
     data_atualizacao = models.DateTimeField("Data atualização", auto_now=True)
     doacao = models.ForeignKey("Doacao", related_name='item_doacao', on_delete=models.DO_NOTHING)
     demanda = models.ForeignKey("Demanda", related_name='item_doacao', on_delete=models.DO_NOTHING)

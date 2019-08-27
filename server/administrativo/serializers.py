@@ -6,7 +6,6 @@ from django.db import IntegrityError
 
 from django.db import transaction
 
-from doacoes.serializers import DemandaSerializer
 from .models import *
 
 REGEX_PASSWORD = re.compile('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,50}$')
@@ -53,8 +52,8 @@ class SolicitacaoRecuperarSenhaUsuarioSerializer(serializers.ModelSerializer):
 
 class UsuarioSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=128, write_only=True)
-    endereco = EnderecoSerializer(allow_null=True)
-    telefone = TelefoneSerializer(many=True, allow_null=True)
+    endereco = EnderecoSerializer(allow_null=True, required=False)
+    telefone = TelefoneSerializer(many=True, allow_null=True, required=False)
 
     class Meta:
         model = Usuario
@@ -117,7 +116,7 @@ class OngSerializer(serializers.ModelSerializer):
 
         if ong:
             with transaction.atomic():
-                endereco = usuario_data.pop("endereco")
+                """ endereco = usuario_data.pop("endereco") """
                 telefone = usuario_data.pop("telefone")
                 
                 end, created = Endereco.objects.get_or_create(**endereco)
@@ -142,11 +141,4 @@ class OngListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ong
         fields = ['id', 'nome', 'cnpj', 'historia', 'telefone', 'ativo', 'endereco']
-        
-class OngDemandas(serializers.ModelSerializer):
-    demandas = serializers.ListField(child=DemandaSerializer())
-    telefone = TelefoneSerializer(many=True)
-    
-    class Meta:
-        model = Ong
-        fields = ['id', 'nome', 'cnpj', 'historia', 'telefone', 'ativo', 'endereco', 'demandas']
+
