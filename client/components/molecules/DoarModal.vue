@@ -48,13 +48,11 @@ export default {
   },
   methods: {
     ...mapActions('carrinho', ['fetchOng', 'adicionarItemNoCarrinho']),
-    ...mapActions('busca', ['fetchOng', 'adicionarItemNoCarrinho']),
     confirmado () {
       this.isComponentModalActive = false
       this.fetchOng(1)
-      this.adicionarItemNoCarrinho({ item: this.item, quantidade: this.quantidade })
+      this.adicionarItemNoCarrinho({ demanda: this.item, quantidade_prometida: this.quantidade })
       if (this.carrinhoVazio)
-
         this.$router.push('/carrinho')
     }
   }

@@ -7,7 +7,7 @@ export const state = () => ({
 
 export const mutations = {
   ORDER_ITENS(state){
-    state.list.sort((a, b) => a.titulo.localeCompare(b.titulo))
+    state.list.sort((a, b) => a.descricao.localeCompare(b.descricao))
   },
   UPDATE_TIPO(state, payload) {
     state.tipo = payload
@@ -17,14 +17,6 @@ export const mutations = {
   },
   UPDATE_RESULTADOS(state, payload) {
     state.list = payload
-  },
-  REMOVE_RESULTADO (state, item) {
-    state.list = state.list.filter(r => r.id !== item.id)
-    state.list.sort((a, b) => a.titulo.localeCompare(b.titulo))
-  },
-  ADD_RESULTADO (state, item) {
-    state.list.push(item)
-    state.list.sort((a, b) => a.titulo.localeCompare(b.titulo))
   },
   TO_DEFEAULT_RESULTADOS(state) {
     state.list = state.default
@@ -47,9 +39,9 @@ export const actions = {
       commit('ORDER_ITENS')
     })
   },
-  async fetchBusca({ commit, dispatch }, params) {
+  async fetchBusca({ commit, dispatch }, tipo) {
     return await this.$BuscarService
-      .fetch(params)
+      .fetch(tipo)
       .then(response => {
         commit('UPDATE_RESULTADOS', response)
         commit('SET_DEFEAULT_RESULTADOS', response)

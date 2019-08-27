@@ -4,7 +4,9 @@ from django.db import transaction
 from .models import *
 import datetime
 
+
 from administrativo.serializers import UsuarioSerializer, OngSerializer, TelefoneSerializer
+
 
 class CategoriaItemDoacaoSerializer(serializers.ModelSerializer):
     
@@ -42,7 +44,9 @@ class DemandaSerializer(serializers.ModelSerializer):
 
 class DemandaSerializerRetorno(serializers.ModelSerializer):
     categoria = CategoriaItemDoacaoSerializer()
+
     ong = OngSerializer()
+
     class Meta:
         model = Demanda
         fields = ['id',
@@ -70,7 +74,9 @@ class DemandaSerializerAlteracao(serializers.ModelSerializer):
 
 class DemandaSerializerList(serializers.ModelSerializer):
     categoria = CategoriaItemDoacaoSerializer()
+
     ong = OngSerializer()
+
     class Meta:
         model = Demanda
         fields = ['id',
@@ -176,7 +182,7 @@ class DoacaoSerializerRetornoCadastro(serializers.ModelSerializer):
 
 class DoacaoSerializerLista(serializers.ModelSerializer):
     item_doacao = ItemDoacaoListSerializer(many=True)
-    usuario = UsuarioSerializer()
+    # usuario = UsuarioSerializer()
     # itens_doacao = serializers.ListField(child=ItemDoacaoListSerializer())
     class Meta:
         model = Doacao

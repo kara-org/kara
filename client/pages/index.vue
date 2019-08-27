@@ -23,7 +23,7 @@
       <div class="hero-body">
         <div class="container">
           <div class="level">
-            <ListagemOngs :list="list" :isBusca="true"/>
+            <!-- <ListagemOngs :list="list" :isBusca="true"/> -->
           </div>
         </div>
       </div>
