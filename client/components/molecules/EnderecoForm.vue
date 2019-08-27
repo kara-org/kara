@@ -111,7 +111,6 @@ export default {
 
         if (validacep.test(cep)) {
           this.$viaCep.buscarCep(cep).then(obj => {
-            console.log(obj)
             this.endereco.logradouro = obj.logradouro
             this.endereco.bairro = obj.bairro
             this.endereco.cidade = obj.localidade
