@@ -11,7 +11,7 @@ export const mutations = {
     state.itensSelecionados.push(item)
   },
   REMOVE_ITEM (state, item) {
-    state.itensSelecionados = state.itensSelecionados.filter(i => i.item.id !== item.id)
+    state.itensSelecionados = state.itensSelecionados.filter(i => i.demanda.id !== item.id)
   },
 }
 
