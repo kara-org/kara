@@ -266,18 +266,31 @@ export default {
     async register() {
       try {
         await this.$axios.post('ong/', this.ong).catch(err => {
-          if (!err.response) {
-            err.message = 'Servidor desconectado'
-          } else if (err.response.status === 400) {
-            err.message = err.response.data.non_field_errors[0]
-          }
-          this.$toast.open({
-            message: err.message,
-            type: 'is-danger',
-            position: 'is-bottom'
+            this.$toast.open({
+              message: this.isCadastro
+                ? 'Cadastro realizado com successo! Será enviada uma confirmação para seu email.'
+                : 'Atualização realizada com successo! Será enviada uma confirmação para seu email.',
+              type: 'is-success',
+              position: 'is-top'
+            })
+            this.$router.push('/login')
           })
-        })
-        this.success = true
+          .catch(err => {
+            console.error(this.errors)
+
+            if (!err.response) {
+              err.message = 'Servidor desconectado'
+            } else if (err.response.status === 400) {
+              if (err.response.data.non_field_errors)
+                err.message = err.response.data.non_field_errors[0]
+              err.message = err.response.data.non_field_errors[0]
+            }
+            this.$toast.open({
+              message: err.message,
+              type: 'is-danger',
+              position: 'is-bottom'
+            })
+          })
       } catch (e) {
         this.error = e.response.data.message
       }
@@ -331,6 +344,7 @@ export default {
                   /\D/g,
                   ''
                 )
+                this.ong.usuario.telefone[0].numero = this.ong.telefone[0].numero
                 this.ong.cnpj = this.ong.cnpj.replace(/\D/g, '')
                 this.isCadastro ? this.register() : this.change()
                 return
