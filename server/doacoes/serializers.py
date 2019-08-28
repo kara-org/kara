@@ -100,13 +100,13 @@ class StatusItemDoacaoSerializer(serializers.ModelSerializer):
         ]
 
 class ItemDoacaoCadastroSerializer(serializers.ModelSerializer):
-    demanda = DemandaSerializerRetorno()
+    id_demanda = serializers.IntegerField()
 
     class Meta:
         model = ItemDoacao
         fields = [
                     'quantidade_prometida',
-                    'demanda'
+                    'id_demanda'
                   ]
 
 class ItemDoacaoListSerializer(serializers.ModelSerializer):
