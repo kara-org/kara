@@ -24,7 +24,7 @@ export const actions = {
 
   sendDoacao (context) {
     let doacao = {
-      'item_doacao' : context.state.itensSelecionados.map( i => { return { "demanda": i.demanda, 'quantidade_prometida' : i.quantidade_prometida } } ),
+      'item_doacao' : context.state.itensSelecionados.map( i => { return { "demanda": i.demanda.id, 'quantidade_prometida' : i.quantidade_prometida } }),
       'id_usuario' : context.rootState.auth.user.id,
       'data_agendamento': '2019-12-30'
     }
