@@ -5,8 +5,8 @@ export default ({ $axios, $store }) => resource => ({
     }).then( () => dispatch('global/stopLoading', null, { root: true }))
   },
 
-  create(payload) {
-    return $axios.$post(resource, payload).catch(err => {
+  async create(payload) {
+    return await $axios.$post(resource, payload).catch(err => {
       console.log(err)
     })
   },
