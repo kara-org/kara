@@ -80,10 +80,7 @@
       <h1>Produto cadastrado com successo.</h1>
       <hr />
       <div class="column has-text-centered">
-        <button
-          @click="reset()"
-          class="button is-primary is-outlined is-medium is-rounded"
-        >Voltar</button>
+        <button @click="reset()" class="button is-primary is-outlined is-medium is-rounded">Voltar</button>
       </div>
     </div>
   </section>
@@ -134,11 +131,20 @@ export default {
       try {
         await this.$axios
           .$post(`/ong/${1}/demandas/`, this.demanda)
+          .then(response => {
+            this.$toast.open({
+              message: 'Cadastro realizado com successo!',
+              type: 'is-success',
+              position: 'is-top'
+            })
+            this.success = true
+          })
           .catch(err => {
             if (!err.response) {
               err.message = 'Servidor desconectado'
             } else if (err.response.status === 400) {
-              err.message = err.response.data.non_field_errors[0]
+              if (err.response.data.non_field_errors)
+                err.message = err.response.data.non_field_errors[0]
             }
             this.$toast.open({
               message: err.message,
@@ -146,7 +152,6 @@ export default {
               position: 'is-bottom'
             })
           })
-        this.success = true
       } catch (e) {
         this.error = e.response.data.message
       }

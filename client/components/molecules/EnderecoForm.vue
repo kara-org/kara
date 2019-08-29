@@ -52,7 +52,7 @@
         type="text"
         v-model.trim="endereco.bairro"
         name="bairro"
-        v-validate="'required|alpha'"
+        v-validate="'required'"
       ></b-input>
     </b-field>
     <b-field
