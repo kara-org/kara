@@ -72,7 +72,7 @@
       >
         <b-input
           type="text"
-          v-model.lazy="doador.telefone[0].numero"
+          v-model.trim="doador.telefone[0].numero"
           v-cleave="masks.phone"
           maxlength="15"
           name="telefone"

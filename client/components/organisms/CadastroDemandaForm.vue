@@ -133,7 +133,7 @@ export default {
           .$post(`/ong/${1}/demandas/`, this.demanda)
           .then(response => {
             this.$toast.open({
-              message: 'Cadastro realizado com successo!',
+              message: 'Produto cadastrado com successo!',
               type: 'is-success',
               position: 'is-top'
             })

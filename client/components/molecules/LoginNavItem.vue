@@ -28,7 +28,7 @@
           <small>Bem vindo!</small>
         </span>
         <span>
-          <strong>{{ isAuthenticated ? userName : null }}</strong>
+          <strong>{{ userName }}</strong>
         </span>
       </div>
       <div class="navbar-item" />
