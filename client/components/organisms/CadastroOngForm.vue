@@ -150,7 +150,7 @@
         type="submit"
         class="button is-primary is-outlined is-medium is-rounded is-fullwidth"
       >Confirmar</button>
-      <div class="has-text-centered">
+      <div class="column has-text-centered">
         <nuxt-link
           class="voltar is-primary is-inverted"
           to="/"
@@ -165,6 +165,11 @@
     <div v-else class="column has-text-centered">
       <h1>Atualização realizada com sucesso!</h1>
       <hr />
+      <button
+        class="button is-primary is-outlined is-rounded"
+        @click="success=false"
+        exact-active-class="is-active"
+      >Voltar</button>
     </div>
   </section>
 </template>
@@ -223,7 +228,7 @@ export default {
       masks: {
         phone: {
           delimiters: ['(', ')', ' ', '-'],
-          blocks: [0, 2, 0, 4, 4],
+          blocks: [0, 2, 0, 4, 5],
           numericOnly: true
         },
         cnpj: {
@@ -265,11 +270,11 @@ export default {
     },
     async register() {
       try {
-        await this.$axios.post('ong/', this.ong).catch(err => {
+        await this.$axios
+          .post('ong/', this.ong)
+          .then(response => {
             this.$toast.open({
-              message: this.isCadastro
-                ? 'Cadastro realizado com successo! Será enviada uma confirmação para seu email.'
-                : 'Atualização realizada com successo! Será enviada uma confirmação para seu email.',
+              message: 'Cadastro realizado com successo!',
               type: 'is-success',
               position: 'is-top'
             })
@@ -283,7 +288,6 @@ export default {
             } else if (err.response.status === 400) {
               if (err.response.data.non_field_errors)
                 err.message = err.response.data.non_field_errors[0]
-              err.message = err.response.data.non_field_errors[0]
             }
             this.$toast.open({
               message: err.message,
@@ -297,18 +301,32 @@ export default {
     },
     async change() {
       try {
-        await this.$axios.$patch(`ong/${1}/`,{ nome: this.ong.nome, historia: this.ong.historia }).catch(err => {
-          if (!err.response) {
-            err.message = 'Servidor desconectado'
-          } else if (err.response.status === 400) {
-            err.message = err.response.data.non_field_errors[0]
-          }
-          this.$toast.open({
-            message: err.message,
-            type: 'is-danger',
-            position: 'is-bottom'
+        await this.$axios
+          .$patch(`ong/${1}/`, {
+            nome: this.ong.nome,
+            historia: this.ong.historia
           })
-        })
+          .then(response => {
+            this.$toast.open({
+              message: 'Atualização realizada com successo!',
+              type: 'is-success',
+              position: 'is-top'
+            })
+            this.$router.push('/editarOng')
+          })
+          .catch(err => {
+            if (!err.response) {
+              err.message = 'Servidor desconectado'
+            } else if (err.response.status === 400) {
+              if (err.response.data.non_field_errors)
+                err.message = err.response.data.non_field_errors[0]
+            }
+            this.$toast.open({
+              message: err.message,
+              type: 'is-danger',
+              position: 'is-bottom'
+            })
+          })
         this.success = true
       } catch (e) {
         this.error = e.response.data.message
