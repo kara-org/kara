@@ -26,8 +26,9 @@ Validator.extend('phone', {
 });
 
 function isPhone(tel) {
-    var exp = /\(\d{2}\)\ \d{4}\-\d{4}/
-    return !exp.test(tel) ? false : true
+    var exp = /\(\d{2}\)\ \d{4}\-\d{4,5}/
+    var length = tel.length != 11 && tel.length != 10
+    return !exp.test(tel) && length ? false : true
 }
 
 Vue.use(VeeValidate, { locale: 'pt_BR' });
