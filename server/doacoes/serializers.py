@@ -29,8 +29,6 @@ class DemandaSerializer(serializers.ModelSerializer):
                   'id_categoria',
                   'quantidade_solicitada',
                   'quantidade_alcancada',
-                  'data_inicio',
-                  'data_fim',
                   'descricao']
 
     def create(self, validated_data):
@@ -54,8 +52,6 @@ class DemandaSerializerRetorno(serializers.ModelSerializer):
                   'categoria',
                   'quantidade_solicitada',
                   'quantidade_alcancada',
-                  'data_inicio',
-                  'data_fim',
                   'descricao',
                   'ativo']
 
@@ -67,8 +63,6 @@ class DemandaSerializerAlteracao(serializers.ModelSerializer):
                   'categoria',
                   'quantidade_solicitada',
                   'quantidade_alcancada',
-                  'data_inicio',
-                  'data_fim',
                   'descricao',
                   'ativo']
 
@@ -84,8 +78,6 @@ class DemandaSerializerList(serializers.ModelSerializer):
                   'categoria',
                   'quantidade_solicitada',
                   'quantidade_alcancada',
-                  'data_inicio',
-                  'data_fim',
                   'descricao',
                   'ativo']
 #endregion
@@ -134,6 +126,7 @@ class ItemDoacaoConfirmacaoSerializer(serializers.ModelSerializer):
         fields = [
                     'id_item',
                     'quantidade_efetivada',
+                    'item_doacao'
                   ]
 #endregion
 
@@ -146,7 +139,6 @@ class DoacaoSerializer(serializers.ModelSerializer):
         model = Doacao
         fields = [
                     'id_usuario',
-                    'data_agendamento',
                     'item_doacao'
                   ]
 
@@ -189,7 +181,6 @@ class DoacaoSerializerLista(serializers.ModelSerializer):
         fields = [
                     "id",
                     "usuario",
-                    "data_agendamento",
                     "data_confimacao",
                     "item_doacao"
                   ]
@@ -204,34 +195,6 @@ class DoacaoConfirmacaoSerializer(serializers.ModelSerializer):
                     "data_confimacao",
                     "item_doacao"
                   ]
-
-    def create(self, validated_data):
-        itens_doacao = validated_data.pop("item_doacao")
-        doacao = self.context.get("doacao")
-
-        #usuario = Usuario.objects.get(pk=id_usuario)
-        status = StatusItemDoacao.objects.get(pk=3)
-        with transaction.atomic():
-            try:
-                for item_doacao in itens_doacao:
-                    #Captura os identificadores
-                    id_item = int(item_doacao['id_item'])
-                    #Consulta os objetos
-                    item = ItemDoacao.objects.get(pk=id_item)
-                    demanda = Demanda.objects.get(pk=item.demanda.id)
-                    #Salva a quantidade do item doada e incrementa a quantidade alcançada da demanda
-                    item.quantidade_efetivada = int(item_doacao['quantidade_efetivada'])
-                    if demanda.quantidade_alcancada:
-                        demanda.quantidade_alcancada += int(item_doacao['quantidade_efetivada'])
-                    else:
-                        demanda.quantidade_alcancada = int(item_doacao['quantidade_efetivada'])
-                    item.status = status
-                    item.save()
-                    demanda.save()
-                return True
-            except Exception as e:
-                print(e)
-            return False
 
 class DoacaoCancelamentoSerializer(serializers.Serializer):
     doacao = DoacaoSerializerLista()
