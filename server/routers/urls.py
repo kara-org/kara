@@ -44,7 +44,7 @@ doacao_patterns = [
 ]
 
 item_doacao =[
-    path('item/<int:pk>/quantidade/<int:qtd>/confirmar/', ItemDoacaoView.as_view({'post': 'post'}), name='confirmar_item_doacao')
+    path('item/<int:pk>/confirmar/', ItemDoacaoView.as_view({'post': 'post'}), name='confirmar_item_doacao')
 ]
 
 busca_patterns = [

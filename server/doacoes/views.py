@@ -12,6 +12,8 @@ from administrativo.models import Ong
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 from .doacao import *
+from decimal import *
+
 
 @permission_classes((AllowAny, ))
 class DemandaView(viewsets.ViewSet):
@@ -104,7 +106,6 @@ class DoacaoView(viewsets.ViewSet):
 class DoacaoViewUser(viewsets.ViewSet):
     #serializer_class = DoacaoSerializer
     serializer_lista_class = DoacaoSerializerLista
-    serializer_confirmacao_class = DoacaoConfirmacaoSerializer
 
     def list(self, request, id_user):
         doacoes = Doacao.objects.filter(usuario__id=id_user)
@@ -140,10 +141,12 @@ class BuscaDemandasView(viewsets.ViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class ItemDoacaoView(viewsets.ViewSet):
-    #serializer_class = DoacaoSerializer
-    serializer_lista_class = DoacaoSerializerLista
-    serializer_confirmacao_class = DoacaoConfirmacaoSerializer
+    serializer_class = ItemDoacaoConfirmacaoSerializer
 
-    def post(self, request, pk, qtd, *args, **kwargs):
-        resposta = DoacaoDo(request)
-        return resposta.confirmarItemDoacao(pk, qtd)
+    def post(self, request, pk, *args, **kwargs):
+        data = request.data
+        serializer = self.serializer_class(data=data)
+        if serializer.is_valid():
+            qtd = Decimal(request.data["quantidade_efetivada"]).quantize(Decimal('.01'), rounding=ROUND_DOWN)
+            resposta = DoacaoDo(request)
+            return resposta.confirmarItemDoacao(pk, qtd)

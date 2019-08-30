@@ -3,6 +3,7 @@ from administrativo.models import Usuario, Ong
 from django.db import transaction
 from .models import *
 import datetime
+from decimal import *
 
 
 from administrativo.serializers import UsuarioSerializer, OngSerializer, TelefoneSerializer
@@ -118,15 +119,11 @@ class ItemDoacaoListSerializer(serializers.ModelSerializer):
         ]
 
 class ItemDoacaoConfirmacaoSerializer(serializers.ModelSerializer):
-    id_item = serializers.IntegerField()
-    item_doacao = StatusItemDoacaoSerializer(read_only=True)
 
     class Meta:
         model = ItemDoacao
         fields = [
-                    'id_item',
-                    'quantidade_efetivada',
-                    'item_doacao'
+                    "quantidade_efetivada",
                   ]
 #endregion
 
@@ -154,7 +151,8 @@ class DoacaoSerializer(serializers.ModelSerializer):
             try:
                 for item_doacao in itens_doacao:
                     id = int(item_doacao['id_demanda'])
-                    quantidade = int(item_doacao['quantidade_prometida'])
+                    quantidade = Decimal(item_doacao['quantidade_prometida']).quantize(Decimal('.01'),
+                                                                                       rounding=ROUND_DOWN)
                     demanda = Demanda.objects.get(pk=id)
                     item = ItemDoacao(doacao=doacao, demanda=demanda, status=status, quantidade_prometida=quantidade)
                     item.save()
@@ -181,17 +179,6 @@ class DoacaoSerializerLista(serializers.ModelSerializer):
         fields = [
                     "id",
                     "usuario",
-                    "data_confimacao",
-                    "item_doacao"
-                  ]
-
-class DoacaoConfirmacaoSerializer(serializers.ModelSerializer):
-    item_doacao = ItemDoacaoConfirmacaoSerializer(many=True)
-
-    class Meta:
-        model = Doacao
-        fields = [
-                    "id",
                     "data_confimacao",
                     "item_doacao"
                   ]

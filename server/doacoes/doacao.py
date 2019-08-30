@@ -51,6 +51,8 @@ class DoacaoDo():
 
             item_doacao.status = status_item
             item_doacao.save()
+            doacao.data_confimacao = datetime.now()
+            doacao.save()
             demanda.save()
         return Response({'message': 'Confirmada com sucesso'}, status=status.HTTP_202_ACCEPTED)
 
@@ -60,7 +62,7 @@ class DoacaoDo():
             try:
                 item_doacao = ItemDoacao.objects.get(pk=pk)
                 status_item = StatusItemDoacao.objects.get(pk=3)
-                if item_doacao.status == status:
+                if item_doacao.status == status_item:
                     return Response({'message': '403 - Esse item doação já foi confirmado.'},
                                     status=status.HTTP_403_FORBIDDEN)
 
@@ -76,6 +78,5 @@ class DoacaoDo():
                 item_doacao.save()
                 demanda.save()
                 return Response(status=status.HTTP_202_ACCEPTED)
-            except Exception as e:
-                print(e)
-            return Response({'message': e}, status=status.HTTP_403_FORBIDDEN)
+            except:
+                return Response({'message': "Doação não existe"}, status=status.HTTP_403_FORBIDDEN)
