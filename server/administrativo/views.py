@@ -46,12 +46,16 @@ class RecuperarSenhaUsuarioView(viewsets.ViewSet):
 @permission_classes((AllowAny, ))
 class UsuarioView(viewsets.ViewSet):
     serializer_class = UsuarioSerializer
-    
+    serializer_class_usuario_ong = UsuarioOngSerializer
     
     def retrive(self, request):
         try:
-            usuario = Usuario.objects.get(pk=request.user.pk)            
-            serializer = self.serializer_class(usuario)
+            usuario = Usuario.objects.get(pk=request.user.pk)
+            if usuario.vinculo_ong:
+                usuario.ong = UsuarioPertenceOng.objects.get(usuario=usuario).ong
+                serializer = self.serializer_class_usuario_ong(usuario)
+            else:
+                serializer = self.serializer_class(usuario)
         except:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.data)
