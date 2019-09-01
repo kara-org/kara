@@ -57,11 +57,14 @@ class DemandaSerializerRetorno(serializers.ModelSerializer):
                   'ativo']
 
 class DemandaSerializerAlteracao(serializers.ModelSerializer):
+    id_ong = serializers.IntegerField()
+    id_categoria = serializers.IntegerField()
+
     class Meta:
         model = Demanda
         fields = ['id',
-                  'ong',
-                  'categoria',
+                  'id_ong',
+                  'id_categoria',
                   'quantidade_solicitada',
                   'quantidade_alcancada',
                   'descricao',
@@ -124,6 +127,13 @@ class ItemDoacaoConfirmacaoSerializer(serializers.ModelSerializer):
         model = ItemDoacao
         fields = [
                     "quantidade_efetivada",
+                  ]
+
+class ItemDoacaoAlteracaoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ItemDoacao
+        fields = [
+                    'quantidade_prometida',
                   ]
 #endregion
 

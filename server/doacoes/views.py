@@ -142,6 +142,7 @@ class BuscaDemandasView(viewsets.ViewSet):
 
 class ItemDoacaoView(viewsets.ViewSet):
     serializer_class = ItemDoacaoConfirmacaoSerializer
+    serializer_class_alteracao = ItemDoacaoAlteracaoSerializer
 
     def post(self, request, pk, *args, **kwargs):
         data = request.data
@@ -150,3 +151,25 @@ class ItemDoacaoView(viewsets.ViewSet):
             qtd = Decimal(request.data["quantidade_efetivada"]).quantize(Decimal('.01'), rounding=ROUND_DOWN)
             resposta = DoacaoDo(request)
             return resposta.confirmarItemDoacao(pk, qtd)
+
+    def delete(self, request, pk, *args, **kwargs):
+        try:
+            obj = ItemDoacao.objects.get(pk=pk)
+            status_item = StatusItemDoacao.objects.get(pk=2)
+            if obj.status == status_item:
+                return Response("Item doação já cancelado", status=status.HTTP_400_BAD_REQUEST)
+            else:
+                obj.status = status_item
+                obj.save()
+                return Response("Ok", status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            return Response("Objeto não encontrado", status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, pk, *args, **kwargs):
+        obj = ItemDoacao.objects.get(pk=pk)
+        serializer = self.serializer_class_alteracao(obj, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

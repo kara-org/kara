@@ -44,7 +44,9 @@ doacao_patterns = [
 ]
 
 item_doacao =[
-    path('item/<int:pk>/confirmar/', ItemDoacaoView.as_view({'post': 'post'}), name='confirmar_item_doacao')
+    path('item/<int:pk>/confirmar/', ItemDoacaoView.as_view({'post': 'post'}), name='confirmar_item_doacao'),
+    path('item/<int:pk>/cancelar/', ItemDoacaoView.as_view({'delete': 'delete'}), name='cancelar_item_doacao'),
+    path('item/<int:pk>/', ItemDoacaoView.as_view({'patch': 'patch'}), name='alterar_item_doacao')
 ]
 
 busca_patterns = [
