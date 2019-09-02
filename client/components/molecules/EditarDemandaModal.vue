@@ -15,24 +15,14 @@
           </header>
           <section class="modal-card-body">
             <b-field label="Título">
-              <b-input type="text" v-model="titulo" placeholder="Açucar" required></b-input>
-            </b-field>
-            <b-field label="Categoria">
-              <b-input type="text" v-model="categoria" disabled placeholder="Alimentos" required></b-input>
+              <b-input type="text" v-model="titulo" placeholder="Açucar"></b-input>
             </b-field>
             <b-field label="Quantidade">
-              <b-input type="number" v-model="quantidade" placeholder="Quantidade a doar" required></b-input>
-            </b-field>
-            <b-field label="Data de inicio">
-              <b-input type="text" v-model="dataInicio" placeholder="15/08/2019" required></b-input>
-            </b-field>
-            <b-field label="Data de finalização">
-              <b-input type="text" v-model="dataFim" placeholder="21/09/2019" required></b-input>
+              <b-input type="number" v-model="quantidade" placeholder="Quantidade esperada"></b-input>
             </b-field>
           </section>
           <footer class="modal-card-foot">
-            <button class="button" @click="isComponentModalActive = false">Cancelar</button>
-            <button class="button is-primary" @click="confirm()">Confirmar</button>
+            <button class="button is-primary is-fullwidth" @click="confirm()">Confirmar</button>
           </footer>
         </div>
       </form>
@@ -41,55 +31,26 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   props: { demanda: Object },
   data() {
     return {
       isComponentModalActive: false,
       quantidade: null,
-      titulo: null,
-      categoria: null,
-      dataInicio: null,
-      dataFim: null
+      titulo: null
     }
   },
   mounted() {
-    this.quantidade = this.demanda.quantidade_solicitada
     this.titulo = this.demanda.descricao
-    this.categoria = this.demanda.categoria.descricao
-    this.dataInicio = this.demanda.data_inicio
-    this.dataFim = this.demanda.data_fim
+    this.quantidade = this.demanda.quantidade_solicitada
   },
   methods: {
     async confirm() {
-      if (this.quantidade && this.quantidade > 0 && this.demanda.quantidade_solicitada != this.quantidade) {
-        //this.demanda.quantidade_solicitada = this.quantidade
-        await this.$axios.$patch(`/demanda/${this.demanda.id}/`, {
-          quantidade_solicitada: this.quantidade
-        })
-      }
-      if (this.titulo && this.demanda.descricao != this.titulo) {
-        //this.demanda.descricao = this.titulo
-        await this.$axios.$patch(`/demanda/${this.demanda.id}/`, {
-          descricao: this.titulo
-        })
-      }
-      if (this.categoria && this.demanda.categoria.descricao != this.categoria) {
-        //this.demanda.categoria.descricao = this.categoria
-        //await this.$axios.$patch(`/demanda/${this.demanda.id}/`, {categoria: this.categoria})
-      }
-      if (this.dataInicio && this.data_inicio != this.demanda.data_inicio) {
-        //this.demanda.data_inicio = this.dataInicio
-        await this.$axios.$patch(`/demanda/${this.demanda.id}/`, {
-          data_inicio: this.dataInicio
-        })
-      }
-      if (this.dataFim && this.demanda.data_fim != this.dataFim) {
-        //this.demanda.data_fim = this.dataFim
-        await this.$axios.$patch(`/demanda/${this.demanda.id}/`, {
-          data_fim: this.dataFim
-        })
-      }
+      this.$axios.$patch(`/demanda/${this.demanda.id}/`, {
+        quantidade_solicitada: this.quantidade,
+        descricao: this.titulo
+      })
       this.isComponentModalActive = false
     }
   }

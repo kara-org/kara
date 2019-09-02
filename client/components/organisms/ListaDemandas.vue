@@ -1,26 +1,24 @@
 <template>
   <section>
     <b-table
-      :data="data"
+      class="table"
+      :data="demandas"
       ref="table"
-      :paginated="isPaginated"
-      :per-page="perPage"
-      :current-page.sync="currentPage"
-      :pagination-position="paginationPosition"
-      :pagination-simple="isPaginationSimple"
+      :bordered="false"
+      :striped="true"
+      :focusable="true"
     >
       <template slot-scope="props">
         <b-table-column
           field="descricao"
           :visible="columnsVisible['descricao'].display"
           :label="columnsVisible['descricao'].title"
-          sortable
+          centered
         >{{ props.row.descricao }}</b-table-column>
         <b-table-column
           field="quantidade_solicitada"
           :visible="columnsVisible['quantidade_solicitada'].display"
           :label="columnsVisible['quantidade_solicitada'].title"
-          sortable
           centered
         >{{ props.row.quantidade_solicitada }}</b-table-column>
 
@@ -28,7 +26,6 @@
           field="quantidade_alcancada"
           :visible="columnsVisible['quantidade_alcancada'].display"
           :label="columnsVisible['quantidade_alcancada'].title"
-          sortable
           centered
         >{{ !props.row.quantidade_alcancada ? 0 : props.row.quantidade_alcancada }}</b-table-column>
 
@@ -38,15 +35,7 @@
           :label="columnsVisible['restante'].title"
           centered
         >{{ props.row.quantidade_solicitada - (!props.row.quantidade_alcancada ? 0 : props.row.quantidade_alcancada) }}</b-table-column>
-        <b-table-column
-          :visible="columnsVisible['progresso'].display"
-          :label="columnsVisible['progresso'].title"
-          centered
-        >
-          <span
-            class="tag is-success"
-          >{{ Math.round(( !props.row.quantidade_alcancada ? 0 : props.row.quantidade_alcancada / props.row.quantidade_solicitada) * 100) }}%</span>
-        </b-table-column>
+
         <b-table-column
           field="acao"
           :visible="columnsVisible['acao'].display"
@@ -74,6 +63,15 @@
             </b-button>
           </b-tooltip>
         </b-table-column>
+        <b-table-column
+          :visible="columnsVisible['progresso'].display"
+          :label="columnsVisible['progresso'].title"
+          centered
+        >
+          <span
+            class="tag is-success"
+          >{{ Math.round(( !props.row.quantidade_alcancada ? 0 : props.row.quantidade_alcancada / props.row.quantidade_solicitada) * 100) }}%</span>
+        </b-table-column>
       </template>
     </b-table>
   </section>
@@ -81,22 +79,18 @@
 
 <script>
 import EditarModal from '@/components/molecules/EditarDemandaModal.vue'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   components: { EditarModal },
   async mounted() {
-    this.data = await this.$axios.$get(`/ong/${1}/demandas/`)
-    console.log(this.data)
+    await this.fetchDemandasOng(1)
   },
   methods: {
-    /* async reativar(id) {
-      this.$axios.$patch(`/demanda/${id}/`, { ativo: true })
-      this.data = await this.$axios.$get(`/ong/${1}/demandas/`)
-    },
-    async inativar(id) {
-      this.$axios.$delete(`/demanda/${id}/cancelar`)
-      this.data = await this.$axios.$get(`/ong/${1}/demandas/`)
-    }, */
+    ...mapActions('demandas', [
+      'fetchDemandasOng',
+      'changeDemanda',
+      'deleteDemanda'
+    ]),
     async confirm(id, acao) {
       this.$dialog.confirm({
         message: `Tem certeza que deseja ${acao} essa demanda?`,
@@ -105,17 +99,19 @@ export default {
 
         onConfirm: () => {
           if (acao == 'inativar') {
-            this.$axios.$delete(`/demanda/${id}/cancelar`)
+            this.deleteDemanda(id)
           } else {
-            this.$axios.$patch(`/demanda/${id}/`, { ativo: true })
+            this.changeDemanda(id, { ativo: true })
           }
         }
       })
     }
   },
+  computed: {
+    ...mapGetters({ demandas: 'demandas/demandas' })
+  },
   data() {
     return {
-      data: [],
       columnsVisible: {
         descricao: { title: 'Título', display: true },
         quantidade_solicitada: { title: 'Esperado', display: true },
@@ -133,3 +129,11 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.table {
+  overflow-x: hidden;
+  max-height: 400px;
+  overflow-y: auto;
+}
+</style>

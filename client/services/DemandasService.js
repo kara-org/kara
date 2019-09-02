@@ -1,11 +1,14 @@
 export default $axios => resource => ({
-  index (id) {
-    return $axios.$get(`/ong/${id}/demandas/`)
+  getDemandasOng(idComposer) {
+    return $axios.$get(`ong/${idComposer}${resource}`)
   },
-  create(id, payload) {
-    return $axios.$post(`/ong/${id}/demandas/`, payload)
+  create(idComposer, payload) {
+    return $axios.$post(`${resource}/ong/${idComposer}/demandas/`, payload)
   },
   change(id, payload) {
-    return $axios.$patch(`/demanda/${id}`, payload)
+    return $axios.$patch(`${resource}/demanda/${id}/`, payload)
+  },
+  delete(id) {
+    return $axios.$delete(`${resource}/demanda/${id}/cancelar`)
   }
 })
