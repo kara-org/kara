@@ -9,14 +9,14 @@
       :pagination-position="paginationPosition"
     >
       <template slot-scope="fProps">
-        <b-table :data="fProps.row.itens_doacao">
+        <b-table :data="fProps.row.item_doacao">
           <template slot-scope="props">
             <b-table-column
               field="demanda"
               :visible="columnsVisible['demanda'].display"
               :label="columnsVisible['demanda'].title"
               centered
-            >{{ props.row.demanda_id }}</b-table-column>
+            >{{ props.row.demanda.descricao }}</b-table-column>
             <b-table-column
               field="data"
               :visible="columnsVisible['data'].display"
@@ -61,7 +61,7 @@
               :label="columnsVisible['acao'].title"
               centered
             >
-              <template v-if="props.row.status_id==3">
+              <template v-if="props.row.status.codigo_status===1">
                 <EditarModal v-if="isDoador" :doacao="props.row" />
                 <b-tooltip class="is-danger" label="Cancelar doação" position="is-right">
                   <b-button
@@ -86,7 +86,7 @@
                 </b-tooltip>
               </template>
 
-              <span v-else-if="props.row.status_id==1" class="tag is-success">CONFIRMADA</span>
+              <span v-else-if="props.row.status.codigo_status===2" class="tag is-success">ENTREGUE</span>
               <span v-else class="tag is-danger">CANCELADA</span>
             </b-table-column>
           </template>
