@@ -20,6 +20,7 @@ class DemandaView(viewsets.ViewSet):
     serializer_class = DemandaSerializer
     serializer_retorno_class = DemandaSerializerRetorno
     serializer_class_alteracao = DemandaSerializerAlteracao
+    serializer_class_cancelamento = DemandaSerializerCancelamento
 
     def get_object(self, id):
         try:
@@ -64,7 +65,7 @@ class DemandaView(viewsets.ViewSet):
         # if not obj.ativo:
         #     return Response("Demanda já cancelada", status=status.HTTP_400_BAD_REQUEST)
         request.data['ativo'] = False
-        serializer = self.serializer_class_alteracao(obj, data=request.data, partial=True)
+        serializer = self.serializer_class_cancelamento(obj, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
