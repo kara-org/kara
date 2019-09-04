@@ -19,7 +19,7 @@ export const mutations = {
   },
 
   SET_ITEM_DOACAO(state, item) {
-    state.list = state.list.map((d) => {
+    state.list = state.list.forEach((d) => {
       if (d.id === doacao.id) {
         d.item_doacao = state.list.map((i) => {
           if (i.id === id) {
@@ -28,7 +28,6 @@ export const mutations = {
           return i
         })
       }
-      return d
     })
   },
 
@@ -41,7 +40,7 @@ export const mutations = {
   },
 
   CANCELA_DOACAO(state, id) {
-    state.list = state.list.map((d) => {
+    state.list = state.list.forEach((d) => {
       if (d.id === id) {
         d = state.list.map((i) => {
           i.status.codigo_status = 3
@@ -49,13 +48,12 @@ export const mutations = {
           return i
         })
       }
-      return d
     })
   },
 
   CANCELA_ITEM_DOACAO(state, id) {
-    state.list = state.list.map((d) => {
-      return d.item_doacao = d.item_doacao.map((i) => {
+    state.list = state.list.forEach((d) => {
+      d.item_doacao = d.item_doacao.map((i) => {
         if (i.id === id) {
           i.status.codigo_status = 3
           i.status.mensagem = "CANCELADA"
@@ -66,7 +64,7 @@ export const mutations = {
   },
 
   CONFIRMA_DOACAO(state, id) {
-    state.list = state.list.map((d) => {
+    state.list = state.list.forEach((d) => {
       if (d.id === id) {
         d = state.list.map((i) => {
           i.status.codigo_status = 2
@@ -74,13 +72,12 @@ export const mutations = {
           return i
         })
       }
-      return d
     })
   },
 
   CONFIRMA_ITEM_DOACAO(state, id) {
-    state.list = state.list.map((d) => {
-      return d.item_doacao = d.item_doacao.map((i) => {
+    state.list = state.list.forEach((d) => {
+      d.item_doacao = d.item_doacao.map((i) => {
         if (i.id === id) {
           i.status.codigo_status = 2
           i.status.mensagem = "ENTREGUE"
@@ -127,8 +124,8 @@ export const actions = {
 
   deleteItemDoacao(context, id) {
     this.$axios.$delete(`/item/${id}/cancelar`)
-      .then((_) =>
-        context.commit('CANCELA_ITEM_DOACAO', id))
+      /* .then((_) =>
+        context.commit('CANCELA_ITEM_DOACAO', id)) */
       .catch((err) => console.log(err))
   },
 
@@ -139,8 +136,9 @@ export const actions = {
       .catch((err) => console.log(err))
   },
 
-  confirmaItemDoacao(context, id) {
-    this.$axios.$post(`/item/${id}/confirmar/`)
+  confirmaItemDoacao(context, id, payload) {
+    console.log(payload)
+    this.$axios.$post(`/item/${id}/confirmar/`, payload)
       .then((_) =>
         context.commit('CONFIRMA_ITEM_DOACAO', id))
       .catch((err) => console.log(err))

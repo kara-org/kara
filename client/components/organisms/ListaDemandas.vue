@@ -1,13 +1,6 @@
 <template>
   <section>
-    <b-table
-      class="table"
-      :data="demandas"
-      ref="table"
-      :bordered="false"
-      :striped="true"
-      :focusable="true"
-    >
+    <b-table class="table" :data="demandas" ref="table" :bordered="false" :striped="true">
       <template slot-scope="props">
         <b-table-column
           field="descricao"
@@ -83,7 +76,12 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   components: { EditarModal },
   async mounted() {
-    await this.fetchDemandasOng(1)
+    await this.fetchDemandasOng(this.$auth.user.ong.id)
+  },
+  computed: {
+    user() {
+      this.$auth.user
+    }
   },
   methods: {
     ...mapActions('demandas', [
@@ -97,11 +95,13 @@ export default {
         confirmText: 'Sim',
         cancelText: 'Não',
 
-        onConfirm: () => {
+        onConfirm: async () => {
           if (acao == 'inativar') {
-            this.deleteDemanda(id)
+            await this.deleteDemanda(id)
+            this.fetchDemandasOng(this.user.ong.id)
           } else {
-            this.changeDemanda(id, { ativo: true })
+            await this.changeDemanda(id, { ativo: true })
+            this.fetchDemandasOng(this.user.ong.id)
           }
         }
       })

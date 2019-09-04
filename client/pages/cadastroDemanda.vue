@@ -5,7 +5,7 @@
     <div class="hero-body">
       <div class="container">
         <div class="columns has-no-margin is-centered">
-          <article class="card is-rounded" style="width:600px">
+          <article class="card is-rounded" style="width:300px">
             <div class="card-content">
               <p class="form-section-title">Cadastre uma demanda</p>
               <CadastroDemandaForm :isCadastro="true" />

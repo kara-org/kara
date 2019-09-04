@@ -12,7 +12,7 @@
           para a meta
         </p>
         <div class="level-right" v-if="!isCarrinho">
-          <DoarModal :text="'Doar'" :idOng="1" :item="demanda" />
+          <DoarModal :text="'Doar'" :id="demanda.ong.id" :item="demanda" />
         </div>
         <div class="level" v-else>
           <button class="delete is-medium" @click="remover">Remover</button>
