@@ -136,7 +136,7 @@ class BuscaDemandasView(viewsets.ViewSet):
     serializer_class = DemandaSerializerRetorno
 
     def list(self, request):
-        demanda = Demanda.objects.filter(Q(data_fim__gte = datetime.now().date()), Q(ativo=True))
+        demanda = Demanda.objects.filter(Q(ativo=True))
         serializer = self.serializer_class(demanda, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
