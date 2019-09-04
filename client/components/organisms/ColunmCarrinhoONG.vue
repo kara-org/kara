@@ -42,7 +42,7 @@ export default {
             position: 'is-top'
           })
       })
-      this.$router.push('/perfil')
+      this.$router.push('/gerenciarDoacoes')
     }
   }
 }

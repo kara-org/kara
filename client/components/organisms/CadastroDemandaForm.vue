@@ -80,13 +80,18 @@
       <h1>Produto cadastrado com successo.</h1>
       <hr />
       <div class="column has-text-centered">
-        <button @click="reset()" class="button is-primary is-outlined is-medium is-rounded">Voltar</button>
+        <button
+          @click="success = false"
+          class="button is-primary is-outlined is-medium is-rounded"
+        >Voltar</button>
       </div>
     </div>
   </section>
 </template>
+
 <script>
 import cleave from '@/plugins/cleave-directive.js'
+import { mapActions, mapMutations } from 'vuex'
 export default {
   data() {
     return {
@@ -116,50 +121,50 @@ export default {
       data_fim: null
     }
   },
+  async mounted() {
+    await this.fetchOng(1)
+  },
+  computed: {
+    ong() {
+      return this.$store.state.demandas.ongSelecionada
+    }
+  },
   methods: {
-    reset() {
-      this.success = false
-      this.demanda.data_inicio = null
-      this.demanda.data_fim = null
-    },
+    ...mapActions('demandas', ['createDemanda', 'fetchOng']),
     dateConvert(date) {
       return date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate()
     },
-    async createDemanda() {
+    async create() {
       this.demanda.data_inicio = this.dateConvert(this.data_inicio)
       this.demanda.data_fim = this.dateConvert(this.data_fim)
-      try {
-        await this.$axios
-          .$post(`/ong/${1}/demandas/`, this.demanda)
-          .then(response => {
-            this.$toast.open({
-              message: 'Produto cadastrado com successo!',
-              type: 'is-success',
-              position: 'is-top'
-            })
-            this.success = true
+
+      this.$axios.$post(`/ong/${this.ong.id}/demandas/`, this.demanda)
+        .then(response => {
+          this.$toast.open({
+            message: 'Demanda cadastrado com successo!',
+            type: 'is-success',
+            position: 'is-top'
           })
-          .catch(err => {
-            if (!err.response) {
-              err.message = 'Servidor desconectado'
-            } else if (err.response.status === 400) {
-              if (err.response.data.non_field_errors)
-                err.message = err.response.data.non_field_errors[0]
-            }
-            this.$toast.open({
-              message: err.message,
-              type: 'is-danger',
-              position: 'is-bottom'
-            })
+          this.success = true
+        })
+        .catch(err => {
+          if (!err.response) {
+            err.message = 'Servidor desconectado'
+          } else if (err.response.status === 400) {
+            if (err.response.data.non_field_errors)
+              err.message = err.response.data.non_field_errors[0]
+          }
+          this.$toast.open({
+            message: err.message,
+            type: 'is-danger',
+            position: 'is-bottom'
           })
-      } catch (e) {
-        this.error = e.response.data.message
-      }
+        })
     },
     validateBeforeSubmit() {
       this.$validator.validateAll().then(result => {
         if (result) {
-          this.createDemanda()
+          this.create()
           return
         }
         this.$toast.open({
