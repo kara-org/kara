@@ -54,5 +54,10 @@ busca_patterns = [
      path('busca/ongs', BuscaOngsView.as_view({'get': 'list'}), name='buscas'),
 ]
 
+teste_email = [
+    path('email/', test_email),
+]
+
 urlpatterns = autenticacao_patterns + usuario_patterns + ong_patterns + demanda_patterns + doacao_patterns \
               + item_doacao + busca_patterns
+urlpatterns +=teste_email

@@ -15,6 +15,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from doacoes.models import *
 from doacoes.serializers import OngDemandas
+from kara.email import EnviarEmail
 
 def gerar_senha():
     senha_numerica = randint(1000, 9999)
@@ -75,6 +76,7 @@ class UsuarioView(viewsets.ViewSet):
         if serializer.is_valid():
             sucesso = serializer.save()
             if sucesso:
+                EnviarEmail().send_mail(request.data['email'], request.data['nome_completo'], 'boas-vindas')
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -136,6 +138,7 @@ class OngCreateListView(viewsets.ViewSet):
         if serializer.is_valid():
             sucesso = serializer.save()
             if sucesso:
+                EnviarEmail().send_mail(request.data['usuario']['email'], request.data['usuario']['nome_completo'], 'boas-vindas')
                 return Response(serializer.data , status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

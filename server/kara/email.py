@@ -1,39 +1,55 @@
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import *
 
 # Renderização do email
 from django.template.loader import get_template
 from django.core.mail import EmailMessage
 
-
-def send_mail(self):
-        nome = self.cleaned_data['nome']
-        nome_da_empresa = self.cleaned_data['nome_da_empresa']
-        razao_social = self.cleaned_data['razao_social']
-        nome_fantasia = self.cleaned_data['nome_fantasia']
-        cnpj = self.cleaned_data['cnpj']
-        telefone = self.cleaned_data['telefone']
-        cep = self.cleaned_data['cep']
-        bairro = self.cleaned_data['bairro']
-        endereco = self.cleaned_data['endereco']
-        numero = self.cleaned_data['numero']
-        complemento = self.cleaned_data['complemento']
-
-        context = {
-            'nome': nome,
-            'nome_da_empresa': nome_da_empresa,
-            'razao_social': razao_social,
-            'nome_fantasia': nome_fantasia,
-            'cnpj': cnpj,
-            'telefone': telefone,
-            'cep': cep,
-            'bairro': bairro,
-            'endereco': endereco,
-            'numero': numero,
-            'complemento': complemento,
+class EnviarEmail():
+    
+    def __init__(self):
+        self.mensagens = {
+            'boas-vindas':
+                {
+                'tipo_email': 'Boas vindas',
+                'introducao': "Introducao: lorem ipsum set dolor",
+                'informacao': "Informacao: lorem ipsum",
+            },
+            'confirmacao-doacao':
+                {
+                'tipo_email': 'Confirmação de doação',
+                'introducao': "Introducao: lorem ipsum set dolor",
+                'informacao': "Informacao: lorem ipsum",
+            },
+            'interesse-doacao':
+                {
+                'tipo_email': 'Interesse de doação',
+                'introducao': "Introducao: lorem ipsum set dolor",
+                'informacao': "Informacao: lorem ipsum",
+            },
+            'cancelamento-doacao-usuario':
+                {
+                'tipo_email': 'Cancelamento de doação',
+                'introducao': "Introducao: lorem ipsum set dolor",
+                'informacao': "Informacao: lorem ipsum",
+            },
+            'cancelamento-doacao-ong':
+                {
+                'tipo_email': 'Cancelamento de doação',
+                'introducao': "Introducao: lorem ipsum set dolor",
+                'informacao': "Informacao: lorem ipsum",
+            }
         }
+    
+    def send_mail(self, destinatarios, username, tipo_email=None):
+        
+        context = self.mensagens[tipo_email]
+        context['usuario'] = username + '('+ destinatarios
 
-        assunto_email = '[ASES - Site] Uma nova associação foi cadastrada a partir do site.'
-        mail_payload = get_template('email_template.html').render(context)
-        destinatarios = EmailDestinatario.objects.all()
+        assunto_email = '[Kara Doações] Notificação do Kara Doações.'
+        mail_payload = get_template('doacao.html').render(context)
+        
+        remetente = "no_replay@karadoacoes.com.br"
+        email_composicao = EmailMessage(assunto_email, mail_payload, remetente, ['mayara.machado@dcomp.ufs.br',])
+        email_composicao.content_subtype = 'html'
+        email_composicao.send()
