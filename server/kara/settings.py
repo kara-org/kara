@@ -149,6 +149,8 @@ EMAIL_HOST_USER = 'joao.daltro'
 EMAIL_HOST_PASSWORD = 'jpmd454245'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'no_replay@karadoacoes.com.br'
+
 #######################################################################
 
 JWT_AUTH = {
