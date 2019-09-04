@@ -130,6 +130,7 @@ class Ong(models.Model):
     ativo = models.BooleanField(default=True)
     ultimo_login = models.DateTimeField(auto_now_add=True)
     endereco = models.ForeignKey("Endereco", on_delete=models.DO_NOTHING, blank=True, null=True)
+    verificado = models.BooleanField("Verificado", default=False)
 
 
 

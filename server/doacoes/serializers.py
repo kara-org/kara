@@ -182,8 +182,7 @@ class DoacaoSerializerRetornoCadastro(serializers.ModelSerializer):
 
 class DoacaoSerializerLista(serializers.ModelSerializer):
     item_doacao = ItemDoacaoListSerializer(many=True)
-    # usuario = UsuarioSerializer()
-    # itens_doacao = serializers.ListField(child=ItemDoacaoListSerializer())
+    usuario = UsuarioSerializer()
     class Meta:
         model = Doacao
         fields = [
