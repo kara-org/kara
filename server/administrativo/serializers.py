@@ -142,3 +142,16 @@ class OngListSerializer(serializers.ModelSerializer):
         model = Ong
         fields = ['id', 'nome', 'cnpj', 'historia', 'telefone', 'ativo', 'endereco']
 
+class UsuarioOngSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(max_length=128, write_only=True)
+    endereco = EnderecoSerializer(allow_null=True, required=False)
+    telefone = TelefoneSerializer(many=True, allow_null=True, required=False)
+    ong = OngSerializer()
+
+    class Meta:
+        model = Usuario
+        fields = (
+                    'id', 'email', 'password', 'nome_completo', 'ativo',
+                    'ultimo_login', 'cpf', 'foto','vinculo_ong',
+                    'endereco','telefone', 'vinculo_ong', 'ong',
+                )
