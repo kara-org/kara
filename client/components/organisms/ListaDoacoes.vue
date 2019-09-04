@@ -1,14 +1,33 @@
 <template>
   <section>
     <b-table
-      :data="data"
+      :data="doacoes"
       ref="table"
-      :paginated="isPaginated"
-      :per-page="perPage"
-      :current-page.sync="currentPage"
-      :pagination-position="paginationPosition"
+      :paginated="true"
+      :per-page="5"
+      :show-detail-icon="true"
+      pagination-position="bottom"
+      detail-key="id"
+      detailed
     >
       <template slot-scope="fProps">
+        <b-table-column field="id" label="ID" centered>{{ fProps.row.id }}</b-table-column>
+
+        <b-table-column field="ong" label="ONG" centered>
+          <span>{{ fProps.row.item_doacao[0].demanda.ong.nome }}</span>
+        </b-table-column>
+        <b-table-column
+          field="data"
+          :visible="columnsVisible['data'].display"
+          :label="columnsVisible['data'].title"
+          centered
+        >
+          <span
+            class="tag is-success"
+          >{{ new Date(fProps.row.data_agendamento).toLocaleDateString() }}</span>
+        </b-table-column>
+      </template>
+      <template slot="detail" slot-scope="fProps">
         <b-table :data="fProps.row.item_doacao">
           <template slot-scope="props">
             <b-table-column
@@ -17,17 +36,6 @@
               :label="columnsVisible['demanda'].title"
               centered
             >{{ props.row.demanda.descricao }}</b-table-column>
-            <b-table-column
-              field="data"
-              :visible="columnsVisible['data'].display"
-              :label="columnsVisible['data'].title"
-              centered
-            >
-              <span
-                class="tag is-success"
-              >{{ new Date(fProps.row.data_agendamento).toLocaleDateString() }}</span>
-            </b-table-column>
-
             <b-table-column
               field="doador"
               :visible="columnsVisible['doador'].display"
@@ -98,24 +106,38 @@
 
 <script>
 import EditarModal from '@/components/molecules/EditarDoacaoModal.vue'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   components: { EditarModal },
-  props: {
-    isDoador: Boolean
+  computed: {
+    isDoador() {
+      return !this.$auth.user.vinculo_ong
+    },
+    user() {
+      return this.$auth.user
+    },
+    ...mapGetters({ doacoes: 'doacoes/doacoes' })
   },
+  
   async mounted() {
     if (this.isDoador) {
-      this.data = await this.$axios.$get(`/doador/${this.$auth.user.id}/doacoes/`)
-      console.log(this.data)
+      await this.fetchDoacoesDoador(this.user.id)
     } else {
-      /* var user = (await this.$axios.$get(
-        `/usuario/${this.$auth.user.id}`
-      )) */
-      this.data = await this.$axios.$get(`/ong/${1}/doacoes/`)
-      console.log(this.data)
+      await this.fetchDoacoesOng(this.user.ong.id)
     }
   },
+
   methods: {
+    ...mapActions('doacoes', [
+      'fetchDoacoesDoador',
+      'fetchDoacoesOng',
+      'changeItemDoacao',
+      'deleteItemDoacao',
+      'confirmaItemDoacao'
+    ]),
+    toggle(row) {
+      this.$refs.table.toggleDetails(row)
+    },
     prettyDate(date) {
       date = new Date(date)
       return date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear()
@@ -128,11 +150,9 @@ export default {
 
         onConfirm: () => {
           if (acao == 'cancelar') {
-            //this.$axios.$post(`/doacao/${id}/confirmar`)
-            //this.mounted()
+            this.deleteItemDoacao(id)
           } else {
-            //this.$axios.$post(`/doacao/${id}/cancelar`)
-            //this.mounted()
+            this.confirmaItemDoacao(id)
           }
         }
       })
@@ -140,7 +160,6 @@ export default {
   },
   data() {
     return {
-      data: [],
       columnsVisible: {
         demanda: { title: 'Demanda', display: true },
         efetivado: { title: 'Efetivado', display: true },
@@ -149,12 +168,10 @@ export default {
         ong: { title: 'ONG', display: this.isDoador ? true : false },
         data: { title: 'Data agendada', display: true },
         acao: { title: 'Ação', display: true }
-      },
-      isPaginated: true,
-      paginationPosition: 'bottom',
-      currentPage: 1,
-      perPage: 1
+      }
     }
   }
 }
 </script>
+<style lang="scss" scoped>
+</style>
