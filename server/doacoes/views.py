@@ -13,6 +13,8 @@ from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 from .doacao import *
 
+from django.shortcuts import render
+
 @permission_classes((AllowAny, ))
 class DemandaView(viewsets.ViewSet):
     serializer_class = DemandaSerializer
@@ -90,6 +92,7 @@ class DoacaoView(viewsets.ViewSet):
             doacao = serializer.save()
             if doacao:
                 serializer = self.serializer_retorno_class(doacao)
+                EnviarEmail().send_mail(request.user.email request.user.nome_completo, 'Interesse de doação')
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -143,3 +146,13 @@ class BuscaDemandasView(viewsets.ViewSet):
         demanda = Demanda.objects.filter(Q(data_fim__gte = datetime.now().date()), Q(ativo=True))
         serializer = self.serializer_class(demanda, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+def test_email(request):
+    context = {
+        'tipo_email' : "confirmacao_doacao",
+        'introducao' : "Introducao: lorem ipsum set dolor",
+        'username' : "coentro",
+        'informacao' : "Informacao: lorem ipsum"
+    }
+    return render(request, 'doacao.html', context)
