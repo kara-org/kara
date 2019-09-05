@@ -1,13 +1,6 @@
 <template>
   <section>
-    <b-table
-      class="table"
-      :data="demandas"
-      ref="table"
-      :bordered="false"
-      :striped="true"
-      :focusable="true"
-    >
+    <b-table class="table" :data="demandas" ref="table" :bordered="false" :striped="true">
       <template slot-scope="props">
         <b-table-column
           field="descricao"
@@ -34,7 +27,7 @@
           :visible="columnsVisible['restante'].display"
           :label="columnsVisible['restante'].title"
           centered
-        >{{ props.row.quantidade_solicitada - (!props.row.quantidade_alcancada ? 0 : props.row.quantidade_alcancada) }}</b-table-column>
+        >{{ qtdRestante(props.row.quantidade_solicitada, props.row.quantidade_alcancada)}}</b-table-column>
 
         <b-table-column
           field="acao"
@@ -53,7 +46,8 @@
               </b-button>
             </b-tooltip>
           </template>
-          <b-tooltip v-else class="is-success" label="Reativar demanda" position="is-right">
+          <span v-else class="tag is-danger">INATIVA</span>
+          <!--<b-tooltip v-else class="is-success" label="Reativar demanda" position="is-right">
             <b-button
               disabled
               class="is-success is-outlined is-small"
@@ -61,7 +55,7 @@
             >
               <b-icon icon="replay"></b-icon>
             </b-button>
-          </b-tooltip>
+          </b-tooltip>-->
         </b-table-column>
         <b-table-column
           :visible="columnsVisible['progresso'].display"
@@ -83,9 +77,19 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   components: { EditarModal },
   async mounted() {
-    await this.fetchDemandasOng(1)
+    await this.fetchDemandasOng(this.$auth.user.ong.id)
+  },
+  computed: {
+    user() {
+      this.$auth.user
+    },
+    ...mapGetters({ demandas: 'demandas/demandas' })
   },
   methods: {
+    qtdRestante(qtdSolicitada, qtdAlcancada) {
+      var restante = qtdSolicitada - qtdAlcancada
+      return restante >= 0 ? restante : 0
+    },
     ...mapActions('demandas', [
       'fetchDemandasOng',
       'changeDemanda',
@@ -97,18 +101,17 @@ export default {
         confirmText: 'Sim',
         cancelText: 'Não',
 
-        onConfirm: () => {
+        onConfirm: async () => {
           if (acao == 'inativar') {
-            this.deleteDemanda(id)
+            await this.deleteDemanda(id)
+            await this.fetchDemandasOng(this.user.ong.id)
           } else {
-            this.changeDemanda(id, { ativo: true })
+            await this.changeDemanda(id, { ativo: true })
+            await this.fetchDemandasOng(this.user.ong.id)
           }
         }
       })
     }
-  },
-  computed: {
-    ...mapGetters({ demandas: 'demandas/demandas' })
   },
   data() {
     return {

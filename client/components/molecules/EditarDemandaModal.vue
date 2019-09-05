@@ -1,12 +1,10 @@
 <template>
   <span>
-    <a @click="isComponentModalActive = true">
-      <b-tooltip class="is-success" label="Editar demanda" position="is-right">
-        <b-button class="is-outlined is-success is-small">
-          <b-icon icon="settings"></b-icon>
-        </b-button>
-      </b-tooltip>
-    </a>
+    <b-tooltip class="is-success" label="Editar demanda" position="is-right">
+      <b-button @click="isComponentModalActive = true" class="is-outlined is-success is-small">
+        <b-icon icon="settings"></b-icon>
+      </b-button>
+    </b-tooltip>
     <b-modal :active.sync="isComponentModalActive" has-modal-card>
       <form action>
         <div class="modal-card" style="width: auto">

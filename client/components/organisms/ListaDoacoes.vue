@@ -11,20 +11,30 @@
       detailed
     >
       <template slot-scope="fProps">
-        <b-table-column field="id" label="ID" centered>{{ fProps.row.id }}</b-table-column>
+        <b-table-column field="id" label="ID Doação" centered>{{ fProps.row.id }}</b-table-column>
 
-        <b-table-column field="ong" label="ONG" centered>
+        <b-table-column v-if="isDoador" field="ong" label="ONG" centered>
           <span>{{ fProps.row.item_doacao[0].demanda.ong.nome }}</span>
         </b-table-column>
+        <b-table-column
+          v-else
+          field="doador"
+          :visible="columnsVisible['doador'].display"
+          :label="columnsVisible['doador'].title"
+          centered
+        >{{ fProps.row.usuario.nome_completo }}</b-table-column>
         <b-table-column
           field="data"
           :visible="columnsVisible['data'].display"
           :label="columnsVisible['data'].title"
           centered
         >
+          <span v-if="isDoacaoPendente(fProps.row.item_doacao)" class="tag">PENDENTE</span>
           <span
-            class="tag is-success"
-          >{{ new Date(fProps.row.data_agendamento).toLocaleDateString() }}</span>
+            v-else-if="isDoacaoCancelada(fProps.row.item_doacao)"
+            class="tag is-danger"
+          >CANCELADA</span>
+          <span v-else class="tag is-success">ENTREGUE</span>
         </b-table-column>
       </template>
       <template slot="detail" slot-scope="fProps">
@@ -36,12 +46,6 @@
               :label="columnsVisible['demanda'].title"
               centered
             >{{ props.row.demanda.descricao }}</b-table-column>
-            <b-table-column
-              field="doador"
-              :visible="columnsVisible['doador'].display"
-              :label="columnsVisible['doador'].title"
-              centered
-            >{{ fProps.row.usuario }}</b-table-column>
 
             <b-table-column
               field="ong"
@@ -85,16 +89,11 @@
                   label="Confirmar doação"
                   position="is-right"
                 >
-                  <b-button
-                    class="is-success is-outlined is-small"
-                    @click="confirm(props.row.id, 'confirmar')"
-                  >
-                    <b-icon icon="check"></b-icon>
-                  </b-button>
+                  <DoarModal text="Confirmar" :id="props.row.id" />
                 </b-tooltip>
               </template>
 
-              <span v-else-if="props.row.status.codigo_status===2" class="tag is-success">ENTREGUE</span>
+              <span v-else-if="props.row.status.codigo_status===3" class="tag is-success">ENTREGUE</span>
               <span v-else class="tag is-danger">CANCELADA</span>
             </b-table-column>
           </template>
@@ -105,10 +104,11 @@
 </template>
 
 <script>
+import DoarModal from '@/components/molecules/DoarModal.vue'
 import EditarModal from '@/components/molecules/EditarDoacaoModal.vue'
 import { mapActions, mapGetters } from 'vuex'
 export default {
-  components: { EditarModal },
+  components: { EditarModal, DoarModal },
   computed: {
     isDoador() {
       return !this.$auth.user.vinculo_ong
@@ -118,7 +118,7 @@ export default {
     },
     ...mapGetters({ doacoes: 'doacoes/doacoes' })
   },
-  
+
   async mounted() {
     if (this.isDoador) {
       await this.fetchDoacoesDoador(this.user.id)
@@ -128,6 +128,22 @@ export default {
   },
 
   methods: {
+    isDoacaoPendente(doacao) {
+      for (let index = 0; index < doacao.length; index++) {
+        if (doacao[index].status.codigo_status === 1) {
+          return true
+        }
+      }
+      return false
+    },
+    isDoacaoCancelada(doacao) {
+      for (let index = 0; index < doacao.length; index++) {
+        if (doacao[index].status.codigo_status !== 2) {
+          return false
+        }
+      }
+      return true
+    },
     ...mapActions('doacoes', [
       'fetchDoacoesDoador',
       'fetchDoacoesOng',
@@ -148,11 +164,14 @@ export default {
         confirmText: 'Sim',
         cancelText: 'Não',
 
-        onConfirm: () => {
+        onConfirm: async () => {
           if (acao == 'cancelar') {
-            this.deleteItemDoacao(id)
+            await this.deleteItemDoacao(id)
+            if (this.isDoador) {
+              await this.fetchDoacoesOng(this.$auth.user.ong.id)
+            } else await this.fetchDoacoesDoador(this.$auth.user.id)
           } else {
-            this.confirmaItemDoacao(id)
+            await this.confirmaItemDoacao(id)
           }
         }
       })
@@ -166,7 +185,7 @@ export default {
         prometido: { title: 'Prometido', display: true },
         doador: { title: 'Doador', display: this.isDoador ? false : true },
         ong: { title: 'ONG', display: this.isDoador ? true : false },
-        data: { title: 'Data agendada', display: true },
+        data: { title: 'Estado', display: true },
         acao: { title: 'Ação', display: true }
       }
     }
