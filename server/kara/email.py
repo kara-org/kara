@@ -46,7 +46,8 @@ class EnviarEmail():
     def send_mail(self, destinatarios, username=None, tipo_email=None):
         
         context = self.mensagens[tipo_email]
-        context['usuario'] = str(username)
+        if username != None:
+            context['usuario'] = str(username)
 
         assunto_email = '[Kara Doações] Notificação do Kara Doações.'
         # mail_payload = get_template('doacao.html').render(context)
@@ -64,7 +65,7 @@ class EnviarEmail():
             'doacao.html',
             context
         )
-        
+                
         send_mail(
             assunto_email,
             'Corpo da mensagem',

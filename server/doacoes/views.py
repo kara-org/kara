@@ -186,5 +186,8 @@ def test_email(request):
         'username' : "coentro",
         'informacao' : "Informacao: lorem ipsum"
     }
-    EnviarEmail().send_mail(request.user.nome_completo, request.user.email, 'boas-vindas')
+    try:
+        EnviarEmail().send_mail('mayara.machado@dcomp.ufs.br',request.user.nome_completo, 'boas-vindas')
+    except:
+        pass
     return render(request, 'doacao.html', context)

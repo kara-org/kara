@@ -85,7 +85,10 @@ class UsuarioSerializer(serializers.ModelSerializer):
                     user.telefone.add(fone)
             user.save()
 
-            EnviarEmail().send_mail(user.email, user.nome_completo,'boas-vindas')
+            try:
+                EnviarEmail().send_mail(user.email, user.nome_completo,'boas-vindas')
+            except Exception as e:
+                print(e)
             return user
         except Exception as e:
             print(e)
