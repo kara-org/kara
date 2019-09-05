@@ -41,6 +41,7 @@ export const mutations = {
 
   CANCELA_DOACAO(state, id) {
     state.list = state.list.forEach((d) => {
+      console.log(d)
       if (d.id === id) {
         d = state.list.map((i) => {
           i.status.codigo_status = 3

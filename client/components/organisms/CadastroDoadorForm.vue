@@ -105,7 +105,7 @@
             type="password"
             name="senha"
             v-model="doador.password"
-            v-validate="'required|min:8'"
+            v-validate="'required|min:4'"
             ref="senha"
           />
         </b-field>
