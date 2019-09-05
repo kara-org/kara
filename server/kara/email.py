@@ -27,7 +27,7 @@ class EnviarEmail():
                 {
                 'tipo_email': 'Interesse de doação',
                 'introducao': "Estamos muito felizes por você ter demonstrado o interesse de realizar uma doação utilizando nosso portal.",
-                'informacao': "Orientamos que para efetivar a doação você deve entrar em contato com a ong para combinar a melhor forma, local e horário para a entrega das doações."
+                'informacao': "Orientamos que para efetivar a doação você deve entrar em contato com a ong para combinar a melhor forma, local e horário para a entrega das doações.",
                 'rodape': "A kara Doações agradece a sua colaboração.",
             },
             'cancelamento-doacao-usuario':
