@@ -41,6 +41,14 @@ class DemandaSerializer(serializers.ModelSerializer):
             return demanda
         return Demanda.objects.none()
 
+class OngDemandas(serializers.ModelSerializer):
+    demandas = serializers.ListField(child=DemandaSerializer())
+    telefone = TelefoneSerializer(many=True)
+
+    class Meta:
+        model = Ong
+        fields = ['id', 'nome', 'cnpj', 'historia', 'telefone', 'ativo', 'endereco', 'demandas']
+
 class DemandaSerializerRetorno(serializers.ModelSerializer):
     categoria = CategoriaItemDoacaoSerializer()
 
@@ -65,6 +73,19 @@ class DemandaSerializerAlteracao(serializers.ModelSerializer):
         fields = ['id',
                   'id_ong',
                   'id_categoria',
+                  'quantidade_solicitada',
+                  'quantidade_alcancada',
+                  'descricao',
+                  'ativo']
+
+class DemandaSerializerCancelamento(serializers.ModelSerializer):
+    ong = OngSerializer()
+
+    class Meta:
+        model = Demanda
+        fields = ['id',
+                  'ong',
+                  'categoria',
                   'quantidade_solicitada',
                   'quantidade_alcancada',
                   'descricao',
@@ -197,11 +218,3 @@ class DoacaoCancelamentoSerializer(serializers.Serializer):
     data_cancelamento = serializers.DateField(initial=datetime.date.today)
     
 #endregion
-
-class OngDemandas(serializers.ModelSerializer):
-    demandas = serializers.ListField(child=DemandaSerializer())
-    telefone = TelefoneSerializer(many=True)
-
-    class Meta:
-        model = Ong
-        fields = ['id', 'nome', 'cnpj', 'historia', 'telefone', 'ativo', 'endereco', 'demandas']
