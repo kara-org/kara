@@ -1,5 +1,7 @@
 from django.core.mail import send_mail
 from django.conf import settings
+from django.template import loader
+
 
 # Renderização do email
 from django.template.loader import get_template
@@ -41,15 +43,33 @@ class EnviarEmail():
             }
         }
     
-    def send_mail(self, destinatarios, username, tipo_email=None):
+    def send_mail(self, destinatarios, username=None, tipo_email=None):
         
         context = self.mensagens[tipo_email]
-        context['usuario'] = username + '('+ destinatarios
+        context['usuario'] = str(username)
 
         assunto_email = '[Kara Doações] Notificação do Kara Doações.'
-        mail_payload = get_template('doacao.html').render(context)
+        # mail_payload = get_template('doacao.html').render(context)
         
         remetente = "no_replay@karadoacoes.com.br"
-        email_composicao = EmailMessage(assunto_email, mail_payload, remetente, ['mayara.machado@dcomp.ufs.br',])
-        email_composicao.content_subtype = 'html'
-        email_composicao.send()
+        # email_composicao = EmailMessage(assunto_email, mail_payload, remetente, ['mayara.machado@dcomp.ufs.br',])
+        # email_composicao.content_subtype = 'html'
+        # email_composicao.send()
+        
+        destinatarios_list = []
+        if destinatarios:
+            destinatarios_list.append(destinatarios)
+        
+        msg_html = loader.render_to_string(
+            'doacao.html',
+            context
+        )
+        
+        send_mail(
+            assunto_email,
+            'Corpo da mensagem',
+            remetente,
+            destinatarios_list,
+            html_message=msg_html,
+        )
+
