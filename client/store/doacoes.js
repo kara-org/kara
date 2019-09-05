@@ -44,22 +44,22 @@ export const mutations = {
       if (d.id === id) {
         d = state.list.map((i) => {
           i.status.codigo_status = 3
+          i.status.id = 3
           i.status.mensagem = "CANCELADA"
           return i
         })
       }
     })
   },
-
+  
   CANCELA_ITEM_DOACAO(state, id) {
-    state.list = state.list.forEach((d) => {
-      d.item_doacao = d.item_doacao.map((i) => {
-        if (i.id === id) {
-          i.status.codigo_status = 3
-          i.status.mensagem = "CANCELADA"
-        }
-        return i
-      })
+    state.list = state.list.map((i) => {
+      if (i.id === id) {
+        i.status.codigo_status = 3
+        i.status.id = 3
+        i.status.mensagem = "CANCELADA"
+      }
+      return i
     })
   },
 
@@ -123,14 +123,13 @@ export const actions = {
   },
 
   deleteItemDoacao(context, id) {
-    this.$axios.$delete(`/item/${id}/cancelar`)
-      /* .then((_) =>
-        context.commit('CANCELA_ITEM_DOACAO', id)) */
+    this.$axios.$delete(`/item/${id}/cancelar/`)
+      .then(context.commit('CANCELA_ITEM_DOACAO', id))
       .catch((err) => console.log(err))
   },
 
   deleteDoacao(context, id) {
-    this.$axios.$delete(`/doacao/${id}/cancelar`)
+    this.$axios.$delete(`/doacao/${id}/cancelar/`)
       .then((_) =>
         context.commit('CANCELA_DOACAO', id))
       .catch((err) => console.log(err))

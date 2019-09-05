@@ -185,7 +185,7 @@ export default {
         prometido: { title: 'Prometido', display: true },
         doador: { title: 'Doador', display: this.isDoador ? false : true },
         ong: { title: 'ONG', display: this.isDoador ? true : false },
-        data: { title: 'Data de confirmação', display: true },
+        data: { title: 'Estado', display: true },
         acao: { title: 'Ação', display: true }
       }
     }
