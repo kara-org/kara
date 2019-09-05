@@ -65,14 +65,22 @@ class UsuarioSerializer(serializers.ModelSerializer):
         
     def create(self, validated_data):
         print(validated_data)
-        endereco = validated_data.pop("endereco")
-        telefone = validated_data.pop("telefone")
+        temEndereco = False
+        if 'endereco' in validated_data:
+            temEndereco, endereco = True, validated_data.pop("endereco")
+        
+        temTelefone = False
+        if 'telefone' in validated_data:
+            temTelefone, telefone = True, validated_data.pop("telefone")
         
         try:
-            end = Endereco(**endereco)
-            end.save()
-            
-            user = Usuario.objects.create_user(endereco= end,  **validated_data)
+            if temEndereco:
+                end = Endereco(**endereco)
+                end.save()
+                user = Usuario.objects.create_user(endereco= end,  **validated_data)
+            else:
+                user = Usuario.objects.create_user( **validated_data)
+
             for t in telefone:
                 fone = Telefone(**t)
                 fone.save()
