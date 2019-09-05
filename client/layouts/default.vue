@@ -22,9 +22,9 @@ export default {
           to: { name: 'index' }
         },
         {
-          title: 'Inspire',
+          title: 'Demandas',
           icon: 'lightbulb',
-          to: { name: 'inspire' }
+          to: { name: 'busca' }
         }
       ]
     }

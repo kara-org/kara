@@ -25,7 +25,8 @@
     "nuxt-buefy": "^0.3.2",
     "nuxt-sass-resources-loader": "^2.0.5",
     "vee-validate": "^2.2.13",
-    "vue-viacep": "^1.0.3"
+    "vue-viacep": "^1.0.3",
+    "vue-videobg": "^2.0.0"
   },
   "devDependencies": {
     "eslint-config-prettier": "^4.1.0",
