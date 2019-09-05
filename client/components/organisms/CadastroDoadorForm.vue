@@ -218,7 +218,7 @@ export default {
         await this.$axios
           .patch(`/usuario/${this.$auth.user.id}/`, {
             nome_completo: this.doador.nome_completo,
-            telefone: this.doador.telefone,
+            //telefone: this.doador.telefone,
             email: this.doador.email
             //foto: this.doador.foto
           })
