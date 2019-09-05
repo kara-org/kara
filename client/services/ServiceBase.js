@@ -15,10 +15,8 @@ export default ({ $axios, $store }) => resource => ({
     return await $axios.$get(`${resource}${id}`)
   },
 
-  update(payload) {
-    return $axios.$put(`${resource}`, payload).catch(err => {
-      dispatch('global/addErro', err, { root: true })
-    })
+  async update(id, payload) {
+    return await $axios.$patch(`${resource}${id}/`, payload)
   },
 
   delete(id) {
