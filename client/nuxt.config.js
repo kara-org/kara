@@ -1,4 +1,5 @@
 const env = require('dotenv').config()
+const nodeExternals = require('webpack-node-externals');
 
 export default {
   mode: 'universal',
@@ -38,6 +39,7 @@ export default {
     { src: '~/plugins/via-cep' },
     { src: '~/plugins/axios' },
     { src: '~/plugins/services' },
+    // { src: '~/plugins/vue-videobg' },
 
   ],
   /*
@@ -86,9 +88,16 @@ export default {
     /*
     ** You can extend webpack config here
     */
-    extend(config, ctx) {
+    extend(config,  { isServer }) {
       // const vueLoader = config.module.rules.find((rule) => rule.loader === 'vue-loader')
       // vueLoader.query.loaders.scss = 'vue-style-loader!css-loader!sass-loader?' + JSON.stringify({ includePaths: [path.resolve(__dirname), 'node_modules'] })
+      if (isServer) {
+        config.externals = [
+          nodeExternals({
+            whitelist: [/\.(?!(?:js|json)$).{1,5}$/i, /^vue-videobg/]
+          })
+        ]
+      }
     }
   }
 }

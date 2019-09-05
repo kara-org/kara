@@ -1903,6 +1903,13 @@ babel-plugin-transform-object-rest-spread@^6.26.0:
     babel-plugin-syntax-object-rest-spread "^6.8.0"
     babel-runtime "^6.26.0"
 
+babel-runtime@^5.8.0:
+  version "5.8.38"
+  resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-5.8.38.tgz#1c0b02eb63312f5f087ff20450827b425c9d4c19"
+  integrity sha1-HAsC62MxL18If/IEUIJ7QlydTBk=
+  dependencies:
+    core-js "^1.0.0"
+
 babel-runtime@^6.22.0, babel-runtime@^6.26.0:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.26.0.tgz#965c7058668e82b55d7bfe04ff2337bc8b5647fe"
@@ -2748,6 +2755,11 @@ core-js-pure@3.1.4:
   version "3.1.4"
   resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.1.4.tgz#5fa17dc77002a169a3566cc48dc774d2e13e3769"
   integrity sha512-uJ4Z7iPNwiu1foygbcZYJsJs1jiXrTTCvxfLDXNhI/I+NHbSIEyr548y4fcsCEyWY0XgfAG/qqaunJ1SThHenA==
+
+core-js@^1.0.0:
+  version "1.2.7"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-1.2.7.tgz#652294c14651db28fa93bd2d5ff2983a4f08c636"
+  integrity sha1-ZSKUwUZR2yj6k70tX/KYOk8IxjY=
 
 core-js@^2.4.0, core-js@^2.5.7, core-js@^2.6.5:
   version "2.6.9"
@@ -8639,7 +8651,15 @@ vue-viacep@^1.0.3:
   resolved "https://registry.yarnpkg.com/vue-viacep/-/vue-viacep-1.0.3.tgz#30c03a1eeeddb58c9598aaa476752108aa8b2a44"
   integrity sha512-8bsfV9rMdjoxKWk/+0AlaNvF1wCYnTK+awbRjrl1wcGmG0XJBh1QRVKTDDdNUfpBI2TF7VnmyHh96JsfBIN27Q==
 
-vue@^2.6.10:
+vue-videobg@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/vue-videobg/-/vue-videobg-2.0.0.tgz#58267502eda6dbe158a2d5dd924cf61bea086d0c"
+  integrity sha1-WCZ1Au2m2+FYotXdkkz2G+oIbQw=
+  dependencies:
+    babel-runtime "^5.8.0"
+    vue "^2.3.2"
+
+vue@^2.3.2, vue@^2.6.10:
   version "2.6.10"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.10.tgz#a72b1a42a4d82a721ea438d1b6bf55e66195c637"
   integrity sha512-ImThpeNU9HbdZL3utgMCq0oiMzAkt1mcgy3/E6zWC/G6AaQoeuFdsl9nDhTDU3X1R6FK7nsIUuRACVcjI+A2GQ==

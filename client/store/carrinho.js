@@ -1,5 +1,7 @@
 export const state = () => ({
-  ong: {},
+  ong: {
+    demandas: []
+  },
   itensSelecionados: [],
 })
 
@@ -49,6 +51,6 @@ export const getters = {
     return state.itensSelecionados ? state.itensSelecionados.map(i => i.demanda) : []
   },
   itensForaDoCarrinho: (state, getters) => {
-    return state.ong.demandas.filter(x => ! getters.itensNoCarrinho.map(y => y.id).includes(x.id));
+    return state.ong.demandas.filter(x => ! getters.itensNoCarrinho.map(i => i.id).includes(x.id));
   }
 }
