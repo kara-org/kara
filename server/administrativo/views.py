@@ -41,7 +41,14 @@ class RecuperarSenhaUsuarioView(viewsets.ViewSet):
         #a = check_password(senha, hashed_pwd)
         usuario.password = hashed_pwd
         usuario.save()
-        send_mail('Recuperação de senha portal Kara', 'Sua nova senha de acesso é: ' + senha, 'suporte@kara.org.br', [usuario.email], fail_silently=False)
+        
+        try:
+            EnviarEmail().send_mail(usuario.email, None,  'recuperar-senha', senha)
+        except Exception as e:
+            print(e)
+            
+        
+        # send_mail('Recuperação de senha portal Kara', 'Sua nova senha de acesso é: ' + senha, 'suporte@kara.org.br', [usuario.email], fail_silently=False)
         return Response()
 
 @permission_classes((AllowAny, ))

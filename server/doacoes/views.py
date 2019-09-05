@@ -186,14 +186,8 @@ class ItemDoacaoView(viewsets.ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 def test_email(request):
-    context = {
-        'tipo_email' : "confirmacao_doacao",
-        'introducao' : "Introducao: lorem ipsum set dolor",
-        'username' : "coentro",
-        'informacao' : "Informacao: lorem ipsum"
-    }
     try:
-        EnviarEmail().send_mail('mayara.machado@dcomp.ufs.br',request.user.nome_completo, 'boas-vindas')
+        EnviarEmail().send_mail('mayara.machado@dcomp.ufs.br',request.user.nome_completo, 'recuperar-senha')
     except:
         pass
-    return render(request, 'doacao.html', context)
+    return render(request, 'doacao.html')
