@@ -27,7 +27,7 @@
           :visible="columnsVisible['restante'].display"
           :label="columnsVisible['restante'].title"
           centered
-        >{{ props.row.quantidade_solicitada - (!props.row.quantidade_alcancada ? 0 : props.row.quantidade_alcancada) }}</b-table-column>
+        >{{ qtdRestante(props.row.quantidade_solicitada, props.row.quantidade_alcancada)}}</b-table-column>
 
         <b-table-column
           field="acao"
@@ -46,7 +46,8 @@
               </b-button>
             </b-tooltip>
           </template>
-          <b-tooltip v-else class="is-success" label="Reativar demanda" position="is-right">
+          <span v-else class="tag is-danger">INATIVA</span>
+          <!--<b-tooltip v-else class="is-success" label="Reativar demanda" position="is-right">
             <b-button
               disabled
               class="is-success is-outlined is-small"
@@ -54,7 +55,7 @@
             >
               <b-icon icon="replay"></b-icon>
             </b-button>
-          </b-tooltip>
+          </b-tooltip>-->
         </b-table-column>
         <b-table-column
           :visible="columnsVisible['progresso'].display"
@@ -81,9 +82,17 @@ export default {
   computed: {
     user() {
       this.$auth.user
+    },
+    demandas() {
+      return this.$store.state.demandas.list
     }
   },
   methods: {
+    ...mapGetters({ demandas: 'demandas/demandas' }),
+    qtdRestante(qtdSolicitada, qtdAlcancada) {
+      var restante = qtdSolicitada - qtdAlcancada
+      return restante >= 0 ? restante : 0
+    },
     ...mapActions('demandas', [
       'fetchDemandasOng',
       'changeDemanda',
@@ -98,17 +107,14 @@ export default {
         onConfirm: async () => {
           if (acao == 'inativar') {
             await this.deleteDemanda(id)
-            this.fetchDemandasOng(this.user.ong.id)
+            await this.fetchDemandasOng(this.user.ong.id)
           } else {
             await this.changeDemanda(id, { ativo: true })
-            this.fetchDemandasOng(this.user.ong.id)
+            await this.fetchDemandasOng(this.user.ong.id)
           }
         }
       })
     }
-  },
-  computed: {
-    ...mapGetters({ demandas: 'demandas/demandas' })
   },
   data() {
     return {
