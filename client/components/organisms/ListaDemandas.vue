@@ -83,12 +83,9 @@ export default {
     user() {
       this.$auth.user
     },
-    demandas() {
-      return this.$store.state.demandas.list
-    }
+    ...mapGetters({ demandas: 'demandas/demandas' })
   },
   methods: {
-    ...mapGetters({ demandas: 'demandas/demandas' }),
     qtdRestante(qtdSolicitada, qtdAlcancada) {
       var restante = qtdSolicitada - qtdAlcancada
       return restante >= 0 ? restante : 0
