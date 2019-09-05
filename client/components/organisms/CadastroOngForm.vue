@@ -250,18 +250,11 @@ export default {
     }
   },
   async mounted() {
-    //id = this.$auth.user.id_ong
     if (this.$auth.user && this.$auth.user.vinculo_ong) {
-      var ong = await this.$axios.$get(`ong/${1}`)
-      console.log(ong)
-      this.ong.cnpj = ong.cnpj
-      this.ong.historia = ong.historia
-      this.ong.nome = ong.nome
+      this.$OngService.show(1).then(response => {
+        this.ong = response
+      })
     }
-    //this.ong.endereco = ong.endereco
-    //this.ong.telefone = ong.telefone
-    //this.ong.email = ong.email
-    //console.log(await this.fetchPerfilOng(1))
   },
   methods: {
     ...mapActions('ongs', ['fetchPerfilOng']),
@@ -270,8 +263,7 @@ export default {
     },
     async register() {
       try {
-        await this.$axios
-          .post('ong/', this.ong)
+        await this.$OngService.create(this.ong)
           .then(response => {
             this.$toast.open({
               message: 'Cadastro realizado com successo!',
@@ -281,8 +273,6 @@ export default {
             this.$router.push('/login')
           })
           .catch(err => {
-            console.error(this.errors)
-
             if (!err.response) {
               err.message = 'Servidor desconectado'
             } else if (err.response.status === 400) {
@@ -290,7 +280,7 @@ export default {
                 err.message = err.response.data.non_field_errors[0]
             }
             this.$toast.open({
-              message: err.message,
+              message: err.response.data.message,
               type: 'is-danger',
               position: 'is-bottom'
             })
@@ -301,8 +291,7 @@ export default {
     },
     async change() {
       try {
-        await this.$axios
-          .$patch(`ong/${1}/`, {
+        await this.$OngService.update(this.ong.id, {
             nome: this.ong.nome,
             historia: this.ong.historia
           })
@@ -312,7 +301,8 @@ export default {
               type: 'is-success',
               position: 'is-top'
             })
-            this.$router.push('/editarOng')
+            this.success = true
+            // this.$router.push('/editarOng')
           })
           .catch(err => {
             if (!err.response) {
@@ -322,12 +312,13 @@ export default {
                 err.message = err.response.data.non_field_errors[0]
             }
             this.$toast.open({
-              message: err.message,
+              message: err.response.data.message,
               type: 'is-danger',
               position: 'is-bottom'
             })
+            this.success = false
           })
-        this.success = true
+
       } catch (e) {
         this.error = e.response.data.message
       }
