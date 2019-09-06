@@ -25,8 +25,8 @@
             <b-field label="Quantidade">
               <b-input
                 type="number"
-                min="0.01"
-                step=".01"
+                min="0.5"
+                step=".5"
                 v-model="quantidade"
                 placeholder="Quantidade a doar"
                 required

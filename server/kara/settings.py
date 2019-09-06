@@ -30,7 +30,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1:8000',
     'localhost:8000',
-    'api.karadoacoes.tk'
+    'api.karadoacoes.tk',
     'karadoacoes.tk'
 ]
 
