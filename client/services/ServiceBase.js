@@ -1,14 +1,15 @@
 export default ({ $axios, $store }) => resource => ({
   async index() {
-    return await $axios.$get(resource).catch(err => {
-      dispatch('global/addErro', err, { root: true })
-    }).then( () => dispatch('global/stopLoading', null, { root: true }))
+    return await $axios
+      .$get(resource)
+      // .catch(err => {
+      //   dispatch('global/addErro', err, { root: true })
+      // })
+      // .then(() => dispatch('global/stopLoading', null, { root: true }))
   },
 
   async create(payload) {
-    return await $axios.$post(resource, payload).catch(err => {
-      console.log(err)
-    })
+    return await $axios.$post(resource, payload)
   },
 
   async show(id) {
@@ -19,10 +20,8 @@ export default ({ $axios, $store }) => resource => ({
     return await $axios.$patch(`${resource}${id}/`, payload)
   },
 
-  delete(id) {
-    return $axios.$delete(`/${resource}/${id}`).catch(err => {
-      dispatch('global/addErro', err, { root: true })
-    })
+  async delete(id) {
+    return await $axios.$delete(`${resource}${id}/`)
   },
 
   getResource() {
