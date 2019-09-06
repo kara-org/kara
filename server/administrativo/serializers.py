@@ -8,6 +8,8 @@ from django.db import transaction
 
 from .models import *
 
+from kara.email import EnviarEmail
+
 REGEX_PASSWORD = re.compile('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,50}$')
 
 class EnderecoSerializer(serializers.ModelSerializer):
@@ -86,7 +88,11 @@ class UsuarioSerializer(serializers.ModelSerializer):
                 fone.save()
                 user.telefone.add(fone)
             user.save()
-        
+
+            try:
+                EnviarEmail().send_mail(user.email, user.nome_completo,'boas-vindas')
+            except Exception as e:
+                print(e)
             return user
         except Exception as e:
             print(e)

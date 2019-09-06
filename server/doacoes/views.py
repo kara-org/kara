@@ -15,6 +15,12 @@ from .doacao import *
 from decimal import *
 
 
+from django.shortcuts import render
+
+from kara.email import *
+
+from django.shortcuts import render
+
 @permission_classes((AllowAny, ))
 class DemandaView(viewsets.ViewSet):
     serializer_class = DemandaSerializer
@@ -93,6 +99,10 @@ class DoacaoView(viewsets.ViewSet):
             doacao = serializer.save()
             if doacao:
                 serializer = self.serializer_retorno_class(doacao)
+                try:
+                    EnviarEmail().send_mail(request.user.email, request.user.nome_completo, 'Interesse de doação')
+                except Exception as e:
+                    print(e)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -174,3 +184,10 @@ class ItemDoacaoView(viewsets.ViewSet):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+def test_email(request):
+    try:
+        EnviarEmail().send_mail('mayara.machado@dcomp.ufs.br',request.user.nome_completo, 'recuperar-senha')
+    except:
+        pass
+    return render(request, 'doacao.html')

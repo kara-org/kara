@@ -73,7 +73,9 @@ ROOT_URLCONF = 'kara.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+                os.path.join(BASE_DIR, 'kara/templates'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -143,12 +145,17 @@ REST_FRAMEWORK = {
 }
 
 ##################### SMTP EMAIL ###################################
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_HOST_USER = 'joao.daltro'
-EMAIL_HOST_PASSWORD = 'jpmd454245'
+# EMAIL_HOST_USER = 'joao.daltro'
+# EMAIL_HOST_PASSWORD = 'jpmd454245'
+EMAIL_HOST_USER =  'apikey'
+EMAIL_HOST_PASSWORD = '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'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'no_replay@karadoacoes.com.br'
+
 #######################################################################
 
 JWT_AUTH = {

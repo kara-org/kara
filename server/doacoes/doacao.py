@@ -6,6 +6,8 @@ from django.db.models import Q
 from django.http import Http404, HttpResponse
 from datetime import datetime
 
+from kara.email import EnviarEmail
+
 class DoacaoDo():
     
     def __init__(self, request):
@@ -26,6 +28,11 @@ class DoacaoDo():
                 'data_cancelamento': datetime.now().date()
             }
             serializer = serializer_cancelamento_class(retorno)
+            try:
+                EnviarEmail().send_mail(self.request.user.email,self.request.user.nome_completo, 'cancelamento-doacao-usuario')
+            except Exception as e:
+                print(e)
+            
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         return Response({'message': '403 - Essa doação já foi cancelada.'}, status=status.HTTP_403_FORBIDDEN)
 
@@ -54,6 +61,12 @@ class DoacaoDo():
             doacao.data_confimacao = datetime.now()
             doacao.save()
             demanda.save()
+            
+        try:
+            EnviarEmail().send_mail(self.request.user.email, self.request.user.nome_completo,  'confirmacao-doacao')
+        except Exception as e:
+            print(e)
+            
         return Response({'message': 'Confirmada com sucesso'}, status=status.HTTP_202_ACCEPTED)
 
     def confirmarItemDoacao(self, pk, qtd):

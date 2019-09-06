@@ -15,6 +15,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from doacoes.models import *
 from doacoes.serializers import OngDemandas
+from kara.email import EnviarEmail
 
 def gerar_senha():
     senha_numerica = randint(1000, 9999)
@@ -40,7 +41,14 @@ class RecuperarSenhaUsuarioView(viewsets.ViewSet):
         #a = check_password(senha, hashed_pwd)
         usuario.password = hashed_pwd
         usuario.save()
-        send_mail('Recuperação de senha portal Kara', 'Sua nova senha de acesso é: ' + senha, 'suporte@kara.org.br', [usuario.email], fail_silently=False)
+        
+        try:
+            EnviarEmail().send_mail(usuario.email, None,  'recuperar-senha', senha)
+        except Exception as e:
+            print(e)
+            
+        
+        # send_mail('Recuperação de senha portal Kara', 'Sua nova senha de acesso é: ' + senha, 'suporte@kara.org.br', [usuario.email], fail_silently=False)
         return Response()
 
 @permission_classes((AllowAny, ))
@@ -75,6 +83,10 @@ class UsuarioView(viewsets.ViewSet):
         if serializer.is_valid():
             sucesso = serializer.save()
             if sucesso:
+                try:
+                    EnviarEmail().send_mail(request.data['email'], request.data['nome_completo'], 'boas-vindas')
+                except Exception as e:
+                    print(e)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -136,6 +148,10 @@ class OngCreateListView(viewsets.ViewSet):
         if serializer.is_valid():
             sucesso = serializer.save()
             if sucesso:
+                try:
+                    EnviarEmail().send_mail(request.data['usuario']['email'], request.data['usuario']['nome_completo'], 'boas-vindas')
+                except Exception as e:
+                    print(e)
                 return Response(serializer.data , status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
