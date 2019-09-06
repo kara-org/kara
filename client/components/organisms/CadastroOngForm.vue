@@ -276,8 +276,18 @@ export default {
             if (!err.response) {
               err.message = 'Servidor desconectado'
             } else if (err.response.status === 400) {
-              if (err.response.data.non_field_errors)
+              if (err.response.data.non_field_errors) {
                 err.message = err.response.data.non_field_errors[0]
+              } else if (err.response.data.usuario) {
+                Object.keys(err.response.data.usuario).forEach(key => {
+                  this.$toast.open({
+                    message: err.response.data.usuario[key][0],
+                    type: 'is-danger',
+                    position: 'is-bottom'
+                  })
+                })
+                return
+              }
             }
             this.$toast.open({
               message: err.response.data.message,
