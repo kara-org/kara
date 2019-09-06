@@ -8,7 +8,7 @@
         </p>
         <p class="is-size-5 heading">
           Restam
-          <strong>{{ qtdRestante(demanda.quantidade_solicitada, demanda.quantidade_alcancada) }}</strong>
+          <strong>{{ quantidadeRestante }}</strong>
           para a meta
         </p>
         <div class="level-right" v-if="!isCarrinho">
@@ -29,11 +29,13 @@ import { mapActions } from 'vuex'
 export default {
   components: { DoarModal },
   props: ['demanda', 'isCarrinho'],
-  methods: {
-    qtdRestante(qtdSolicitada, qtdAlcancada) {
-      var restante = qtdSolicitada - qtdAlcancada
+  computed: {
+    quantidadeRestante () {
+      let restante = this.demanda.quantidade_solicitada - this.demanda.quantidade_alcancada
       return restante >= 0 ? restante : 0
-    },
+    }
+  },
+  methods: {
     ...mapActions('carrinho', ['removerItemNoCarrinho']),
     remover: function() {
       this.$dialog.confirm({
