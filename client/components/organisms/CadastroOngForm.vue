@@ -251,7 +251,7 @@ export default {
   },
   async mounted() {
     if (this.$auth.user && this.$auth.user.vinculo_ong) {
-      this.$OngService.show(1).then(response => {
+      this.$OngService.show(this.$auth.user.ong.id).then(response => {
         this.ong = response
       })
     }
