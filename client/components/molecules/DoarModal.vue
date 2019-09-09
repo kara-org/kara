@@ -56,6 +56,9 @@ export default {
     },
     item: {
       type: Object
+    },
+    idOng: {
+      type: Number
     }
   },
   data() {
@@ -77,10 +80,10 @@ export default {
             quantidade_efetivada: this.quantidade
           })
           .then(response => {
-            this.fetchDoacoesOng(this.$auth.user.ong.id)
+            this.fetchDoacoesOng(this.idOng)
           })
       } else {
-        this.fetchOng(1)
+        this.fetchOng(this.idOng)
         this.adicionarItemNoCarrinho({
           demanda: this.item,
           quantidade_prometida: this.quantidade
