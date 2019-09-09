@@ -3,6 +3,7 @@ from administrativo.models import Usuario, Ong
 from django.db import transaction
 from .models import *
 import datetime
+from decimal import *
 
 
 from administrativo.serializers import UsuarioSerializer, OngSerializer, TelefoneSerializer
@@ -29,8 +30,6 @@ class DemandaSerializer(serializers.ModelSerializer):
                   'id_categoria',
                   'quantidade_solicitada',
                   'quantidade_alcancada',
-                  'data_inicio',
-                  'data_fim',
                   'descricao']
 
     def create(self, validated_data):
@@ -41,6 +40,14 @@ class DemandaSerializer(serializers.ModelSerializer):
         if demanda:
             return demanda
         return Demanda.objects.none()
+
+class OngDemandas(serializers.ModelSerializer):
+    demandas = serializers.ListField(child=DemandaSerializer())
+    telefone = TelefoneSerializer(many=True)
+
+    class Meta:
+        model = Ong
+        fields = ['id', 'nome', 'cnpj', 'historia', 'telefone', 'ativo', 'endereco', 'demandas']
 
 class DemandaSerializerRetorno(serializers.ModelSerializer):
     categoria = CategoriaItemDoacaoSerializer()
@@ -54,12 +61,26 @@ class DemandaSerializerRetorno(serializers.ModelSerializer):
                   'categoria',
                   'quantidade_solicitada',
                   'quantidade_alcancada',
-                  'data_inicio',
-                  'data_fim',
                   'descricao',
                   'ativo']
 
 class DemandaSerializerAlteracao(serializers.ModelSerializer):
+    id_ong = serializers.IntegerField()
+    id_categoria = serializers.IntegerField()
+
+    class Meta:
+        model = Demanda
+        fields = ['id',
+                  'id_ong',
+                  'id_categoria',
+                  'quantidade_solicitada',
+                  'quantidade_alcancada',
+                  'descricao',
+                  'ativo']
+
+class DemandaSerializerCancelamento(serializers.ModelSerializer):
+    ong = OngSerializer()
+
     class Meta:
         model = Demanda
         fields = ['id',
@@ -67,8 +88,6 @@ class DemandaSerializerAlteracao(serializers.ModelSerializer):
                   'categoria',
                   'quantidade_solicitada',
                   'quantidade_alcancada',
-                  'data_inicio',
-                  'data_fim',
                   'descricao',
                   'ativo']
 
@@ -84,8 +103,6 @@ class DemandaSerializerList(serializers.ModelSerializer):
                   'categoria',
                   'quantidade_solicitada',
                   'quantidade_alcancada',
-                  'data_inicio',
-                  'data_fim',
                   'descricao',
                   'ativo']
 #endregion
@@ -100,13 +117,13 @@ class StatusItemDoacaoSerializer(serializers.ModelSerializer):
         ]
 
 class ItemDoacaoCadastroSerializer(serializers.ModelSerializer):
-    demanda = DemandaSerializerRetorno()
+    id_demanda = serializers.IntegerField()
 
     class Meta:
         model = ItemDoacao
         fields = [
                     'quantidade_prometida',
-                    'demanda'
+                    'id_demanda'
                   ]
 
 class ItemDoacaoListSerializer(serializers.ModelSerializer):
@@ -126,14 +143,18 @@ class ItemDoacaoListSerializer(serializers.ModelSerializer):
         ]
 
 class ItemDoacaoConfirmacaoSerializer(serializers.ModelSerializer):
-    id_item = serializers.IntegerField()
-    item_doacao = StatusItemDoacaoSerializer(read_only=True)
 
     class Meta:
         model = ItemDoacao
         fields = [
-                    'id_item',
-                    'quantidade_efetivada',
+                    "quantidade_efetivada",
+                  ]
+
+class ItemDoacaoAlteracaoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ItemDoacao
+        fields = [
+                    'quantidade_prometida',
                   ]
 #endregion
 
@@ -146,7 +167,6 @@ class DoacaoSerializer(serializers.ModelSerializer):
         model = Doacao
         fields = [
                     'id_usuario',
-                    'data_agendamento',
                     'item_doacao'
                   ]
 
@@ -162,7 +182,8 @@ class DoacaoSerializer(serializers.ModelSerializer):
             try:
                 for item_doacao in itens_doacao:
                     id = int(item_doacao['id_demanda'])
-                    quantidade = int(item_doacao['quantidade_prometida'])
+                    quantidade = Decimal(item_doacao['quantidade_prometida']).quantize(Decimal('.01'),
+                                                                                       rounding=ROUND_DOWN)
                     demanda = Demanda.objects.get(pk=id)
                     item = ItemDoacao(doacao=doacao, demanda=demanda, status=status, quantidade_prometida=quantidade)
                     item.save()
@@ -182,67 +203,18 @@ class DoacaoSerializerRetornoCadastro(serializers.ModelSerializer):
 
 class DoacaoSerializerLista(serializers.ModelSerializer):
     item_doacao = ItemDoacaoListSerializer(many=True)
-    # usuario = UsuarioSerializer()
-    # itens_doacao = serializers.ListField(child=ItemDoacaoListSerializer())
+    usuario = UsuarioSerializer()
     class Meta:
         model = Doacao
         fields = [
                     "id",
                     "usuario",
-                    "data_agendamento",
                     "data_confimacao",
                     "item_doacao"
                   ]
-
-class DoacaoConfirmacaoSerializer(serializers.ModelSerializer):
-    item_doacao = ItemDoacaoConfirmacaoSerializer(many=True)
-
-    class Meta:
-        model = Doacao
-        fields = [
-                    "id",
-                    "data_confimacao",
-                    "item_doacao"
-                  ]
-
-    def create(self, validated_data):
-        itens_doacao = validated_data.pop("item_doacao")
-        doacao = self.context.get("doacao")
-
-        #usuario = Usuario.objects.get(pk=id_usuario)
-        status = StatusItemDoacao.objects.get(pk=3)
-        with transaction.atomic():
-            try:
-                for item_doacao in itens_doacao:
-                    #Captura os identificadores
-                    id_item = int(item_doacao['id_item'])
-                    #Consulta os objetos
-                    item = ItemDoacao.objects.get(pk=id_item)
-                    demanda = Demanda.objects.get(pk=item.demanda.id)
-                    #Salva a quantidade do item doada e incrementa a quantidade alcançada da demanda
-                    item.quantidade_efetivada = int(item_doacao['quantidade_efetivada'])
-                    if demanda.quantidade_alcancada:
-                        demanda.quantidade_alcancada += int(item_doacao['quantidade_efetivada'])
-                    else:
-                        demanda.quantidade_alcancada = int(item_doacao['quantidade_efetivada'])
-                    item.status = status
-                    item.save()
-                    demanda.save()
-                return True
-            except Exception as e:
-                print(e)
-            return False
 
 class DoacaoCancelamentoSerializer(serializers.Serializer):
     doacao = DoacaoSerializerLista()
     data_cancelamento = serializers.DateField(initial=datetime.date.today)
     
 #endregion
-
-class OngDemandas(serializers.ModelSerializer):
-    demandas = serializers.ListField(child=DemandaSerializer())
-    telefone = TelefoneSerializer(many=True)
-
-    class Meta:
-        model = Ong
-        fields = ['id', 'nome', 'cnpj', 'historia', 'telefone', 'ativo', 'endereco', 'demandas']

@@ -1,7 +1,7 @@
 <template>
   <article class="has-background-white">
     <h1 class="title is-size-5 has-text-centered">Demandas selecionadas</h1>
-    <b-button  @click="sendDoacao" class="is-primary is-fullwidth is-rounded is-stick-botton" size="is-medium" fullwidth="true"  icon="magnify">Finalizar doação</b-button>
+    <b-button  @click="send" class="is-primary is-fullwidth is-rounded is-stick-botton" size="is-medium" fullwidth="true"  icon="magnify">Finalizar doação</b-button>
     <br>
     <div class="columns">
       <p v-if="demandas && demandas.length == 0 ">Demandas aparecerão aqui a medida que você for selecionando.</p>
@@ -33,7 +33,17 @@ export default {
     ...mapGetters({ demandas: 'carrinho/itensNoCarrinho' }),
   },
   methods: {
-    ...mapActions('carrinho', ['sendDoacao'])
+    ...mapActions('carrinho', ['sendDoacao']),
+    send(){
+      this.sendDoacao().then(() => {
+        this.$toast.open({
+            message: "Obrigado pela doação!",
+            type: 'is-success',
+            position: 'is-top'
+          })
+      })
+      this.$router.push('/gerenciarDoacoes')
+    }
   }
 }
 </script>

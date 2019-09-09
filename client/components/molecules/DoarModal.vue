@@ -1,6 +1,20 @@
 <template>
   <section>
-    <button class="button is-primary is-medium" @click="isComponentModalActive = true">{{text}}</button>
+    <b-tooltip
+      v-if="text === 'Confirmar'"
+      class="is-success"
+      label="Confirmar doação"
+      position="is-right"
+    >
+      <b-button class="is-success is-outlined is-small" @click="isComponentModalActive = true">
+        <b-icon icon="check"></b-icon>
+      </b-button>
+    </b-tooltip>
+    <button
+      v-else
+      class="button is-primary is-medium"
+      @click="isComponentModalActive = true"
+    >{{text}}</button>
     <b-modal :active.sync="isComponentModalActive" has-modal-card>
       <form action>
         <div class="modal-card" style="width: auto">
@@ -9,12 +23,19 @@
           </header>
           <section class="modal-card-body">
             <b-field label="Quantidade">
-              <b-input type="number" :value="quantidade" placeholder="Quantidade a doar" required></b-input>
+              <b-input
+                type="number"
+                min="0.5"
+                step=".5"
+                v-model="quantidade"
+                placeholder="Quantidade a doar"
+                required
+              ></b-input>
             </b-field>
           </section>
           <footer class="modal-card-foot">
             <button class="button" type="button" @click="isComponentModalActive = false">Cancelar</button>
-            <button class="button is-primary"  type="button"  @click="confirmado">Confirmar</button>
+            <button class="button is-primary" type="button" @click="confirmado">Confirmar</button>
           </footer>
         </div>
       </form>
@@ -23,14 +44,14 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex'
 export default {
   props: {
     text: {
       type: String,
       required: true
     },
-    idOng: {
+    id: {
       type: Number
     },
     item: {
@@ -40,20 +61,33 @@ export default {
   data() {
     return {
       isComponentModalActive: false,
-      quantidade: 1
+      quantidade: 1.0
     }
   },
-  computed:{
-     ...mapGetters({ carrinhoVazio: 'carrinho/isEmpty' }),
+  computed: {
+    ...mapGetters({ carrinhoVazio: 'carrinho/isEmpty' })
   },
   methods: {
     ...mapActions('carrinho', ['fetchOng', 'adicionarItemNoCarrinho']),
-    confirmado () {
+    ...mapActions('doacoes', ['confirmaItemDoacao', 'fetchDoacoesOng']),
+    confirmado() {
+      if (this.text === 'Confirmar') {
+        this.$axios
+          .$post(`/item/${this.id}/confirmar/`, {
+            quantidade_efetivada: this.quantidade
+          })
+          .then(response => {
+            this.fetchDoacoesOng(this.$auth.user.ong.id)
+          })
+      } else {
+        this.fetchOng(1)
+        this.adicionarItemNoCarrinho({
+          demanda: this.item,
+          quantidade_prometida: this.quantidade
+        })
+        if (this.carrinhoVazio) this.$router.push('/carrinho')
+      }
       this.isComponentModalActive = false
-      this.fetchOng(1)
-      this.adicionarItemNoCarrinho({ demanda: this.item, quantidade_prometida: this.quantidade })
-      if (this.carrinhoVazio)
-        this.$router.push('/carrinho')
     }
   }
 }

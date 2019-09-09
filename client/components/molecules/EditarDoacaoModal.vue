@@ -1,10 +1,10 @@
 <template>
   <span>
-    <a @click="isComponentModalActive = true">
-      <b-tooltip class="is-success" label="Editar doação" position="is-right">
-        <b-icon class="button is-medium is-outlined is-success" icon="settings"></b-icon>
-      </b-tooltip>
-    </a>
+    <b-tooltip class="is-success" label="Editar doação" position="is-right">
+      <b-button @click="isComponentModalActive = true" class="is-outlined is-success is-small">
+        <b-icon icon="settings"></b-icon>
+      </b-button>
+    </b-tooltip>
     <b-modal :active.sync="isComponentModalActive" has-modal-card>
       <form action>
         <div class="modal-card" style="width: auto">
@@ -42,7 +42,7 @@ export default {
     async confirm() {
       if (this.quantidade && this.quantidade > 0) {
         console.log(
-          await this.$axios.$patch(`/doacao/${this.doacao.id}/`, {
+          await this.$axios.$patch(`/item/${this.doacao.id}/`, {
             quantidade_prometida: this.quantidade
           })
         )

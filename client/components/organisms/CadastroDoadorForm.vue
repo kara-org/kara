@@ -74,7 +74,7 @@
           type="text"
           v-model.trim="doador.telefone[0].numero"
           v-cleave="masks.phone"
-          maxlength="14"
+          maxlength="15"
           name="telefone"
           v-validate="'required|phone'"
         ></b-input>
@@ -105,7 +105,7 @@
             type="password"
             name="senha"
             v-model="doador.password"
-            v-validate="'required|min:8'"
+            v-validate="'required|min:4'"
             ref="senha"
           />
         </b-field>
@@ -193,7 +193,7 @@ export default {
         },
         phone: {
           delimiters: ['(', ')', ' ', '-'],
-          blocks: [0, 2, 0, 4, 4],
+          blocks: [0, 2, 0, 4, 5],
           numericOnly: true
         },
         cnpj: {
@@ -205,13 +205,12 @@ export default {
     }
   },
   created() {
-    !this.isCadastro
-      ? (this.doador = JSON.parse(JSON.stringify(this.$auth.user)))
-      : this.doador
+    if (!this.isCadastro) {
+      this.doador = JSON.parse(JSON.stringify(this.$auth.user))
+    }
   },
   methods: {
     loadFoto() {
-      console.log(URL.createObjectURL(this.doador.foto))
       return URL.createObjectURL(this.doador.foto)
     },
     async patch() {
@@ -219,9 +218,17 @@ export default {
         await this.$axios
           .patch(`/usuario/${this.$auth.user.id}/`, {
             nome_completo: this.doador.nome_completo,
-            telefone: this.doador.telefone,
-            email: this.doador.email,
+            //telefone: this.doador.telefone,
+            email: this.doador.email
             //foto: this.doador.foto
+          })
+          .then(response => {
+            this.$toast.open({
+              message: 'Atualização realizada com successo!',
+              type: 'is-success',
+              position: 'is-top'
+            })
+            this.$router.push('/editarPerfil')
           })
           .catch(err => {
             if (!err.response) {
@@ -247,9 +254,7 @@ export default {
           .post('usuario/', this.doador)
           .then(response => {
             this.$toast.open({
-              message: this.isCadastro
-                ? 'Cadastro realizado com successo! Será enviada uma confirmação para seu email.'
-                : 'Atualização realizada com successo! Será enviada uma confirmação para seu email.',
+              message: 'Cadastro realizado com successo!',
               type: 'is-success',
               position: 'is-top'
             })
@@ -263,7 +268,6 @@ export default {
             } else if (err.response.status === 400) {
               if (err.response.data.non_field_errors)
                 err.message = err.response.data.non_field_errors[0]
-              err.message = err.response.data.non_field_errors[0]
             }
             this.$toast.open({
               message: err.message,
@@ -279,9 +283,9 @@ export default {
     validateBeforeSubmit() {
       this.$validator.validateAll().then(result => {
         if (result) {
-          var num = this.doador.telefone[0].numero
-          this.doador.telefone[0].numero = Number.parseInt(
-            num.replace(/\D/g, '')
+          this.doador.telefone[0].numero = this.doador.telefone[0].numero.replace(
+            /\D/g,
+            ''
           )
           this.doador.cpf = this.doador.cpf.replace(/\D/g, '')
           this.isCadastro ? this.register() : this.patch()

@@ -1,16 +1,18 @@
 <template>
   <div>
-    <section class="hero is-fullheight-with-navbar">
-      <div class="hero-body banner">
+    <section class="hero is-fullheight-with-navbar video">
+      <div class="hero-video">
         <video
           autoplay
           loop
           muted
-          class="banner__video"
+
           poster=""
         >
           <source src="~assets/video/video-bg.mp4" type="video/mp4" />
         </video>
+      </div>
+      <div class="hero-body banner">
         <div class="container">
           <h2 class="subtitle">
             <span>Ajude o próximo</span>
@@ -19,35 +21,91 @@
         </div>
       </div>
     </section>
-    <section class="hero is-fullheight">
-      <div class="hero-body">
-        <div class="container">
-          <div class="level">
-            <!-- <ListagemOngs :list="list" :isBusca="true"/> -->
+    <section class="section sobre">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-full">
+            <h1 class="title is-primary is-size-2 has-text-centered">Como funciona</h1>
+          </div>
+        </div>
+        <div class="columns is-vcentered">
+          <div class="column is-half">
+            <figure class="image">
+              <img src="~assets/sobre/acesso.svg">
+            </figure>
+          </div>
+          <div class="column">
+            <div class="hero is-completeheight">
+              <div class="hero-body">
+                <div class="container">
+                  <h2 class="is-size-4 is-2 has-text-dark">
+                    <div class="tag is-size-6 is-primary">1</div><p>Primeiro, você precisa buscar uma demanda na nossa barra de busca, experimente digitar "Arroz" e clicar no botão buscar</p>
+                  </h2>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="columns is-vcentered">
+            <div class="column">
+              <div class="hero is-completeheight">
+                <div class="hero-body">
+                  <div class="container">
+                    <h2 class="is-size-4 is-2 has-text-dark is-centered">
+                      <div class="tag is-size-6 is-primary">2</div><p>  Inicie uma conversa por telefone ou email para combinar o encontro com a ONG</p>
+                    </h2>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="column is-half">
+              <figure class="image">
+                <img src="~assets/sobre/combine.svg">
+              </figure>
+            </div>
+        </div>
+        <div class="columns is-vcentered">
+          <div class="column is-half">
+            <figure class="image">
+              <img src="~assets/sobre/entrega.svg">
+            </figure>
+          </div>
+          <div class="column">
+            <div class="hero is-completeheight">
+              <div class="hero-body">
+                <div class="container is-vcentered">
+                  <h2 class="is-size-4 is-2 has-text-dark">
+                    <div class="tag is-size-6 is-primary">3</div><p> Agora é só entregar sua doação e aproveitar pra conhecer o projeto que você está apoiando! </p>
+                  </h2>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
-    <section></section>
+    <section >
+    </section>
   </div>
 </template>
 
 <script>
-import ListagemOngs from '../components/organisms/ListagemCards'
 import Buscar from '../components/molecules/BuscarForm'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'HomePage',
   components: {
-    ListagemOngs,
     Buscar
   },
   computed: {
-    list (){
-      return this.$store.state.busca.list
-    }
   },
-  created: function() {}
+  methods: {
+     ...mapActions('busca', ['fetchBusca', 'buscar']),
+  },
+  created: function() {
+    this.fetchBusca('demandas')
+  }
 }
 </script>
 <style lang="scss" scoped>
@@ -85,5 +143,8 @@ export default {
   min-height: 100%;
   transform: translateX(-50%) translateY(-50%);
   z-index: -1;
+}
+.is-completeheight {
+  height: 100%;
 }
 </style>

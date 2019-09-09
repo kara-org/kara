@@ -8,11 +8,11 @@
         </p>
         <p class="is-size-5 heading">
           Restam
-          <strong>{{  demanda.quantidade_solicitada - demanda.quantidade_alcancada }}</strong>
+          <strong>{{ quantidadeRestante }}</strong>
           para a meta
         </p>
         <div class="level-right" v-if="!isCarrinho">
-          <DoarModal :text="'Doar'" :idOng="1" :item="demanda" />
+          <DoarModal :text="'Doar'" :id="1" :item="demanda" />
         </div>
         <div class="level" v-else>
           <button class="delete is-medium" @click="remover">Remover</button>
@@ -23,16 +23,18 @@
   </transition>
 </template>
 <script>
-
 import DoarModal from '@/components/molecules/DoarModal.vue'
-import { mapActions } from 'vuex';
+import { mapActions } from 'vuex'
 
 export default {
   components: { DoarModal },
-  props: [
-    'demanda',
-    'isCarrinho'
-  ],
+  props: ['demanda', 'isCarrinho'],
+  computed: {
+    quantidadeRestante () {
+      let restante = this.demanda.quantidade_solicitada - this.demanda.quantidade_alcancada
+      return restante >= 0 ? restante : 0
+    }
+  },
   methods: {
     ...mapActions('carrinho', ['removerItemNoCarrinho']),
     remover: function() {
@@ -43,8 +45,7 @@ export default {
           this.removerItemNoCarrinho(this.demanda)
         }
       })
-    },
-
+    }
   }
 }
 </script>

@@ -1,5 +1,7 @@
 export const state = () => ({
-  ong: {},
+  ong: {
+    demandas: []
+  },
   itensSelecionados: [],
 })
 
@@ -24,12 +26,12 @@ export const actions = {
 
   sendDoacao (context) {
     let doacao = {
-      'item_doacao' : context.state.itensSelecionados.map( i => { return { "demanda": i.demanda, 'quantidade_prometida' : i.quantidade_prometida } } ),
+      'item_doacao' : context.state.itensSelecionados.map( i => { return { "id_demanda": i.demanda.id, 'quantidade_prometida' : i.quantidade_prometida } }),
       'id_usuario' : context.rootState.auth.user.id,
       'data_agendamento': '2019-12-30'
     }
 
-    this.$DoacaoService.create(doacao);
+    return this.$DoacaoService.create(doacao);
   },
 
   adicionarItemNoCarrinho (context, item) {
@@ -49,6 +51,6 @@ export const getters = {
     return state.itensSelecionados ? state.itensSelecionados.map(i => i.demanda) : []
   },
   itensForaDoCarrinho: (state, getters) => {
-    return state.ong.demandas.filter(x => ! getters.itensNoCarrinho.map(y => y.id).includes(x.id));
+    return state.ong.demandas.filter(x => ! getters.itensNoCarrinho.map(i => i.id).includes(x.id));
   }
 }

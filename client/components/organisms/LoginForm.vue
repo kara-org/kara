@@ -19,7 +19,7 @@
           name="Senha"
           password-reveal
           v-model="password"
-          v-validate="'required|min:8'"
+          v-validate="'required|min:4'"
         />
       </b-field>
         <div class="level has-text-centered">

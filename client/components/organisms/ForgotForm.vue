@@ -40,9 +40,45 @@ export default {
   },
   methods: {
     async resetPassword() {
-      setTimeout(() => {
-        this.sucess = true
-      }, 1000)
+      try {
+        await this.$axios
+          .post('/recuperar-senha/', {
+            email: this.email
+          })
+          .then(response => {
+            this.$toast.open({
+              message: 'Recuperação de senha enviada para email com successo!',
+              type: 'is-success',
+              position: 'is-top'
+            })
+            this.$router.push('/login')
+          })
+          .catch(err => {
+            if (!err.response) {
+              err.message = 'Servidor desconectado'
+            } else if (err.response.status === 400) {
+              if (err.response.data.non_field_errors) {
+                err.message = err.response.data.non_field_errors[0]
+              } else if (err.response.data.usuario) {
+                Object.keys(err.response.data.usuario).forEach(key => {
+                  this.$toast.open({
+                    message: err.response.data.usuario[key][0],
+                    type: 'is-danger',
+                    position: 'is-bottom'
+                  })
+                })
+                return
+              }
+            }
+            this.$toast.open({
+              message: 'Email não encontrado.',
+              type: 'is-danger',
+              position: 'is-bottom'
+            })
+          })
+      } catch (e) {
+        this.error = e.response.data.message
+      }
     },
 
     validateBeforeSubmit() {

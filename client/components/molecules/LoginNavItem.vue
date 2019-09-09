@@ -1,14 +1,12 @@
 <template>
   <div>
-    <div class="buttons-auth" v-if="!isAuthenticated">
+    <div class="buttons-auth" v-show="!isAuthenticated">
       <div class="navbar-item">
         <nuxt-link
           class="button is-primary is-outlined is-rounded"
           to="/login"
           exact-active-class="is-active"
-        >
-          Entrar
-        </nuxt-link>
+        >Entrar</nuxt-link>
       </div>
       <div class="navbar-item">
         <nuxt-link
@@ -21,9 +19,9 @@
         </nuxt-link>
       </div>
     </div>
-    <div class="perfil-auth navbar-item media" v-else>
+    <div class="perfil-auth navbar-item media" v-show="isAuthenticated">
       <figure class="image media-left is-32x32">
-        <img class="is-rounded" :src="user.foto" />
+        <img class="is-rounded" :src="isAuthenticated ? user.foto : null" />
       </figure>
       <div class="media-content">
         <span>
@@ -34,19 +32,19 @@
         </span>
       </div>
       <div class="navbar-item" />
-      <div class="navbar-item" v-if="!user.vinculo_ong">
-        <nuxt-link
-          class="button is-primary is-outlined is-rounded"
-          to="/editarPerfil"
-          exact-active-class="is-active"
-        >Perfil</nuxt-link>
-      </div>
-      <div class="navbar-item" v-else>
+      <div class="navbar-item" v-show="vinculoOng">
         <nuxt-link
           class="button is-primary is-outlined is-rounded"
           to="/gerenciarDemandas"
           exact-active-class="is-active"
         >Gerenciamento</nuxt-link>
+      </div>
+      <div class="navbar-item" v-show="!vinculoOng">
+        <nuxt-link
+          class="button is-primary is-outlined is-rounded"
+          to="/editarPerfil"
+          exact-active-class="is-active"
+        >Perfil</nuxt-link>
       </div>
       <div class="media-right">
         <a href="#" class="nav-link" @click="logout">sair</a>
@@ -57,35 +55,33 @@
 
 <script>
 export default {
-  data() {
-    return {
-     user: { nome_completo: '' }
-    }
-  },
   computed: {
     isAuthenticated() {
       return this.$auth.loggedIn
     },
+    user() {
+      return this.$auth.user
+    },
     userName() {
-      return this.user.nome_completo.split(' ')[0]
+      return this.isAuthenticated ? this.user.nome_completo.split(' ')[0] : null
+    },
+    vinculoOng() {
+      return this.isAuthenticated ? this.user.vinculo_ong : null
     }
   },
   methods: {
     logout: function() {
       this.$dialog.confirm({
-        message: 'Deseja mesmo Sair?',
+        message: 'Deseja mesmo sair?',
         confirmText: 'Sim',
         onConfirm: () => {
           this.$auth.logout()
           this.$router.push('/')
-          this.$toast.open('Logout Realizado com sucesso')
+          this.$toast.open('Logout realizado com sucesso')
         }
       })
     }
   },
-  mounted () {
-    this.user = this.$auth.user
-  }
 }
 </script>
 

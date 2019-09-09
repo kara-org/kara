@@ -8,6 +8,8 @@ from django.db import transaction
 
 from .models import *
 
+from kara.email import EnviarEmail
+
 REGEX_PASSWORD = re.compile('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,50}$')
 
 class EnderecoSerializer(serializers.ModelSerializer):
@@ -65,20 +67,32 @@ class UsuarioSerializer(serializers.ModelSerializer):
         
     def create(self, validated_data):
         print(validated_data)
-        endereco = validated_data.pop("endereco")
-        telefone = validated_data.pop("telefone")
+        temEndereco = False
+        if 'endereco' in validated_data:
+            temEndereco, endereco = True, validated_data.pop("endereco")
+        
+        temTelefone = False
+        if 'telefone' in validated_data:
+            temTelefone, telefone = True, validated_data.pop("telefone")
         
         try:
-            end = Endereco(**endereco)
-            end.save()
-            
-            user = Usuario.objects.create_user(endereco= end,  **validated_data)
+            if temEndereco:
+                end = Endereco(**endereco)
+                end.save()
+                user = Usuario.objects.create_user(endereco= end,  **validated_data)
+            else:
+                user = Usuario.objects.create_user( **validated_data)
+
             for t in telefone:
                 fone = Telefone(**t)
                 fone.save()
                 user.telefone.add(fone)
             user.save()
-        
+
+            try:
+                EnviarEmail().send_mail(user.email, user.nome_completo,'boas-vindas')
+            except Exception as e:
+                print(e)
             return user
         except Exception as e:
             print(e)
@@ -142,3 +156,16 @@ class OngListSerializer(serializers.ModelSerializer):
         model = Ong
         fields = ['id', 'nome', 'cnpj', 'historia', 'telefone', 'ativo', 'endereco']
 
+class UsuarioOngSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(max_length=128, write_only=True)
+    endereco = EnderecoSerializer(allow_null=True, required=False)
+    telefone = TelefoneSerializer(many=True, allow_null=True, required=False)
+    ong = OngSerializer()
+
+    class Meta:
+        model = Usuario
+        fields = (
+                    'id', 'email', 'password', 'nome_completo', 'ativo',
+                    'ultimo_login', 'cpf', 'foto','vinculo_ong',
+                    'endereco','telefone', 'vinculo_ong', 'ong',
+                )

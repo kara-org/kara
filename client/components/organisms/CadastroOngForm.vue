@@ -115,7 +115,7 @@
             type="password"
             name="senha"
             v-model="ong.usuario.password"
-            v-validate="'required|min:8'"
+            v-validate="'required|min:4'"
             ref="senha"
           />
         </b-field>
@@ -150,7 +150,7 @@
         type="submit"
         class="button is-primary is-outlined is-medium is-rounded is-fullwidth"
       >Confirmar</button>
-      <div class="has-text-centered">
+      <div class="column has-text-centered">
         <nuxt-link
           class="voltar is-primary is-inverted"
           to="/"
@@ -165,6 +165,11 @@
     <div v-else class="column has-text-centered">
       <h1>Atualização realizada com sucesso!</h1>
       <hr />
+      <button
+        class="button is-primary is-outlined is-rounded"
+        @click="success=false"
+        exact-active-class="is-active"
+      >Voltar</button>
     </div>
   </section>
 </template>
@@ -223,7 +228,7 @@ export default {
       masks: {
         phone: {
           delimiters: ['(', ')', ' ', '-'],
-          blocks: [0, 2, 0, 4, 4],
+          blocks: [0, 2, 0, 4, 5],
           numericOnly: true
         },
         cnpj: {
@@ -245,18 +250,11 @@ export default {
     }
   },
   async mounted() {
-    //id = this.$auth.user.id_ong
     if (this.$auth.user && this.$auth.user.vinculo_ong) {
-      var ong = await this.$axios.$get(`ong/${1}`)
-      console.log(ong)
-      this.ong.cnpj = ong.cnpj
-      this.ong.historia = ong.historia
-      this.ong.nome = ong.nome
+      this.$OngService.show(this.$auth.user.ong.id).then(response => {
+        this.ong = response
+      })
     }
-    //this.ong.endereco = ong.endereco
-    //this.ong.telefone = ong.telefone
-    //this.ong.email = ong.email
-    //console.log(await this.fetchPerfilOng(1))
   },
   methods: {
     ...mapActions('ongs', ['fetchPerfilOng']),
@@ -265,28 +263,34 @@ export default {
     },
     async register() {
       try {
-        await this.$axios.post('ong/', this.ong).catch(err => {
+        await this.$OngService.create(this.ong)
+          .then(response => {
             this.$toast.open({
-              message: this.isCadastro
-                ? 'Cadastro realizado com successo! Será enviada uma confirmação para seu email.'
-                : 'Atualização realizada com successo! Será enviada uma confirmação para seu email.',
+              message: 'Cadastro realizado com successo!',
               type: 'is-success',
               position: 'is-top'
             })
             this.$router.push('/login')
           })
           .catch(err => {
-            console.error(this.errors)
-
             if (!err.response) {
               err.message = 'Servidor desconectado'
             } else if (err.response.status === 400) {
-              if (err.response.data.non_field_errors)
+              if (err.response.data.non_field_errors) {
                 err.message = err.response.data.non_field_errors[0]
-              err.message = err.response.data.non_field_errors[0]
+              } else if (err.response.data.usuario) {
+                Object.keys(err.response.data.usuario).forEach(key => {
+                  this.$toast.open({
+                    message: err.response.data.usuario[key][0],
+                    type: 'is-danger',
+                    position: 'is-bottom'
+                  })
+                })
+                return
+              }
             }
             this.$toast.open({
-              message: err.message,
+              message: err.response.data.message,
               type: 'is-danger',
               position: 'is-bottom'
             })
@@ -297,19 +301,34 @@ export default {
     },
     async change() {
       try {
-        await this.$axios.$patch(`ong/${1}/`,{ nome: this.ong.nome, historia: this.ong.historia }).catch(err => {
-          if (!err.response) {
-            err.message = 'Servidor desconectado'
-          } else if (err.response.status === 400) {
-            err.message = err.response.data.non_field_errors[0]
-          }
-          this.$toast.open({
-            message: err.message,
-            type: 'is-danger',
-            position: 'is-bottom'
+        await this.$OngService.update(this.ong.id, {
+            nome: this.ong.nome,
+            historia: this.ong.historia
           })
-        })
-        this.success = true
+          .then(response => {
+            this.$toast.open({
+              message: 'Atualização realizada com successo!',
+              type: 'is-success',
+              position: 'is-top'
+            })
+            this.success = true
+            // this.$router.push('/editarOng')
+          })
+          .catch(err => {
+            if (!err.response) {
+              err.message = 'Servidor desconectado'
+            } else if (err.response.status === 400) {
+              if (err.response.data.non_field_errors)
+                err.message = err.response.data.non_field_errors[0]
+            }
+            this.$toast.open({
+              message: err.response.data.message,
+              type: 'is-danger',
+              position: 'is-bottom'
+            })
+            this.success = false
+          })
+
       } catch (e) {
         this.error = e.response.data.message
       }

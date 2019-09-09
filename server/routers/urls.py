@@ -43,9 +43,21 @@ doacao_patterns = [
     path('doacao/<int:pk>/cancelar/', DoacaoViewUser.as_view({'delete': 'destroy'}), name='cancelar_doacao')
 ]
 
+item_doacao =[
+    path('item/<int:pk>/confirmar/', ItemDoacaoView.as_view({'post': 'post'}), name='confirmar_item_doacao'),
+    path('item/<int:pk>/cancelar/', ItemDoacaoView.as_view({'delete': 'delete'}), name='cancelar_item_doacao'),
+    path('item/<int:pk>/', ItemDoacaoView.as_view({'patch': 'patch'}), name='alterar_item_doacao')
+]
+
 busca_patterns = [
      path('busca/demandas', BuscaDemandasView.as_view({'get': 'list'}), name='buscas'),
      path('busca/ongs', BuscaOngsView.as_view({'get': 'list'}), name='buscas'),
 ]
 
-urlpatterns = autenticacao_patterns + usuario_patterns + ong_patterns + demanda_patterns + doacao_patterns + busca_patterns
+teste_email = [
+    path('email/', test_email),
+]
+
+urlpatterns = autenticacao_patterns + usuario_patterns + ong_patterns + demanda_patterns + doacao_patterns \
+              + item_doacao + busca_patterns
+urlpatterns +=teste_email

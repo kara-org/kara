@@ -1,21 +1,24 @@
 <template>
   <div>
-    <h1 class="title">Encontre uma {{ tipo }} e faça sua doação!</h1>
-    <b-field class="filtro">
-      <b-select v-model="tipo" placeholder="Tipo da busca" size="is-large">
+    <h1 class="title">Encontre {{ tipo }} e faça sua doação!</h1>
+    <b-field grouped group-multiline position="is-centered" class="filtro">
+      <!-- <b-select v-model="tipo" placeholder="Tipo da busca" size="is-large">
         <option value="demandas">Demanda</option>
         <option value="ongs" disabled>ONG</option>
-      </b-select>
+      </b-select> -->
 
       <b-input
         :expanded="true"
         placeholder="Digite aqui sua busca"
         size="is-large"
         type="search"
+        class="filtro"
         v-model="palavraChave"
         @keyup.enter.native="send"
       ></b-input>
-      <b-button class="is-primary" size="is-large" @click="send" icon="magnify" :loading="loading">Buscar</b-button>
+      <p class="control">
+        <b-button class="button is-primary" size="is-large" @click="send" icon="magnify" :loading="loading">Buscar</b-button>
+      </p>
     </b-field>
   </div>
 </template>
@@ -72,9 +75,10 @@ export default {
 .button {
   border-top-right-radius: 25px;
   border-bottom-right-radius: 25px;
-  border-top-left-radius: 0px;
-  border-bottom-left-radius: 0px;
+  border-top-left-radius: 25px;
+  border-bottom-left-radius: 25px;
 }
+
 
 .title,
 .subtitle {
@@ -85,6 +89,15 @@ export default {
     padding: 5px;
   }
 }
+
+  @media only screen and (max-width:768px){
+    .button {
+      width: 100%;
+      padding: auto 30px;
+      border-top-left-radius: 25px;
+      border-bottom-left-radius: 25px;
+    }
+  }
 
 </style>
 

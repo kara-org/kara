@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <div class="columns is-multiline">
-      <div v-for="item in list" :key="item.id" class="column" :class="isBusca ? 'is-one-third' : 'is-half'">
+    <div class="columns is-desktop">
+      <div v-for="item in list" :key="item.id" class="column" :class="isBusca ? 'is-one-third is-full-mobile' : 'is-half'">
         <CardOng
           :demanda="item"
           :isCarrinho="false"
