@@ -14,11 +14,11 @@
           para a meta
         </p>
         <div class="level-right" v-if="!isCarrinho">
-          <DoarModal :text="'Doar'" :id="1" :item="demanda" />
+          <DoarModal :text="'Doar'" :idOng="ong && ong.id ? ong.id : demanda.ong.id" :id="1" :item="demanda" />
         </div>
         <div class="level" v-else>
           <button class="delete is-medium" @click="remover">Remover</button>
-          <DoarModal :text="'Editar'" />
+          <DoarModal :idOng="ong && ong.id ? ong.id : demanda.ong.id" :text="'Editar'" />
         </div>
       </div>
     </div>
@@ -36,6 +36,7 @@ export default {
       let restante = this.demanda.quantidade_solicitada - this.demanda.quantidade_alcancada
       return restante >= 0 ? restante : 0
     }
+
   },
   methods: {
     ...mapActions('carrinho', ['removerItemNoCarrinho']),
