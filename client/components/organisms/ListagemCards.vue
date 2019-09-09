@@ -4,6 +4,7 @@
       <div v-for="item in list" :key="item.id" class="column" :class="isBusca ? 'is-one-third is-full-mobile' : 'is-half'">
         <CardOng
           :demanda="item"
+          :ong="ong"
           :isCarrinho="false"
         />
       </div>
@@ -14,7 +15,7 @@
 <script>
 import CardOng from '../molecules/CardDemanda'
 
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
   props: {
     isBusca: Boolean,
@@ -27,6 +28,7 @@ export default {
     return {}
   },
   computed: {
+    ...mapState('carrinho', ['ong'])
   },
   methods: {
     ...mapActions('busca', ['fetchBusca', 'buscar'])

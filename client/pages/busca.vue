@@ -11,8 +11,7 @@
       <div class="hero-head">
         <div class="container">
             <h1 class="title is-4  has-text-centered is-primary">Demandas</h1>
-            <p class="has-text-centered"><small >Encontre itens, caso não encontre, veja nossas sugestões abaixo</small></p>
-
+            <p class="has-text-centered"><small >Busque por itens, caso não encontre, veja nossas sugestões abaixo </small></p>
             <ListagemOngs :list="list" :isBusca="true"/>
         </div>
       </div>

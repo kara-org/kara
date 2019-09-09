@@ -15,6 +15,9 @@ export const mutations = {
   REMOVE_ITEM (state, item) {
     state.itensSelecionados = state.itensSelecionados.filter(i => i.demanda.id !== item.id)
   },
+  ESVAZIAR_CARRINHO (state) {
+    state.itensSelecionados = []
+  },
 }
 
 export const actions = {
@@ -26,15 +29,25 @@ export const actions = {
 
   sendDoacao (context) {
     let doacao = {
-      'item_doacao' : context.state.itensSelecionados.map( i => { return { "id_demanda": i.demanda.id, 'quantidade_prometida' : i.quantidade_prometida } }),
+      'item_doacao' : context.state.itensSelecionados.map(item => {
+        return {
+          'id_demanda': item.demanda.id,
+          'quantidade_prometida' : item.quantidade_prometida
+        }
+      }),
       'id_usuario' : context.rootState.auth.user.id,
       'data_agendamento': '2019-12-30'
     }
 
-    return this.$DoacaoService.create(doacao);
+    return this.$DoacaoService.create(doacao).then(() => {
+      context.commit('ESVAZIAR_CARRINHO')
+    });
   },
 
   adicionarItemNoCarrinho (context, item) {
+    if(context.state.itensSelecionados.map(i => i.id).includes(item.id)){
+      return
+    }
     context.commit('ADD_ITEM', item)
   },
 
@@ -48,9 +61,9 @@ export const getters = {
     return state.itensSelecionados.length > 0
   },
   itensNoCarrinho: (state) => {
-    return state.itensSelecionados ? state.itensSelecionados.map(i => i.demanda) : []
+    return state.itensSelecionados || []
   },
   itensForaDoCarrinho: (state, getters) => {
-    return state.ong.demandas.filter(x => ! getters.itensNoCarrinho.map(i => i.id).includes(x.id));
+    return state.ong.demandas.filter(x => ! getters.itensNoCarrinho.map(i => i.demanda.id).includes(x.id));
   }
 }

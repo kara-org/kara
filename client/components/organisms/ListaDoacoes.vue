@@ -14,7 +14,7 @@
         <b-table-column field="id" label="ID Doação" centered>{{ fProps.row.id }}</b-table-column>
 
         <b-table-column v-if="isDoador" field="ong" label="ONG" centered>
-          <span>{{ fProps.row.item_doacao[0].demanda.ong.nome }}</span>
+          <span>{{ fProps && fProps.row.item_doacao[0]  && fProps.row.item_doacao[0].demanda.ong.nome }}</span>
         </b-table-column>
         <b-table-column
           v-else
