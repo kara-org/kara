@@ -9,8 +9,10 @@
     <div class="cards is-scroll-y">
       <div v-for="item in demandas" :key="item.id" class="column is-full">
         <CardDemanda
-          :demanda="item"
+          :demanda="item.demanda"
+          :ong="ong"
           :isCarrinho="true"
+          :quantidadePrometida="item.quantidade_prometida"
         />
       </div>
     </div>
@@ -19,7 +21,7 @@
 
 <script>
 import CardDemanda from '../molecules/CardDemanda'
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapState } from 'vuex'
 
 export default {
   components: {
@@ -31,6 +33,7 @@ export default {
   },
   computed: {
     ...mapGetters({ demandas: 'carrinho/itensNoCarrinho' }),
+    ...mapState('carrinho', ['ong'])
   },
   methods: {
     ...mapActions('carrinho', ['sendDoacao']),

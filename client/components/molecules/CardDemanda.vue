@@ -2,11 +2,14 @@
   <transition name="fade" appear>
     <div class="box">
       <div class="card-content">
-        <p class="title is-4 heading" style="font-weight: bold!important;">{{ demanda.descricao }}</p>
-        <p class="is-size-5 heading">
+        <p v-if="isCarrinho"> Entregar {{ quantidadePrometida }} de </p>
+        <p class="title is-4 heading" style="margin-bottom: 8px"><strong> {{ demanda.descricao }}</strong></p>
+        <p style="text-transform: uppercase">
           <!-- <nuxt-link :to="`/ong/${ demanda && demanda.ong && demanda.ong.id }`" exact-active-class="is-active">{{ demanda && demanda.ong && demanda.ong.nome }}</nuxt-link> -->
+
+          <small>para <span class="has-text-primary"> {{ ong ? ong.nome : demanda.ong.nome }} </span></small>
         </p>
-        <p class="is-size-5 heading">
+        <p class="is-size-5 heading" v-if="!isCarrinho">
           Restam
           <strong>{{ quantidadeRestante }}</strong>
           para a meta
@@ -28,7 +31,7 @@ import { mapActions } from 'vuex'
 
 export default {
   components: { DoarModal },
-  props: ['demanda', 'isCarrinho'],
+  props: ['demanda', 'isCarrinho', 'ong', 'quantidadePrometida'],
   computed: {
     quantidadeRestante () {
       let restante = this.demanda.quantidade_solicitada - this.demanda.quantidade_alcancada
