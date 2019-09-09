@@ -6,8 +6,7 @@
         <p class="title is-4 heading" style="margin-bottom: 8px"><strong> {{ demanda.descricao }}</strong></p>
         <p style="text-transform: uppercase">
           <!-- <nuxt-link :to="`/ong/${ demanda && demanda.ong && demanda.ong.id }`" exact-active-class="is-active">{{ demanda && demanda.ong && demanda.ong.nome }}</nuxt-link> -->
-
-          <small>para <span class="has-text-primary"> {{ ong ? ong.nome : demanda.ong.nome }} </span></small>
+          <small>para <span class="has-text-primary"> {{ ong && ong.nome ? ong.nome : demanda.ong.nome }} </span></small>
         </p>
         <p class="is-size-5 heading" v-if="!isCarrinho">
           Restam
