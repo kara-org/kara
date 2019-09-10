@@ -39,7 +39,7 @@ export default {
   methods: {
     ...mapActions('carrinho', ['limparCarrinho'])
   },
-  created: function() {
+  mounted: function() {
     this.limparCarrinho()
   }
 }
