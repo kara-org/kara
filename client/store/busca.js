@@ -54,3 +54,9 @@ export const actions = {
       .then(() => dispatch('global/stopLoading', null, { root: true }))
   }
 }
+
+export const getters = {
+  demandasPorOng: (state) => idOng => {
+    return state.default.filter(i => i.ong.id === idOng)
+  },
+}

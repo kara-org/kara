@@ -2,6 +2,7 @@ export const state = () => ({
   ong: {
     demandas: []
   },
+  itensDisponiveis: [],
   itensSelecionados: [],
 })
 
@@ -15,6 +16,9 @@ export const mutations = {
   REMOVE_ITEM (state, item) {
     state.itensSelecionados = state.itensSelecionados.filter(i => i.demanda.id !== item.id)
   },
+  UPDATE_ITENS_FORA (state, payload){
+    state.itensDisponiveis = payload
+  },
   ESVAZIAR_CARRINHO (state) {
     state.itensSelecionados = []
   },
@@ -25,6 +29,10 @@ export const actions = {
     this.$OngService.show(idOng).then((payload) => {
       context.commit('UPDATE_ONG', payload)
     })
+  },
+
+  fetchItens(context, payload){
+    context.commit('UPDATE_ITENS_FORA', payload)
   },
 
   sendDoacao (context) {
@@ -45,8 +53,12 @@ export const actions = {
   },
 
   adicionarItemNoCarrinho (context, item) {
-    if(context.state.itensSelecionados.map(i => i.id).includes(item.id)){
-      return
+    for (const itemSelecionado of context.state.itensSelecionados) {
+      if (itemSelecionado.demanda.id === item.demanda.id) {
+        return
+      }
+
+
     }
     context.commit('ADD_ITEM', item)
   },
@@ -54,6 +66,10 @@ export const actions = {
   removerItemNoCarrinho (context, item) {
     context.commit('REMOVE_ITEM', item)
   },
+
+  limparCarrinho(context) {
+    context.commit('ESVAZIAR_CARRINHO')
+  }
 }
 
 export const getters = {
@@ -64,6 +80,6 @@ export const getters = {
     return state.itensSelecionados || []
   },
   itensForaDoCarrinho: (state, getters) => {
-    return state.ong.demandas.filter(x => ! getters.itensNoCarrinho.map(i => i.demanda.id).includes(x.id));
+    return state.itensDisponiveis && state.itensDisponiveis.filter(x => ! getters.itensNoCarrinho.map(i => i.demanda.id).includes(x.id));
   }
 }

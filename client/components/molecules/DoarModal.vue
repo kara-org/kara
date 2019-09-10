@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
   props: {
     text: {
@@ -68,10 +68,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({ carrinhoVazio: 'carrinho/isEmpty' })
+    ...mapGetters({ carrinhoVazio: 'carrinho/isEmpty' }),
   },
   methods: {
-    ...mapActions('carrinho', ['fetchOng', 'adicionarItemNoCarrinho']),
+    ...mapGetters({ itensOng: 'busca/demandasPorOng' }),
+    ...mapActions('carrinho', ['fetchOng', 'fetchItens','adicionarItemNoCarrinho']),
     ...mapActions('doacoes', ['confirmaItemDoacao', 'fetchDoacoesOng']),
     confirmado() {
       if (this.text === 'Confirmar') {
@@ -84,6 +85,7 @@ export default {
           })
       } else {
         this.fetchOng(this.idOng)
+        this.fetchItens(this.itensOng()(this.idOng))
         this.adicionarItemNoCarrinho({
           demanda: this.item,
           quantidade_prometida: this.quantidade
