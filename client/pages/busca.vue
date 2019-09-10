@@ -23,6 +23,7 @@
 <script>
 import ListagemOngs from '../components/organisms/ListagemCards'
 import Buscar from '../components/molecules/BuscarForm'
+import { mapActions } from 'vuex';
 
 export default {
   name: 'HomePage',
@@ -35,7 +36,12 @@ export default {
       return this.$store.state.busca.list
     }
   },
-  created: function() {}
+  methods: {
+    ...mapActions('carrinho', ['limparCarrinho'])
+  },
+  created: function() {
+    this.limparCarrinho()
+  }
 }
 </script>
 <style>

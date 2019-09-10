@@ -33,7 +33,10 @@ export default {
   },
   computed: {
     ...mapGetters({ demandas: 'carrinho/itensNoCarrinho' }),
-    ...mapState('carrinho', ['ong'])
+    ong () {
+      console.log(this.$store.state.carrinho['ong'])
+      return this.$store.state.carrinho.ong
+    }
   },
   methods: {
     ...mapActions('carrinho', ['sendDoacao']),
