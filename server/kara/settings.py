@@ -27,8 +27,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
+    '10.0.2.2',
     'localhost',
     '127.0.0.1:8000',
+    '10.0.2.2:8000',
     'localhost:8000',
     'api.karadoacoes.tk',
     'karadoacoes.tk'
