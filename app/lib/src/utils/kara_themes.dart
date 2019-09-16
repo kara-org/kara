@@ -30,10 +30,10 @@ class KaraThemes {
   static const appBarTheme = const AppBarTheme(
     brightness: Brightness.light,
     textTheme: TextTheme(
-      title: TextStyle(color: Color(0xff20c090), fontSize: 20),
+      title: TextStyle(color: Colors.black, fontSize: 20),
     ),
     color: Colors.white,
-    iconTheme: IconThemeData(color: Color(0xff20c090)),
+    iconTheme: IconThemeData(color: Colors.black),
   );
 
   static const tabBarTheme = const TabBarTheme(

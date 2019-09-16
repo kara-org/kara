@@ -8,19 +8,26 @@ const errorCampoLoginOrSenhaNull = 'Login e/ou senha vazios';
 const errorCampoIdentificadorNull = 'Identificador vazio';
 const DESCRIPTION_APP_TITLE = 'Kara Doações';
 const DESCRIPTION_OK = 'Entendi';
+const DESCRIPTION_HOW_WORKS = 'Como funciona';
 const DESCRIPTION_ENTER = "Entrar";
 const DESCRIPTION_MISSING_FIELD = "Campo obrigatório";
 const DESCRIPTION_LOGIN = 'Login';
 const DESCRIPTION_LOGIN_HINT = 'Insira seu login';
 const DESCRIPTION_EMAIL = 'Email';
+const DESCRIPTION_SEARCH = 'Buscar';
+const DESCRIPTION_HELP_BY_DONATE = 'Ajude o próximo';
+const DESCRIPTION_SEARCH_DEMANDS = 'Encontre demandas e faça sua doação!';
+const DESCRIPTION_SEARCH_HINT = 'Digite aqui sua busca';
 const DESCRIPTION_EMAIL_HINT = 'Insira seu email';
 const DESCRIPTION_INVALID_EMAIL = 'Formato de email inválido';
 const DESCRIPTION_PASSWORD = 'Senha';
 const DESCRIPTION_PASSWORD_HINT = 'Insira sua senha';
-const DESCRIPTION_INVALID_PASSWORD = 'Senha deve conter pelo menos 4 caracteres';
+const DESCRIPTION_INVALID_PASSWORD =
+    'Senha deve conter pelo menos 4 caracteres';
 const DESCRIPTION_INVALID_NUMBER = 'Formato de número inválido';
 const DESCRIPTION_BUTTON_FORGOT_PASSWORD = 'Esqueci minha senha';
 const DESCRIPTION_APP_BAR_LOGIN = 'Login';
+const DESCRIPTION_APP_BAR_HOME = 'Home';
 const DESCRIPTION_HIDE_TOOLTIP = 'Ocultar Senha';
 const DESCRIPTION_PHONE = 'Telefone';
 const DESCRIPTION_PHONE_HINT = 'Insira seu Telefone';
@@ -80,9 +87,6 @@ const DESCRIPTION_SEMANTIC_DELIVERED_SUBJECTS = "Entregue:";
 const DESCRIPTION_SEMANTIC_CANCELED_SUBJECTS = "Cancelada:";
 const DESCRIPTION_LEVEL = "Nível:";
 const DESCRIPTION_HOURS = "Horas";
-const DESCRIPTION_CH = "Carga horaria:";
-const DESCRIPTION_CREDITS = "Créditos";
-const DESCRIPTION_ABSENCE = "Faltas";
 const DESCRIPTION_PROMISE_QUANTITY = "Quantidade prometida:";
 const DESCRIPTION_REAL_QUANTITY = "Quantidade efetivada:";
 const DESCRIPTION_REQUESTED_QUANTITY = "Quantidade solicitada:";
@@ -114,6 +118,16 @@ const DESCRIPTION_DEMANDS_EMPTY = 'SEM DEMANDAS';
 const DESCRIPTION_ONGS_EMPTY = 'SEM ONGS';
 
 /// ###################################################
+/// TEXTS
+/// ###################################################
+const DESCRIPTION_TUTORIAL_1 =
+    'Primeiro, você precisa buscar uma demanda na nossa barra de busca, experimente digitar "Arroz" e clicar no botão buscar.';
+const DESCRIPTION_TUTORIAL_2 =
+    'Inicie uma conversa por telefone ou email para combinar o encontro com a ONG.';
+const DESCRIPTION_TUTORIAL_3 =
+    'Agora é só entregar sua doação e aproveitar pra conhecer o projeto que você está apoiando!';
+
+/// ###################################################
 /// PAGES
 /// ###################################################
 const DESCRIPTION_PAGE_ABOUT = 'AboutPage';
@@ -127,8 +141,11 @@ const DESCRIPTION_PAGE_DEMANDS = 'DemandsPage';
 /// ASSETS
 /// ###################################################
 
-const DESCRIPTION_IMG_UFS = 'assets/videos/video-bg.mp4';
-const DESCRIPTION_KARA_LOGO = 'assets/images/kara_logo.png';
+const DESCRIPTION_VIDEO_BG = 'assets/gifs/video_bg1.gif';
+const DESCRIPTION_KARA_LOGO = 'assets/images/kara_logo.svg';
+const DESCRIPTION_LADY_PC = 'assets/images/lady_pc.svg';
+const DESCRIPTION_HAPPY_LADY = 'assets/images/happy_lady.svg';
+const DESCRIPTION_MAN = 'assets/images/man.svg';
 
 /// ###################################################
 /// LINKS

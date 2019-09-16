@@ -1,6 +1,7 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kara/src/blocs/login_bloc.dart';
 import 'package:kara/src/ui/components/error_dialog.dart';
 import 'package:kara/src/utils/constants.dart';
@@ -34,20 +35,35 @@ class LoginPage extends StatelessWidget {
               children: <Widget>[
                 Container(
                   margin: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
-                  child: Image.asset(DESCRIPTION_KARA_LOGO),
+                  child: SvgPicture.asset(
+                    DESCRIPTION_KARA_LOGO,
+                    color: primaryColor5,
+                    fit: BoxFit.fitHeight,
+                    height: 100,
+                  ),
                 ),
-                Container(
-                  margin: EdgeInsets.only(top: 20),
-                  child: emailField(bloc),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 10),
-                  child: passwordField(bloc),
-                ),
-                forgotButton(bloc, context),
-                Container(
-                  margin: EdgeInsets.only(left: 1, right: 1),
-                  child: submitButton(bloc, context),
+                Card(
+                  elevation: 2,
+                  child: Container(
+                    padding: EdgeInsets.all(20),
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.only(top: 20),
+                          child: emailField(bloc),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(top: 10),
+                          child: passwordField(bloc),
+                        ),
+                        forgotButton(bloc, context),
+                        Container(
+                          margin: EdgeInsets.only(left: 1, right: 1),
+                          child: submitButton(bloc, context),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -97,9 +113,10 @@ class LoginPage extends StatelessWidget {
               decoration: InputDecoration(
                 suffixIcon: IconButton(
                   onPressed: () => bloc.changeHidePassword(!hideSnapshot.data),
-                  icon: Icon(hideSnapshot.data
-                      ? Icons.visibility
-                      : Icons.visibility_off),
+                  icon: Icon(
+                    hideSnapshot.data ? Icons.visibility : Icons.visibility_off,
+                    color: primaryColor5,
+                  ),
                 ),
                 border: OutlineInputBorder(),
                 labelText: DESCRIPTION_PASSWORD,
