@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kara/src/preferences/usuario_preference.dart';
 import 'package:kara/src/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:kara/src/utils/kara_themes.dart';
 
 class SplashPage extends StatefulWidget {
   @override
@@ -37,7 +39,11 @@ class _SplashPageState extends State<SplashPage> {
       body: Container(
         padding: EdgeInsets.all(32),
         child: Center(
-          child: Image.asset(DESCRIPTION_KARA_LOGO),
+          child: SvgPicture.asset(
+            DESCRIPTION_KARA_LOGO,
+            color: KaraThemes.primaryColor[500],
+            fit: BoxFit.fill,
+          ),
         ),
       ),
     );

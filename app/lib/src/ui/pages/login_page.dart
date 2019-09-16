@@ -10,8 +10,6 @@ import 'package:kara/src/utils/kara_themes.dart';
 class LoginPage extends StatelessWidget {
   final primaryColor5 = KaraThemes.primaryColor[500];
   final primaryColor2 = KaraThemes.primaryColor[200];
-  final _focusNode1 = FocusNode();
-  final _focusNode2 = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +41,7 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 Card(
+                  color: Colors.white.withOpacity(0.95),
                   elevation: 2,
                   child: Container(
                     padding: EdgeInsets.all(20),
@@ -78,12 +77,6 @@ class LoginPage extends StatelessWidget {
       stream: bloc.email,
       builder: (context, snapshot) {
         return TextField(
-          focusNode: _focusNode1,
-          textInputAction: TextInputAction.next,
-          onSubmitted: (_) {
-            _focusNode1.unfocus();
-            FocusScope.of(context).requestFocus(_focusNode2);
-          },
           cursorColor: primaryColor2,
           onChanged: bloc.changeEmail,
           keyboardType: TextInputType.emailAddress,
@@ -106,7 +99,6 @@ class LoginPage extends StatelessWidget {
           initialData: true,
           builder: (context, hideSnapshot) {
             return TextField(
-              focusNode: _focusNode2,
               obscureText: hideSnapshot.data,
               cursorColor: primaryColor2,
               onChanged: bloc.changePassword,
@@ -136,7 +128,10 @@ class LoginPage extends StatelessWidget {
         FlatButton(
           child: Text(
             DESCRIPTION_BUTTON_FORGOT_PASSWORD,
-            style: TextStyle(fontWeight: FontWeight.normal),
+            style: TextStyle(
+              fontWeight: FontWeight.normal,
+              color: Colors.grey[600],
+            ),
           ),
           onPressed: () {},
         ),
