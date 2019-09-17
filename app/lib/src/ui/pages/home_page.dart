@@ -44,9 +44,11 @@ class _HomePageState extends State<HomePage> {
               child: buildSearchColumn(),
             ),
             Container(
+              height: _screenSize.height - 55 - 25 - 40,
               margin: EdgeInsets.only(top: 30, bottom: 10),
               width: _screenSize.width,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Container(
                     child: Text(
@@ -65,15 +67,12 @@ class _HomePageState extends State<HomePage> {
                     DESCRIPTION_TUTORIAL_1,
                     false,
                   ),
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 30),
-                    child: buildTutorialRow(
-                      _screenSize.width,
-                      DESCRIPTION_HAPPY_LADY,
-                      '2',
-                      DESCRIPTION_TUTORIAL_2,
-                      true,
-                    ),
+                  buildTutorialRow(
+                    _screenSize.width,
+                    DESCRIPTION_HAPPY_LADY,
+                    '2',
+                    DESCRIPTION_TUTORIAL_2,
+                    true,
                   ),
                   buildTutorialRow(
                     _screenSize.width,
