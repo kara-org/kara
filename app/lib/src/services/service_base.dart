@@ -76,7 +76,6 @@ abstract class ServiceBase<M> implements IService<M> {
     final url = '$apiRoot/$endpoint';
     try {
       final response = await dio.get(url, queryParameters: params);
-
       if (response != null && response.statusCode == HTTP_OK)
         return response.data.map<M>((r) => toModel(r)).toList();
 

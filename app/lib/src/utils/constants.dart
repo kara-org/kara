@@ -67,10 +67,12 @@ const DESCRIPTION_LOG_TITLE = 'Novidades!';
 const DESCRIPTION_CURRENT_VERSION = 'Versão 1.0.0 - Horários';
 const DESCRIPTION_CHANGE_LOG = <String>[];
 const DESCRIPTION_DIALOG_ERROR = 'Ocorreu um erro';
+const DESCRIPTION_SEARCH_ERROR = 'Erro na busca';
 const DESCRIPTION_ERROR_DEFAULT = 'Favor verificar sua conexão com a internet';
 const DESCRIPTION_TRY_AGAIN = 'Tentar novamente';
 const DESCRIPTION_DEMANDS = "Demandas";
 const DESCRIPTION_DONATES = "Doações";
+const DESCRIPTION_DONATE = "Doar";
 const DESCRIPTION_ONGS = "ONGs";
 const DESCRIPTION_PROFILE = "Perfil";
 const DESCRIPTION_ABOUT_KARA = "Sobre o Kara Doações";
@@ -131,6 +133,7 @@ const DESCRIPTION_TUTORIAL_3 =
 /// PAGES
 /// ###################################################
 const DESCRIPTION_PAGE_ABOUT = 'AboutPage';
+const DESCRIPTION_PAGE_SPLASH = 'SplashPage';
 const DESCRIPTION_PAGE_LOGIN = 'LoginPage';
 const DESCRIPTION_PAGE_REGISTER = 'RegisterPage';
 const DESCRIPTION_PAGE_HOME = 'HomePage';

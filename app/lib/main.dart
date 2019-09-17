@@ -1,12 +1,11 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:kara/src/blocs/demanda_bloc.dart';
 import 'package:kara/src/blocs/login_bloc.dart';
-import 'package:kara/src/ui/pages/home_page.dart';
-import 'package:kara/src/ui/pages/login_page.dart';
-import 'package:kara/src/ui/pages/splash_page.dart';
 import 'package:kara/src/utils/constants.dart';
 import 'package:kara/src/utils/kara_themes.dart';
+import 'package:kara/src/utils/route_generate.dart';
 
 import 'src/utils/constants.dart';
 
@@ -32,14 +31,12 @@ class Main extends StatelessWidget {
             secondaryHeaderColor: KaraThemes.secundaryColor[500],
             appBarTheme: KaraThemes.appBarTheme,
             tabBarTheme: KaraThemes.tabBarTheme),
-        home: SplashPage(),
-        routes: <String, WidgetBuilder>{
-          DESCRIPTION_PAGE_LOGIN: (BuildContext context) => LoginPage(),
-          DESCRIPTION_PAGE_HOME: (BuildContext context) => HomePage(),
-        },
+        initialRoute: DESCRIPTION_PAGE_SPLASH,
+        onGenerateRoute: RouteGenerator.generateRoute,
       ),
       blocs: [
         Bloc((i) => LoginBloc()),
+        Bloc((i) => DemandaBloc()),
       ],
     );
   }

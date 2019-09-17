@@ -129,7 +129,7 @@ class _HomePageState extends State<HomePage> {
             ),
             trailing: SizedBox(
               height: double.infinity,
-              child: buildSearchButton(),
+              child: buildSearchButton(context),
             ),
           ),
         ),
@@ -137,7 +137,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  RaisedButton buildSearchButton() {
+  RaisedButton buildSearchButton(BuildContext context) {
     return RaisedButton(
       child: Text(
         DESCRIPTION_SEARCH,
@@ -149,7 +149,9 @@ class _HomePageState extends State<HomePage> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(25)),
       ),
-      onPressed: () {},
+      onPressed: () {
+        Navigator.of(context).pushNamed(DESCRIPTION_PAGE_DEMANDS);
+      },
     );
   }
 
