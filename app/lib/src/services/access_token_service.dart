@@ -1,8 +1,8 @@
 import 'package:meta/meta.dart';
 
-import '../interfaces/i_access_token.dart';
-import '../models/access_token.dart';
-import '../utils/constants.dart';
+import 'package:kara/src/interfaces/i_access_token.dart';
+import 'package:kara/src/models/access_token.dart';
+import 'package:kara/src/utils/constants.dart';
 
 import 'service_base.dart';
 

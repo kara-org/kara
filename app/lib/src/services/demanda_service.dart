@@ -1,6 +1,6 @@
+import 'package:kara/src/interfaces/i_demanda_service.dart';
 import 'package:kara/src/models/demanda.dart';
 
-import '../interfaces/i_demanda_service.dart';
 import 'service_base.dart';
 
 class DemandaService extends ServiceBase<Demanda> implements IDemandaService {

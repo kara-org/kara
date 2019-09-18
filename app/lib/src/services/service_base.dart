@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
+
 import 'package:kara/src/models/access_token.dart';
+import 'package:kara/src/interfaces/i_service.dart';
 import 'package:kara/src/utils/constants.dart';
 import 'package:kara/src/utils/error_handler.dart';
 import 'package:kara/src/utils/http_connection.dart';
-
-import '../interfaces/i_service.dart';
 
 abstract class ServiceBase<M> implements IService<M> {
   String apiRoot;
@@ -74,13 +74,16 @@ abstract class ServiceBase<M> implements IService<M> {
   @override
   Future<List<M>> getAll(endpoint, {params}) async {
     final url = '$apiRoot/$endpoint';
+    print(url);
     try {
       final response = await dio.get(url, queryParameters: params);
+      print(response);
       if (response != null && response.statusCode == HTTP_OK)
         return response.data.map<M>((r) => toModel(r)).toList();
 
       throw handleError(DioError(response: response));
     } catch (e) {
+      print(e);
       throw handleError(e);
     }
   }

@@ -1,5 +1,6 @@
-import '../interfaces/i_usuario_service.dart';
-import '../models/usuario.dart';
+import 'package:kara/src/interfaces/i_usuario_service.dart';
+import 'package:kara/src/models/usuario.dart';
+
 import 'service_base.dart';
 
 class UsuarioService extends ServiceBase<Usuario> implements IUsuarioService {
