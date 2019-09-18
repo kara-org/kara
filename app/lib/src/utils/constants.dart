@@ -154,4 +154,4 @@ const DESCRIPTION_MAN = 'assets/images/man.svg';
 /// LINKS
 /// ###################################################
 const DESCRIPTION_KARA_URL = 'https://karadoacoes.tk/';
-const URL_API = "http://10.0.2.2:8000/api";
+const URL_API = "http://localhost:8000/api";
