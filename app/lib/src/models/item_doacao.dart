@@ -3,11 +3,12 @@ import 'status.dart';
 
 class ItemDoacao {
   int id;
-  String quantidadePrometida;
-  String quantidadeEfetivada;
+  double quantidadePrometida;
+  double quantidadeEfetivada;
   String dataAtualizacao;
   int doacao;
   Demanda demanda;
+  int idDemanda;
   Status status;
 
   ItemDoacao(
@@ -17,16 +18,18 @@ class ItemDoacao {
       this.dataAtualizacao,
       this.doacao,
       this.demanda,
+      this.idDemanda,
       this.status});
 
   ItemDoacao.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    quantidadePrometida = json['quantidade_prometida'];
-    quantidadeEfetivada = json['quantidade_efetivada'];
+    quantidadePrometida = json['quantidade_prometida'] != null ? double.parse(json['quantidade_prometida']) : null;
+    quantidadeEfetivada = json['quantidade_efetivada'] != null ? double.parse(json['quantidade_efetivada']) : null;
     dataAtualizacao = json['data_atualizacao'];
     doacao = json['doacao'];
     demanda =
         json['demanda'] != null ? new Demanda.fromJson(json['demanda']) : null;
+    idDemanda = json['id_demanda'];
     status =
         json['status'] != null ? new Status.fromJson(json['status']) : null;
   }
@@ -41,6 +44,7 @@ class ItemDoacao {
     if (this.demanda != null) {
       data['demanda'] = this.demanda.toJson();
     }
+    data['id_demanda'] = this.idDemanda;
     if (this.status != null) {
       data['status'] = this.status.toJson();
     }

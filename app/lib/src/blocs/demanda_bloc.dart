@@ -17,7 +17,6 @@ class DemandaBloc extends BlocBase {
       var demandas = await _demandaService.getDemandas();
       updateDemands(demandas);
     } catch (e) {
-      print(e);
       _demandsController.addError(e.message);
     }
   }

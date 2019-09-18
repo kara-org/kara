@@ -5,6 +5,7 @@ import 'item_doacao.dart';
 class Doacao {
   int id;
   Usuario usuario;
+  int idUsuario;
   String dataAgendamento;
   String dataConfimacao;
   List<ItemDoacao> itemDoacao;
@@ -12,6 +13,7 @@ class Doacao {
   Doacao(
       {this.id,
       this.usuario,
+      this.idUsuario,
       this.dataAgendamento,
       this.dataConfimacao,
       this.itemDoacao});
@@ -20,6 +22,7 @@ class Doacao {
     id = json['id'];
     usuario =
         json['usuario'] != null ? new Usuario.fromJson(json['usuario']) : null;
+    idUsuario = json['id_usuario'];
     dataAgendamento = json['data_agendamento'];
     dataConfimacao = json['data_confimacao'];
     if (json['item_doacao'] != null) {
@@ -36,6 +39,7 @@ class Doacao {
     if (this.usuario != null) {
       data['usuario'] = this.usuario.toJson();
     }
+    data['id_usuario'] = this.idUsuario;
     data['data_agendamento'] = this.dataAgendamento;
     data['data_confimacao'] = this.dataConfimacao;
     if (this.itemDoacao != null) {

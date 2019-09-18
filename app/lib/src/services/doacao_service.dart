@@ -9,6 +9,8 @@ class DoacaoService extends ServiceBase<Doacao> implements IDoacaoService {
 
   final endpointDoacao = 'doacao';
   final endpointDoacoes = 'doacoes';
+  final endpointConfirmacao = 'confirmar';
+  final endpointCancelamento = 'cancelar';
   final endpointDoador = 'doador';
   final endpointOng = 'ong';
 
@@ -22,6 +24,24 @@ class DoacaoService extends ServiceBase<Doacao> implements IDoacaoService {
   Future<List<Doacao>> getDoacoesOng(int id, {endpoint}) async {
     var url = endpoint ?? '$endpointOng/$id/$endpointDoacoes';
     return await this.getAll(url);
+  }
+
+  @override
+  Future<String> confirmarDoacao(int id, {endpoint}) async {
+    var url = endpoint ?? '$endpointDoacao/$id/$endpointConfirmacao';
+    return await this.post(url);
+  }
+
+  @override
+  Future<String> cancelarDoacao(int id, {endpoint}) async {
+    var url = endpoint ?? '$endpointDoacao/$id/$endpointCancelamento';
+    return await this.delete(url);
+  }
+
+  @override
+  Future<Doacao> cadastrarDoacao(doacao, {endpoint}) async {
+    var url = endpoint ?? '$endpointDoacao';
+    return await this.postData(url, params: doacao.toJson());
   }
 
   @override

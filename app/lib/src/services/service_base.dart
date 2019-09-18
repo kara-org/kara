@@ -41,6 +41,34 @@ abstract class ServiceBase<M> implements IService<M> {
   }
 
   @override
+  Future<String> delete(endpoint) async {
+    final url = '$apiRoot/$endpoint/';
+    try {
+      Response response = await dio.delete(url);
+      if (response != null && response?.statusCode == HTTP_ACCEPTED)
+        return response.data.toString();
+
+      throw handleError(DioError(response: response));
+    } catch (e) {
+      throw handleError(e);
+    }
+  }
+
+  @override
+  Future<String> post(endpoint) async {
+    final url = '$apiRoot/$endpoint/';
+    try {
+      Response response = await dio.post(url);
+      if (response != null && response?.statusCode == HTTP_ACCEPTED)
+        return response.data.toString();
+
+      throw handleError(DioError(response: response));
+    } catch (e) {
+      throw handleError(e);
+    }
+  }
+
+  @override
   Future<M> postData(endpoint, {params}) async {
     final url = '$apiRoot/$endpoint/';
     try {
@@ -48,7 +76,7 @@ abstract class ServiceBase<M> implements IService<M> {
         'Content-Type': 'application/json',
       });
       Response response = await dio.post(url, data: params, options: options);
-      if (response != null && response?.statusCode == HTTP_OK)
+      if (response != null && response?.statusCode == HTTP_CREATED)
         return toModel(response.data);
 
       throw handleError(DioError(response: response));
@@ -74,16 +102,13 @@ abstract class ServiceBase<M> implements IService<M> {
   @override
   Future<List<M>> getAll(endpoint, {params}) async {
     final url = '$apiRoot/$endpoint';
-    print(url);
     try {
       final response = await dio.get(url, queryParameters: params);
-      print(response);
       if (response != null && response.statusCode == HTTP_OK)
         return response.data.map<M>((r) => toModel(r)).toList();
 
       throw handleError(DioError(response: response));
     } catch (e) {
-      print(e);
       throw handleError(e);
     }
   }
