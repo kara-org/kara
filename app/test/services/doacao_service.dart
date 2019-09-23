@@ -6,31 +6,31 @@ import 'package:kara/src/services/doacao_service.dart';
 Future main() async {
   final accessToken = AccessToken(
     token:
-        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6Impfa2VsdmluMTk5N0Bob3RtYWlsLmNvbSIsImV4cCI6MTU2ODUwMzk5MywiZW1haWwiOiJqX2tlbHZpbjE5OTdAaG90bWFpbC5jb20ifQ.WiuoPe87fgGTjbbn9P9CZg3-DoHS5IyCNV1_PS_0B9k",
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6ImprX3ZpZGExOUBob3RtYWlsLmNvbSIsImV4cCI6MTU2NzU4Mzg1NSwiZW1haWwiOiJqa192aWRhMTlAaG90bWFpbC5jb20ifQ.tfevZ-zUQLQS8oZ7vcGi9qqmItUUTaBJKzch-X3qRo8",
   );
   final service = DoacaoService(accessToken);
 
-  group('Complete DoacaoService tests', () {
-    test('Verify if the api is returning data for doacoes from doador',
+  group('DoacaoService tests:', () {
+    test('verify if the api is returning data for doacoes from doador',
         () async {
       expect((await service.getDoacoesDoador(1)).length >= 0, true);
     });
-    test('Verify if the api is returning data for doacoes from ong', () async {
+    test('verify if the api is returning data for doacoes from ong', () async {
       expect((await service.getDoacoesOng(1)).length >= 0, true);
     });
     test(
-        'Verify if confirmation of a donation that was already confirmed|canceled is not working',
+        'verify if confirmation of a donation that was already confirmed|canceled is not working',
         () async {
       expect(
           () => service.confirmarDoacao(1), throwsA(TypeMatcher<Exception>()));
     });
     test(
-        'Verify if cancelation of a donation that was already confirmed|canceled is not working',
+        'verify if cancelation of a donation that was already confirmed|canceled is not working',
         () async {
       expect(
           () => service.cancelarDoacao(2), throwsA(TypeMatcher<Exception>()));
     });
-    test('Verify if registration of a donation is working', () async {
+    test('verify if registration of a donation is working', () async {
       var json = {
         "id_usuario": 3,
         "item_doacao": [

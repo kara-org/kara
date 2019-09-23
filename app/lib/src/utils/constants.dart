@@ -120,6 +120,18 @@ const DESCRIPTION_DEMANDS_EMPTY = 'SEM DEMANDAS';
 const DESCRIPTION_ONGS_EMPTY = 'SEM ONGS';
 
 /// ###################################################
+/// Endpoints
+/// ###################################################
+const ENDPOINT_ONG = "ong";
+const ENDPOINT_DONATOR = "doador";
+const ENDPOINT_DONATION = "doacao";
+const ENDPOINT_DONATIONS = "doacoes";
+const ENDPOINT_DEMAND = "demanda";
+const ENDPOINT_DEMANDS = "demandas";
+const ENDPOINT_CANCELATION = "cancelar";
+const ENDPOINT_CONFIRMATION = "confirmar";
+
+/// ###################################################
 /// TEXTS
 /// ###################################################
 const DESCRIPTION_TUTORIAL_1 =
