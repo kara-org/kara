@@ -1,5 +1,6 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:kara/src/models/demanda.dart';
+import 'package:kara/src/preferences/access_token_preference.dart';
 import 'package:kara/src/services/demanda_service.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -12,7 +13,8 @@ class DemandaBloc extends BlocBase {
 
   loadData() async {
     try {
-      _demandaService = DemandaService();
+      var accessToken = AccessTokenPreference.getToken();
+      _demandaService = DemandaService(accessToken);
 
       var demandas = await _demandaService.getDemandas();
       updateDemands(demandas);

@@ -23,15 +23,37 @@ abstract class ServiceBase<M> implements IService<M> {
   }
 
   @override
-  Future<M> putData(endpoint, {params}) {
-    // TODO: implement putData
-    return null;
+  Future<M> putData(endpoint, {params}) async {
+    final url = '$apiRoot/$endpoint/';
+    try {
+      var options = RequestOptions(headers: {
+        'Content-Type': 'application/json',
+      });
+      Response response = await dio.put(url, data: params, options: options);
+      if (response != null && response?.statusCode == HTTP_CREATED)
+        return toModel(response.data);
+
+      throw handleError(DioError(response: response));
+    } catch (e) {
+      throw handleError(e);
+    }
   }
 
   @override
-  Future<M> patchData(endpoint, {params}) {
-    // TODO: implement putData
-    return null;
+  Future<M> patchData(endpoint, {params}) async {
+    final url = '$apiRoot/$endpoint/';
+    try {
+      var options = RequestOptions(headers: {
+        'Content-Type': 'application/json',
+      });
+      Response response = await dio.patch(url, data: params, options: options);
+      if (response != null && response?.statusCode == HTTP_CREATED)
+        return toModel(response.data);
+
+      throw handleError(DioError(response: response));
+    } catch (e) {
+      throw handleError(e);
+    }
   }
 
   @override
