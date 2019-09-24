@@ -1,5 +1,6 @@
 import 'package:kara/src/interfaces/i_usuario_service.dart';
 import 'package:kara/src/models/usuario.dart';
+import 'package:kara/src/utils/constants.dart';
 
 import 'service_base.dart';
 
@@ -7,12 +8,17 @@ class UsuarioService extends ServiceBase<Usuario> implements IUsuarioService {
   UsuarioService(accessToken, {apiRoot, dio})
       : super(accessToken: accessToken, dio: dio, apiRoot: apiRoot);
 
-  final endpointUsuario = 'auth/usuario';
-
   @override
   Future<Usuario> getUsuario({endpoint}) async {
-    var url = endpoint ?? endpointUsuario;
+    var url = endpoint ?? '$ENDPOINT_AUTH/$ENDPOINT_USER';
     return await this.getOne(url);
+  }
+
+  @override
+  Future<Usuario> createUsuario(usuario, {endpoint}) async {
+    print(usuario.toJson());
+    var url = endpoint ?? ENDPOINT_USER;
+    return await this.postData(url, params: usuario.toJson());
   }
 
   @override

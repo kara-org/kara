@@ -123,6 +123,8 @@ const DESCRIPTION_ONGS_EMPTY = 'SEM ONGS';
 /// Endpoints
 /// ###################################################
 const ENDPOINT_ONG = "ong";
+const ENDPOINT_USER = "usuario";
+const ENDPOINT_AUTH = "auth";
 const ENDPOINT_DONATOR = "doador";
 const ENDPOINT_DONATION = "doacao";
 const ENDPOINT_DONATIONS = "doacoes";

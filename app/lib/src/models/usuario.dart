@@ -8,6 +8,7 @@ class Usuario {
   bool ativo;
   String ultimoLogin;
   String cpf;
+  String password;
   Null foto;
   bool vinculoOng;
   Endereco endereco;
@@ -20,6 +21,7 @@ class Usuario {
       this.ativo,
       this.ultimoLogin,
       this.cpf,
+      this.password,
       this.foto,
       this.vinculoOng,
       this.endereco,
@@ -32,6 +34,7 @@ class Usuario {
     ativo = json['ativo'];
     ultimoLogin = json['ultimo_login'];
     cpf = json['cpf'];
+    password = json['password'];
     foto = json['foto'];
     vinculoOng = json['vinculo_ong'];
     endereco = json['endereco'] != null
@@ -47,14 +50,11 @@ class Usuario {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = id;
     data['email'] = email;
     data['nome_completo'] = nomeCompleto;
-    data['ativo'] = ativo;
-    data['ultimo_login'] = ultimoLogin;
     data['cpf'] = cpf;
+    data['password'] = password;
     data['foto'] = foto;
-    data['vinculo_ong'] = vinculoOng;
     if (endereco != null) {
       data['endereco'] = endereco.toJson();
     }
