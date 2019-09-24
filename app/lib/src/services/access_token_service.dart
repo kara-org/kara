@@ -18,7 +18,7 @@ class AccessTokenService extends ServiceBase<AccessToken>
     if (email == null || password == null)
       throw Exception(errorCampoLoginOrSenhaNull);
 
-    final jsonStr = '{"email": "$email", "password": "$password"}';
+    final jsonStr = {"email": "$email", "password": "$password"};
     final url = endpoint ?? endpointAccessToken;
 
     return await this.postData(url, params: jsonStr);

@@ -57,12 +57,6 @@ abstract class ServiceBase<M> implements IService<M> {
   }
 
   @override
-  Future<M> deleteData(endpoint, {params}) {
-    // TODO: implement deleteData
-    return null;
-  }
-
-  @override
   Future<String> delete(endpoint) async {
     final url = '$apiRoot/$endpoint/';
     try {
@@ -94,11 +88,12 @@ abstract class ServiceBase<M> implements IService<M> {
   Future<M> postData(endpoint, {params}) async {
     final url = '$apiRoot/$endpoint/';
     try {
-      var options = RequestOptions(headers: {
+      final options = RequestOptions(headers: {
         'Content-Type': 'application/json',
       });
       Response response = await dio.post(url, data: params, options: options);
-      if (response != null && response?.statusCode == HTTP_CREATED)
+      final status = response?.statusCode;
+      if (status == HTTP_CREATED || status == HTTP_ACCEPTED)
         return toModel(response.data);
 
       throw handleError(DioError(response: response));

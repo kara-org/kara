@@ -1,10 +1,9 @@
 abstract class IService<M> {
-  Future<List<M>> getAll(endpoint, {params});
-  Future<M> getOne(endpoint, {params});
-  Future<String> post(endpoint);
-  Future<M> postData(endpoint, {params});
-  Future<M> putData(endpoint, {params});
-  Future<M> patchData(endpoint, {params});
-  Future<M> deleteData(endpoint, {params});
-  Future<String> delete(endpoint);
+  Future<List<M>> getAll(String endpoint, {Map<String, dynamic> params});
+  Future<M> getOne(String endpoint, {Map<String, dynamic> params});
+  Future<String> post(String endpoint);
+  Future<M> postData(String endpoint, {Map<String, dynamic> params});
+  Future<M> putData(String endpoint, {Map<String, dynamic> params});
+  Future<M> patchData(String endpoint, {Map<String, dynamic> params});
+  Future<String> delete(String endpoint);
 }
