@@ -17,7 +17,7 @@ Future main() async {
       await service.cancelarItemDoacao(16);
     });
     test('verify if the api is altering an especify item_doacao', () async {
-      await service.alterarItemDoacao(37, 35.5);
+      await service.changeItemDoacao(37, 35.5);
     });
   });
 }

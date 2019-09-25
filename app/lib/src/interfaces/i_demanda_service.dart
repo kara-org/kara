@@ -7,5 +7,5 @@ abstract class IDemandaService implements IService<Demanda> {
   Future<List<Demanda>> getDemandasOng(int ongId, {String endpoint});
   Future<String> cancelarDemanda(int id, {String endpoint});
   Future<Demanda> cadastrarDemanda(int ongId, Demanda demanda, {String endpoint});
-  Future<Demanda> alterarDemanda(int id, Demanda demanda, {String endpoint});
+  Future<Demanda> changeDemanda(int id, Demanda demanda, {String endpoint});
 }

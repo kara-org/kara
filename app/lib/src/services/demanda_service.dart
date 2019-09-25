@@ -18,7 +18,7 @@ class DemandaService extends ServiceBase<Demanda> implements IDemandaService {
   }
 
   @override
-  Future<Demanda> alterarDemanda(int id, Demanda demanda, {String endpoint}) async {
+  Future<Demanda> changeDemanda(int id, Demanda demanda, {String endpoint}) async {
     var url = endpoint ?? '$ENDPOINT_DEMAND/$id';
     return await this.putData(url, params: demanda.toJson());
   }

@@ -15,7 +15,7 @@ class ItemDoacaoService extends ServiceBase<ItemDoacao>
   ItemDoacao toModel(Map map) => ItemDoacao.fromJson(map);
 
   @override
-  Future<ItemDoacao> alterarItemDoacao(id, quantidadePrometida, {endpoint}) async {
+  Future<ItemDoacao> changeItemDoacao(id, quantidadePrometida, {endpoint}) async {
     var url = endpoint ?? '$ENDPOINT_ITEM/$id/$ENDPOINT_CANCELATION';
     return await this.patchData(url, params: {"quantidade_prometida": quantidadePrometida});
     //TODO resolver retorno da chamada (tá dando exceção, pois o status_code tá vindo 200)

@@ -42,7 +42,7 @@ Future main() async {
         "descricao": "Arroz",
         "ativo": true
       };
-      await service.alterarDemanda(13, Demanda.fromJson(json));
+      await service.changeDemanda(13, Demanda.fromJson(json));
     });
   });
 }
