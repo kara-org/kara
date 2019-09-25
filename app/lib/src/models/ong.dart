@@ -8,6 +8,7 @@ class Ong {
   String historia;
   List<Telefone> telefone;
   bool ativo;
+  int idEndereco;
   Endereco endereco;
 
   Ong(
@@ -17,6 +18,7 @@ class Ong {
       this.historia,
       this.telefone,
       this.ativo,
+      this.idEndereco,
       this.endereco});
 
   Ong.fromJson(Map<String, dynamic> json) {
@@ -31,7 +33,8 @@ class Ong {
       });
     }
     ativo = json['ativo'];
-    endereco = json['endereco'] != null
+    idEndereco = json['endereco'] is int ? json['endereco'] : null;
+    endereco = json['endereco'] is Map
         ? new Endereco.fromJson(json['endereco'])
         : null;
   }
