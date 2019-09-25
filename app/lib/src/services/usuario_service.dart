@@ -15,8 +15,13 @@ class UsuarioService extends ServiceBase<Usuario> implements IUsuarioService {
   }
 
   @override
+  Future<Usuario> changeUsuario(id, json, {endpoint}) async {
+    var url = endpoint ?? '$ENDPOINT_USER/$id';
+    return await this.patchData(url, params: json);
+  }
+
+  @override
   Future<Usuario> createUsuario(usuario, {endpoint}) async {
-    print(usuario.toJson());
     var url = endpoint ?? ENDPOINT_USER;
     return await this.postData(url, params: usuario.toJson());
   }

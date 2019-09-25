@@ -4,5 +4,6 @@ import 'i_service.dart';
 
 abstract class IUsuarioService implements IService<Usuario> {
   Future<Usuario> getUsuario({String endpoint});
+  Future<Usuario> changeUsuario(int id, Map<String, dynamic> json, {String endpoint});
   Future<Usuario> createUsuario(Usuario usuario, {String endpoint});
 }
