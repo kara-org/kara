@@ -92,8 +92,9 @@ abstract class ServiceBase<M> implements IService<M> {
         'Content-Type': 'application/json',
       });
       Response response = await dio.post(url, data: params, options: options);
+      print(response);
       final status = response?.statusCode;
-      if (status == HTTP_CREATED || status == HTTP_ACCEPTED)
+      if (status == HTTP_CREATED || status == HTTP_ACCEPTED || status == HTTP_OK)
         return toModel(response.data);
 
       throw handleError(DioError(response: response));

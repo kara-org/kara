@@ -36,7 +36,6 @@ class LoginBloc extends BlocBase with Validator {
     try {
       var accessToken =
           await _tokenService.getAccessToken(email: email, password: password);
-
       _usuarioService = UsuarioService(accessToken);
 
       var user = await _usuarioService.getUsuario();

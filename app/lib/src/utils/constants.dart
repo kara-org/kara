@@ -151,6 +151,7 @@ const DESCRIPTION_PAGE_ABOUT = 'AboutPage';
 const DESCRIPTION_PAGE_SPLASH = 'SplashPage';
 const DESCRIPTION_PAGE_LOGIN = 'LoginPage';
 const DESCRIPTION_PAGE_REGISTER = 'RegisterPage';
+const DESCRIPTION_NAV_BAR = 'NavBar';
 const DESCRIPTION_PAGE_HOME = 'HomePage';
 const DESCRIPTION_PAGE_PROFILE = 'ProfilePage';
 const DESCRIPTION_PAGE_DEMANDS = 'DemandsPage';
@@ -161,6 +162,7 @@ const DESCRIPTION_PAGE_DEMANDS = 'DemandsPage';
 
 const DESCRIPTION_VIDEO_BG = 'assets/gifs/video_bg1.gif';
 const DESCRIPTION_KARA_LOGO = 'assets/images/kara_logo.svg';
+const DESCRIPTION_KARA_LOGO_PNG = 'assets/images/kara_logo.png';
 const DESCRIPTION_LADY_PC = 'assets/images/lady_pc.svg';
 const DESCRIPTION_HAPPY_LADY = 'assets/images/happy_lady.svg';
 const DESCRIPTION_MAN = 'assets/images/man.svg';
@@ -169,4 +171,4 @@ const DESCRIPTION_MAN = 'assets/images/man.svg';
 /// LINKS
 /// ###################################################
 const DESCRIPTION_KARA_URL = 'https://karadoacoes.tk/';
-const URL_API = "http://localhost:8000/api";
+const URL_API = "http://10.0.2.2:8000/api";

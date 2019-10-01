@@ -55,7 +55,7 @@ class DemandWidget extends StatelessWidget {
           Container(
             margin: EdgeInsets.symmetric(vertical: 10),
             child: Text(
-              (demanda.quantidadeSolicitada - demanda.quantidadeAlcancada)
+              (demanda.quantidadeSolicitada - (demanda.quantidadeAlcancada ?? 0))
                   .toString(),
               style: TextStyle(
                 fontSize: 20,

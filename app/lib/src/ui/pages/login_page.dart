@@ -25,7 +25,7 @@ class LoginPage extends StatelessWidget {
         centerTitle: true,
       ),
       body: Center(
-        child: SizedBox(
+        child: Container(
           width: _screenSize.width * .8,
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
@@ -33,35 +33,31 @@ class LoginPage extends StatelessWidget {
               children: <Widget>[
                 Container(
                   margin: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
-                  child: SvgPicture.asset(
-                    DESCRIPTION_KARA_LOGO,
+                  child: Image.asset(
+                    DESCRIPTION_KARA_LOGO_PNG,
                     color: primaryColor5,
                     fit: BoxFit.fitHeight,
                     height: 100,
                   ),
                 ),
-                Card(
-                  color: Colors.white.withOpacity(0.95),
-                  elevation: 2,
-                  child: Container(
-                    padding: EdgeInsets.all(20),
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          margin: EdgeInsets.only(top: 20),
-                          child: emailField(bloc),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(top: 10),
-                          child: passwordField(bloc),
-                        ),
-                        forgotButton(bloc, context),
-                        Container(
-                          margin: EdgeInsets.only(left: 1, right: 1),
-                          child: submitButton(bloc, context),
-                        ),
-                      ],
-                    ),
+                Container(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.only(top: 20),
+                        child: emailField(bloc),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 10),
+                        child: passwordField(bloc),
+                      ),
+                      forgotButton(bloc, context),
+                      Container(
+                        margin: EdgeInsets.only(left: 1, right: 1),
+                        child: submitButton(bloc, context),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -91,10 +87,10 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget passwordField(LoginBloc bloc) {
-    return StreamBuilder(
+    return StreamBuilder<String>(
       stream: bloc.password,
       builder: (context, snapshot) {
-        return StreamBuilder<Object>(
+        return StreamBuilder<bool>(
           stream: bloc.hidePassword,
           initialData: true,
           builder: (context, hideSnapshot) {

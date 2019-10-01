@@ -5,12 +5,7 @@ import 'package:kara/src/utils/constants.dart';
 import 'package:kara/src/utils/kara_themes.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class HomePage extends StatefulWidget {
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
+class HomePage extends StatelessWidget {
   final primaryColor2 = KaraThemes.primaryColor[200];
   final primaryColor5 = KaraThemes.primaryColor[500];
 
@@ -33,7 +28,7 @@ class _HomePageState extends State<HomePage> {
             Container(
               padding: EdgeInsets.all(10),
               width: _screenSize.width,
-              height: _screenSize.height - 55 - 25,
+              height: _screenSize.height - 55 - 55 - 25,
               decoration: BoxDecoration(
                 color: primaryColor2,
                 image: DecorationImage(
@@ -41,12 +36,10 @@ class _HomePageState extends State<HomePage> {
                   fit: BoxFit.fitHeight,
                 ),
               ),
-              child: buildSearchColumn(),
+              child: buildSearchColumn(context),
             ),
             Container(
-              height: _screenSize.height - 55 - 25 - 40,
               margin: EdgeInsets.only(top: 30, bottom: 10),
-              width: _screenSize.width,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -90,7 +83,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Column buildSearchColumn() {
+  Column buildSearchColumn(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,

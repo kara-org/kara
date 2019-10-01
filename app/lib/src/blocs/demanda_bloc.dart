@@ -13,7 +13,7 @@ class DemandaBloc extends BlocBase {
 
   loadData() async {
     try {
-      var accessToken = AccessTokenPreference.getToken();
+      var accessToken = await AccessTokenPreference.getToken();
       _demandaService = DemandaService(accessToken);
 
       var demandas = await _demandaService.getDemandas();

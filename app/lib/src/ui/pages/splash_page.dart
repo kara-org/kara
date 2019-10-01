@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kara/src/preferences/usuario_preference.dart';
 import 'package:kara/src/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +20,7 @@ class _SplashPageState extends State<SplashPage> {
     bool isAuthenticated = await UsuarioPreference.isAuthenticated();
     await Future.delayed(const Duration(seconds: 2));
     if (isAuthenticated)
-      await Navigator.of(context).pushReplacementNamed(DESCRIPTION_PAGE_HOME);
+      await Navigator.of(context).pushReplacementNamed(DESCRIPTION_NAV_BAR);
     else
       await Navigator.of(context).pushReplacementNamed(DESCRIPTION_PAGE_LOGIN);
   }
@@ -35,15 +34,14 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: KaraThemes.primaryColor[500],
       body: Container(
+        alignment: Alignment.center,
         padding: EdgeInsets.all(32),
-        child: Center(
-          child: SvgPicture.asset(
-            DESCRIPTION_KARA_LOGO,
-            color: KaraThemes.primaryColor[500],
-            fit: BoxFit.fill,
-          ),
+        child: Image.asset(
+          DESCRIPTION_KARA_LOGO_PNG,
+          color: Colors.white,
+          width: MediaQuery.of(context).size.width * .7,
         ),
       ),
     );
