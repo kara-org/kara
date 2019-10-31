@@ -37,13 +37,13 @@ class UsuarioManager(BaseUserManager):
 class Usuario(AbstractBaseUser, PermissionsMixin):
 
     email = models.EmailField(unique=True)
-    nome_completo = models.CharField("Nome completo", max_length=255, blank=True, null=True)
-    ativo = models.BooleanField(default=True, blank=True, null=True)
+    nome_completo = models.CharField("Nome completo", max_length=255)
+    ativo = models.BooleanField(default=True)
     ultimo_login = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     usuario_api = models.BooleanField(default=False, blank=True, null=True)
-    cpf = models.CharField("CPF", max_length=20, blank=True, null=True)
-    profile = models.ImageField("Foto", upload_to= "foto", blank=True, null=True)
-    vinculo_ong = models.BooleanField(default=False, blank=True, null=True)
+    cpf = models.CharField("CPF", max_length=20)
+    profile = models.ImageField("Foto", upload_to= "foto")
+    vinculo_ong = models.BooleanField(default=False)
     endereco = models.ForeignKey("Endereco", on_delete=models.DO_NOTHING, blank=True, null=True)
 
     def save(self, *args, **kwargs):
