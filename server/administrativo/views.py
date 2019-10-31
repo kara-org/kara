@@ -81,14 +81,13 @@ class UsuarioView(viewsets.ViewSet):
         data = request.data
         serializer = self.serializer_class(data=data)
         if serializer.is_valid():
-            sucesso = serializer.save()
-            if sucesso:
-                try:
-                    EnviarEmail().send_mail(request.data['email'], request.data['nome_completo'], 'boas-vindas')
-                except Exception as e:
-                    print(e)
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            try:
+                serializer = serializer.save()
+                print(serializer)
+                EnviarEmail().send_mail(request.data['email'], request.data['nome_completo'], 'boas-vindas')
+            except Exception as e:
+                print(e)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UsuarioDetailView(viewsets.ViewSet):

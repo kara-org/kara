@@ -4,6 +4,11 @@ from django.contrib.auth.signals import user_logged_in
 from django.contrib.auth.models import AbstractUser, PermissionsMixin, BaseUserManager, AbstractBaseUser
 from django.db.models import Q
 
+class Galeria(models.Model):
+    imagem = models.ImageField(upload_to = 'img/', default = 'img.jpg')
+    
+    def __str__(self):
+        return str(self.imagem.filename)
 
 class UsuarioManager(BaseUserManager):
     def _create_user(self, email, password, **extra_fields):
@@ -33,11 +38,11 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 
     email = models.EmailField(unique=True)
     nome_completo = models.CharField("Nome completo", max_length=255, blank=True, null=True)
-    ativo = models.BooleanField(default=True)
-    ultimo_login = models.DateTimeField(auto_now_add=True)
-    usuario_api = models.BooleanField(default=False)
+    ativo = models.BooleanField(default=True, blank=True, null=True)
+    ultimo_login = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    usuario_api = models.BooleanField(default=False, blank=True, null=True)
     cpf = models.CharField("CPF", max_length=20, blank=True, null=True)
-    foto = models.ImageField("Foto", upload_to= "foto", blank=True, null=True)
+    profile = models.ImageField("Foto", upload_to= "foto", blank=True, null=True)
     vinculo_ong = models.BooleanField(default=False, blank=True, null=True)
     endereco = models.ForeignKey("Endereco", on_delete=models.DO_NOTHING, blank=True, null=True)
 

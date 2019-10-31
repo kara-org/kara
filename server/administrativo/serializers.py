@@ -60,8 +60,8 @@ class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
         fields = (
-                    'id', 'email', 'password', 'nome_completo', 'ativo',
-                    'ultimo_login', 'cpf', 'foto','vinculo_ong',
+                    'id', 'profile', 'email', 'password', 'nome_completo', 'ativo',
+                    'ultimo_login', 'cpf','vinculo_ong',
                     'endereco','telefone', 'vinculo_ong',
                 )
         
@@ -96,7 +96,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
             return user
         except Exception as e:
             print(e)
-            return False
+            return None
             # raise IntegrityError('Usuário já existe.')
 
 class OngSerializer(serializers.ModelSerializer):
@@ -135,7 +135,7 @@ class OngSerializer(serializers.ModelSerializer):
                 
                 end, created = Endereco.objects.get_or_create(**endereco)
                 
-                user = Usuario.objects.create_user(endereco= end,  **usuario_data)
+                user = Usuario.objects.get_or_create(endereco= end,  **usuario_data)
                 for t in telefone:
                     fone = Telefone(**t)
                     fone.save()
@@ -165,7 +165,7 @@ class UsuarioOngSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
         fields = (
-                    'id', 'email', 'password', 'nome_completo', 'ativo',
-                    'ultimo_login', 'cpf', 'foto','vinculo_ong',
+                    'id', 'profile', 'email', 'password', 'nome_completo', 'ativo',
+                    'ultimo_login', 'cpf','vinculo_ong',
                     'endereco','telefone', 'vinculo_ong', 'ong',
                 )

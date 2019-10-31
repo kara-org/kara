@@ -6,7 +6,7 @@ import datetime
 from decimal import *
 
 
-from administrativo.serializers import UsuarioSerializer, OngSerializer, TelefoneSerializer
+from administrativo.serializers import UsuarioSerializer, OngSerializer, TelefoneSerializer, EnderecoSerializer
 
 
 class CategoriaItemDoacaoSerializer(serializers.ModelSerializer):
@@ -44,6 +44,7 @@ class DemandaSerializer(serializers.ModelSerializer):
 class OngDemandas(serializers.ModelSerializer):
     demandas = serializers.ListField(child=DemandaSerializer())
     telefone = TelefoneSerializer(many=True)
+    endereco = EnderecoSerializer()
 
     class Meta:
         model = Ong
