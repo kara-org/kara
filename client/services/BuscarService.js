@@ -29,11 +29,11 @@ export default $axios => ({
   },
 
   getResource () {
-    return resource
+    return resource;
   },
   getAxios () {
-    return $axios
+    return $axios;
   },
 
-})
+});
 

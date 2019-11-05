@@ -84,7 +84,7 @@ export default {
       await this.$axios
         .$post(`/ong/${this.ong.id}/demandas/`, this.demanda)
         .then(response => {
-          this.$toast.open({
+          this.$buefy.toast.open({
             message: 'Demanda cadastrado com successo!',
             type: 'is-success',
             position: 'is-top'
@@ -98,7 +98,7 @@ export default {
             if (err.response.data.non_field_errors)
               err.message = err.response.data.non_field_errors[0]
           }
-          this.$toast.open({
+          this.$buefy.toast.open({
             message: err.message,
             type: 'is-danger',
             position: 'is-bottom'
@@ -111,7 +111,7 @@ export default {
           this.create()
           return
         }
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: 'Formulário inválido, verifique os campos em vermelho',
           type: 'is-danger',
           position: 'is-bottom'

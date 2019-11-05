@@ -22,16 +22,12 @@
             <p class="modal-card-title">Item Doação</p>
           </header>
           <section class="modal-card-body">
-            <b-field label="Quantidade">
-              <b-input
-                type="number"
-                min="0.5"
-                step=".5"
-                v-model="quantidade"
-                placeholder="Quantidade a doar"
-                required
-              ></b-input>
-            </b-field>
+              <b-numberinput
+              v-model.number="quantidade"
+              name="quantidade"
+              min="1"
+              v-validate="'required'"
+            ></b-numberinput>
           </section>
           <footer class="modal-card-foot">
             <button class="button" type="button" @click="isComponentModalActive = false">Cancelar</button>

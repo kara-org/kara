@@ -142,7 +142,7 @@
         Já tem um cadastro?
         <nuxt-link
           class="is-primary is-inverted"
-          to="/login"
+          to="/auth/login"
           exact-active-class="is-active"
         >Logue-se</nuxt-link>
       </div>
@@ -250,10 +250,8 @@ export default {
     }
   },
   async mounted() {
-    if (this.$auth.user && this.$auth.user.vinculo_ong) {
-      this.$OngService.show(this.$auth.user.ong.id).then(response => {
-        this.ong = response
-      })
+    if (this.$auth.user && this.$auth.user.ong) {
+        this.ong = this.$auth.user.ong
     }
   },
   methods: {
@@ -265,12 +263,12 @@ export default {
       try {
         await this.$OngService.create(this.ong)
           .then(response => {
-            this.$toast.open({
+            this.$buefy.toast.open({
               message: 'Cadastro realizado com successo!',
               type: 'is-success',
               position: 'is-top'
             })
-            this.$router.push('/login')
+            this.$router.push('/auth/login')
           })
           .catch(err => {
             if (!err.response) {
@@ -280,7 +278,7 @@ export default {
                 err.message = err.response.data.non_field_errors[0]
               } else if (err.response.data.usuario) {
                 Object.keys(err.response.data.usuario).forEach(key => {
-                  this.$toast.open({
+                  this.$buefy.toast.open({
                     message: err.response.data.usuario[key][0],
                     type: 'is-danger',
                     position: 'is-bottom'
@@ -289,7 +287,7 @@ export default {
                 return
               }
             }
-            this.$toast.open({
+            this.$buefy.toast.open({
               message: err.response.data.message,
               type: 'is-danger',
               position: 'is-bottom'
@@ -306,13 +304,13 @@ export default {
             historia: this.ong.historia
           })
           .then(response => {
-            this.$toast.open({
+            this.$buefy.toast.open({
               message: 'Atualização realizada com successo!',
               type: 'is-success',
               position: 'is-top'
             })
             this.success = true
-            // this.$router.push('/editarOng')
+            // this.$router.push('/ong/editar')
           })
           .catch(err => {
             if (!err.response) {
@@ -321,7 +319,7 @@ export default {
               if (err.response.data.non_field_errors)
                 err.message = err.response.data.non_field_errors[0]
             }
-            this.$toast.open({
+            this.$buefy.toast.open({
               message: err.response.data.message,
               type: 'is-danger',
               position: 'is-bottom'
@@ -333,7 +331,7 @@ export default {
         this.error = e.response.data.message
       }
     },
-    //todo
+    //TODO
     validateBeforeSubmit() {
       this.submitted = true
       if (!this.isCadastro) {
@@ -343,7 +341,7 @@ export default {
             return
           } else {
             this.submitted = false
-            this.$toast.open({
+            this.$buefy.toast.open({
               message: 'Formulário inválido, verifique os campos em vermelho',
               type: 'is-danger',
               position: 'is-bottom'
@@ -369,7 +367,7 @@ export default {
                 return
               } else {
                 this.submitted = false
-                this.$toast.open({
+                this.$buefy.toast.open({
                   message:
                     'Formulário inválido, verifique os campos em vermelho',
                   type: 'is-danger',
