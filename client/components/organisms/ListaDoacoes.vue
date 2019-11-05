@@ -159,7 +159,8 @@ export default {
       return date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear()
     },
     async confirm(id, acao) {
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
+
         message: `Tem certeza que deseja ${acao} essa doação?`,
         confirmText: 'Sim',
         cancelText: 'Não',
