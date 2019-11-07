@@ -64,6 +64,12 @@ export default {
   },
 
   auth: {
+    redirect: {
+      login: '/auth/login',
+      logout: '/',
+      callback: '/auth/login',
+      home: '/'
+    },
     strategies: {
       local: {
         endpoints: {
@@ -91,12 +97,13 @@ export default {
     extend(config,  { isServer }) {
       // const vueLoader = config.module.rules.find((rule) => rule.loader === 'vue-loader')
       // vueLoader.query.loaders.scss = 'vue-style-loader!css-loader!sass-loader?' + JSON.stringify({ includePaths: [path.resolve(__dirname), 'node_modules'] })
+
       if (isServer) {
         config.externals = [
           nodeExternals({
             whitelist: [/\.(?!(?:js|json)$).{1,5}$/i, /^vue-videobg/]
           })
-        ]
+        ];
       }
     }
   }

@@ -29,6 +29,7 @@
     "vue-videobg": "^2.0.0"
   },
   "devDependencies": {
+    "@bundle-analyzer/webpack-plugin": "^0.5.1",
     "eslint-config-prettier": "^4.1.0",
     "eslint-plugin-prettier": "^3.0.1",
     "node-sass": "^4.12.0",

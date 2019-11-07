@@ -42,13 +42,13 @@ export default {
     ...mapActions('carrinho', ['sendDoacao']),
     send(){
       this.sendDoacao().then(() => {
-        this.$toast.open({
+        this.$buefy.toast.open({
             message: "Obrigado pela doação!",
             type: 'is-success',
             position: 'is-top'
           })
       })
-      this.$router.push('/gerenciarDoacoes')
+      this.$router.push('/doador/doacoes')
     }
   }
 }

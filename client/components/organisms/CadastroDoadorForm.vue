@@ -126,7 +126,7 @@
           Já tem um cadastro?
           <nuxt-link
             class="is-primary is-inverted"
-            to="/login"
+            to="/auth/login"
             exact-active-class="is-active"
           >Logue-se</nuxt-link>
         </div>
@@ -223,7 +223,7 @@ export default {
             //foto: this.doador.foto
           })
           .then(response => {
-            this.$toast.open({
+            this.$buefy.toast.open({
               message: 'Atualização realizada com successo!',
               type: 'is-success',
               position: 'is-top'
@@ -237,7 +237,7 @@ export default {
               if (err.response.data.non_field_errors)
                 err.message = err.response.data.non_field_errors[0]
             }
-            this.$toast.open({
+            this.$buefy.toast.open({
               message: err.message,
               type: 'is-danger',
               position: 'is-bottom'
@@ -253,12 +253,12 @@ export default {
         await this.$axios
           .post('usuario/', this.doador)
           .then(response => {
-            this.$toast.open({
+            this.$buefy.toast.open({
               message: 'Cadastro realizado com successo!',
               type: 'is-success',
               position: 'is-top'
             })
-            this.$router.push('/login')
+            this.$router.push('/auth/login')
           })
           .catch(err => {
             console.error(this.errors)
@@ -269,7 +269,7 @@ export default {
               if (err.response.data.non_field_errors)
                 err.message = err.response.data.non_field_errors[0]
             }
-            this.$toast.open({
+            this.$buefy.toast.open({
               message: err.message,
               type: 'is-danger',
               position: 'is-bottom'
@@ -292,7 +292,7 @@ export default {
 
           return
         }
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: 'Formulário inválido, verifique os campos em vermelho',
           type: 'is-danger',
           position: 'is-bottom'

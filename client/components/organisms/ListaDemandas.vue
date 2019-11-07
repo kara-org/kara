@@ -96,7 +96,7 @@ export default {
       'deleteDemanda'
     ]),
     async confirm(id, acao) {
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         message: `Tem certeza que deseja ${acao} essa demanda?`,
         confirmText: 'Sim',
         cancelText: 'Não',

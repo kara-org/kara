@@ -41,7 +41,7 @@ export default {
   methods: {
     ...mapActions('carrinho', ['removerItemNoCarrinho']),
     remover: function() {
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         message: 'Tem certeza que deseja remover este item?',
         confirmText: 'Sim',
         onConfirm: () => {

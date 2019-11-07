@@ -17,7 +17,7 @@
                   <p class="title" style="margin-bottom: 10px;">{{ titulo }}</p>
                   <p class="heading">
                     para
-                    <nuxt-link :to="'/ong/'+ongId" exact-active-class="is-active">{{ ongTitulo }}</nuxt-link>
+                    <nuxt-link :to="'/ong/'+idOng" exact-active-class="is-active">{{ ongTitulo }}</nuxt-link>
                   </p>
                 </div>
               </div>
@@ -40,7 +40,7 @@
 </template>
 <script>
 export default {
-  props: ['imagem', 'titulo', 'quantidade', 'ongId', 'ongTitulo', 'to']
+  props: ['imagem', 'titulo', 'quantidade', 'idOng', 'ongTitulo', 'to']
 }
 </script>
 <style>
