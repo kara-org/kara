@@ -16,6 +16,7 @@ from django.utils.decorators import method_decorator
 from doacoes.models import *
 from doacoes.serializers import OngDemandas
 from kara.email import EnviarEmail
+from django.core.files.storage import FileSystemStorage
 
 def gerar_senha():
     senha_numerica = randint(1000, 9999)
@@ -78,16 +79,19 @@ class UsuarioView(viewsets.ViewSet):
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
+        print(f"request: {request.data}")
         data = request.data
         serializer = self.serializer_class(data=data)
+        if request.FILES:
+            serializer.profile = request.FILES['profile']
+            print(f"foto: {serializer.profile}")
         if serializer.is_valid():
+            serializer = serializer.save()
             try:
-                serializer = serializer.save()
-                print(serializer)
                 EnviarEmail().send_mail(request.data['email'], request.data['nome_completo'], 'boas-vindas')
             except Exception as e:
                 print(e)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response({'mesage':'ok'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UsuarioDetailView(viewsets.ViewSet):
@@ -114,6 +118,8 @@ class UsuarioDetailView(viewsets.ViewSet):
 
     def put(self, request, pk, *args, **kwargs):
         obj = self.get_object(pk)
+        request.data['password'] = "a"
+        print(request.data)
         serializer = self.serializer_class(obj, data=request.data)
         if serializer.is_valid():
             serializer.save()

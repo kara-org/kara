@@ -71,7 +71,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
         if 'endereco' in validated_data:
             temEndereco, endereco = True, validated_data.pop("endereco")
         
-        temTelefone = False
+        telefone = []
         if 'telefone' in validated_data:
             temTelefone, telefone = True, validated_data.pop("telefone")
         
@@ -81,7 +81,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
                 end.save()
                 user = Usuario.objects.create_user(endereco= end,  **validated_data)
             else:
-                user = Usuario.objects.create_user( **validated_data)
+                user = Usuario.objects.create_user(**validated_data)
 
             for t in telefone:
                 fone = Telefone(**t)
@@ -98,6 +98,35 @@ class UsuarioSerializer(serializers.ModelSerializer):
             print(e)
             return None
             # raise IntegrityError('Usuário já existe.')
+
+    def update(self, obj, validated_data):
+        
+        if 'password' in validated_data:
+            validated_data.pop('password')
+
+        usuarios = Usuario.objects.filter(pk=obj.pk)
+        
+        temEndereco = False
+        if 'endereco' in validated_data:
+            temEndereco, endereco = True, validated_data.pop("endereco")
+            end, _ = Endereco.objects.get_or_create(**endereco)
+            obj.endereco = end
+            obj.save()
+        
+        telefone = []
+        if 'telefone' in validated_data:
+            temTelefone, telefone_data = True, validated_data.pop("telefone")
+            
+            for t in telefone_data:
+                fone, _ = Telefone.objects.get_or_create(**t)
+                usuarios[0].telefone.add(fone)
+            
+        usuarios[0].save()
+                                
+            
+        usuarios.update(**validated_data)
+        
+        return usuarios[0]
 
 class OngSerializer(serializers.ModelSerializer):
     usuario = UsuarioSerializer(write_only=True, required=False)
