@@ -186,7 +186,7 @@ class ItemDoacaoView(viewsets.ViewSet):
             obj = ItemDoacao.objects.get(pk=pk)
             status_item = StatusItemDoacao.objects.get(pk=2)
             if obj.status.pk == 2 or obj.status.pk ==3:
-                return response.responseFormatado(False,400, mensagem="Item doação finalizada.")
+                return response.responseFormatado(False, 403, mensagem="Item doação finalizada.")
             else:
                 obj.status = status_item
                 obj.save()
