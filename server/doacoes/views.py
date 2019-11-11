@@ -29,6 +29,7 @@ class DemandaView(viewsets.ViewSet):
     serializer_retorno_class = DemandaSerializerRetorno
     serializer_class_alteracao = DemandaSerializerAlteracao
     serializer_class_cancelamento = DemandaSerializerCancelamento
+    response = PadronizacaoResponse()
 
     def get_object(self, id):
         try:
@@ -40,33 +41,38 @@ class DemandaView(viewsets.ViewSet):
         print(id_ong)
         demandas = Demanda.objects.filter(ong_id=id_ong)
         serializer = self.serializer_retorno_class(demandas, many=True)
-        return response.responseFormatado(True, 200, data=serializer.data) 
+        return self.response.responseFormatado(True, 200, data=serializer.data) 
 
     def create(self, request, id_ong, *args, **kwargs):
         ong = Ong.objects.get(pk=id_ong)
         data = request.data
         serializer = self.serializer_class(data=data, context={'ong': ong})
         if serializer.is_valid():
-            demanda = serializer.save()
-            serializer = self.serializer_retorno_class(demanda)
-            return response.responseFormatado(True, 200, data=serializer.data) 
-        return response.responseFormatado(False, 403, mensagem=serializer.errors)
+            try:
+                serializer.save()
+                serializer = self.serializer_retorno_class(serializer.data)
+                return self.response.responseFormatado(True, 200, data=serializer.data) 
+            except Exception as e:
+                print(e)
+                return self.response.responseFormatado(False, 403, mensagem='Categoria não encontrada.')
+
+        return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
 
     def put(self, request, pk, *args, **kwargs):
         obj = self.get_object(pk)
         serializer = self.serializer_class_alteracao(obj, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return response.responseFormatado(True, 200, data=serializer.data) 
-        return response.responseFormatado(False, 403, mensagem=serializer.errors)
+            return self.response.responseFormatado(True, 200, data=serializer.data) 
+        return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
 
     def patch(self, request, pk, *args, **kwargs):
         obj = self.get_object(pk)
         serializer = self.serializer_class_alteracao(obj, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return response.responseFormatado(True, 200, data=serializer.data) 
-        return response.responseFormatado(False, 403, mensagem=serializer.errors)
+            return self.response.responseFormatado(True, 200, data=serializer.data) 
+        return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
 
     def delete(self, request, pk, *args, **kwargs):
         obj = self.get_object(pk)
@@ -76,24 +82,26 @@ class DemandaView(viewsets.ViewSet):
         serializer = self.serializer_class_cancelamento(obj, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return response.responseFormatado(True, 200, data=serializer.data) 
+            return self.response.responseFormatado(True, 200, data=serializer.data) 
 
-        return response.responseFormatado(False, 403, mensagem=serializer.errors)
+        return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
 
 @permission_classes((AllowAny, ))
 class DemandaListView(viewsets.ViewSet):
     serializer_class = DemandaSerializer
     serializer_retorno_class = DemandaSerializerRetorno
+    response = PadronizacaoResponse()
 
     def list(self, request):
         demandas = Demanda.objects.all()
         serializer = self.serializer_retorno_class(demandas, many=True)
-        return response.responseFormatado(True, 200, data=serializer.data) 
+        return self.response.responseFormatado(True, 200, data=serializer.data) 
 
 class DoacaoView(viewsets.ViewSet):
     serializer_class = DoacaoSerializer
     serializer_retorno_class = DoacaoSerializerRetornoCadastro
     serializer_lista_class = DoacaoSerializerLista
+    response = PadronizacaoResponse()
 
     def create(self, request, *args, **kwargs):
         data = request.data
@@ -106,8 +114,8 @@ class DoacaoView(viewsets.ViewSet):
                     EnviarEmail().send_mail(request.user.email, request.user.nome_completo, 'Interesse de doação')
                 except Exception as e:
                     print(e)
-                return response.responseFormatado(True, 200, data=serializer.data) 
-        return response.responseFormatado(False, 403, mensagem=serializer.errors)
+                return self.response.responseFormatado(True, 200, data=serializer.data) 
+        return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
 
     def list(self, request, id_ong):
         doacoes = Doacao.objects.filter(item_doacao__demanda__ong__id=id_ong).distinct()
@@ -115,11 +123,12 @@ class DoacaoView(viewsets.ViewSet):
         #     itens_doacao = ItemDoacao.objects.filter(doacao=doacao)
         #     doacao.itens_doacao = itens_doacao
         serializer = self.serializer_lista_class(doacoes, many=True)
-        return response.responseFormatado(True, 200, data=serializer.data) 
+        return self.response.responseFormatado(True, 200, data=serializer.data) 
 
 class DoacaoViewUser(viewsets.ViewSet):
     #serializer_class = DoacaoSerializer
     serializer_lista_class = DoacaoSerializerLista
+    response = PadronizacaoResponse()
 
     def list(self, request, id_user):
         doacoes = Doacao.objects.filter(usuario__id=id_user)
@@ -127,16 +136,16 @@ class DoacaoViewUser(viewsets.ViewSet):
             itens_doacao = ItemDoacao.objects.filter(doacao=doacao)
             doacao.itens_doacao = itens_doacao
         serializer = self.serializer_lista_class(doacoes, many=True)
-        return response.responseFormatado(True, 200, data=serializer.data) 
+        return self.response.responseFormatado(True, 200, data=serializer.data) 
 
     def post(self, request, pk, *args, **kwargs):
         resposta = DoacaoDo(request)
         retorno = resposta.confirmarDoacao(pk)
         response = PadronizacaoResponse()
         if isinstance(retorno, tuple):
-            return response.responseFormatado(False,retorno[0], mensagem=retorno[1])
+            return self.response.responseFormatado(False,retorno[0], mensagem=retorno[1])
         
-        return response.responseFormatado(True, 200, data=retorno)
+        return self.response.responseFormatado(True, 200, data=retorno)
 
     # def patch(self, request, pk, *args, **kwargs):
     #     doacao = Doacao.objects.get(pk=pk)
@@ -151,22 +160,26 @@ class DoacaoViewUser(viewsets.ViewSet):
         retorno = resposta.cancelarDoacao(pk)
         response = PadronizacaoResponse()
         if isinstance(retorno, tuple):
-            return response.responseFormatado(False,retorno[0], mensagem=retorno[1])
+            return self.response.responseFormatado(False,retorno[0], mensagem=retorno[1])
         
-        return response.responseFormatado(True,200, data=retorno)
+        return self.response.responseFormatado(True,200, data=retorno)
 
 @permission_classes((AllowAny, ))  
 class BuscaDemandasView(viewsets.ViewSet):
     serializer_class = DemandaSerializerRetorno
+    response = PadronizacaoResponse()
+
 
     def list(self, request):
         demanda = Demanda.objects.filter(Q(ativo=True))
         serializer = self.serializer_class(demanda, many=True)
-        return response.responseFormatado(True, 200, data=serializer.data) 
+        return self.response.responseFormatado(True, 200, data=serializer.data) 
 
 class ItemDoacaoView(viewsets.ViewSet):
     serializer_class = ItemDoacaoConfirmacaoSerializer
     serializer_class_alteracao = ItemDoacaoAlteracaoSerializer
+    response = PadronizacaoResponse()
+
 
     def post(self, request, pk, *args, **kwargs):
         data = request.data
@@ -175,33 +188,32 @@ class ItemDoacaoView(viewsets.ViewSet):
             qtd = Decimal(request.data["quantidade_efetivada"]).quantize(Decimal('.01'), rounding=ROUND_DOWN)
             resposta = DoacaoDo(request)
             retorno = resposta.confirmarItemDoacao(pk, qtd)
-            response = PadronizacaoResponse()
             if isinstance(retorno, tuple):
-                return response.responseFormatado(False,retorno[0], mensagem=retorno[1])
-            return response.responseFormatado(True, 200, data=retorno) 
-        return response.responseFormatado(False, 403, mensagem=serializer.errors)
+                return self.response.responseFormatado(False,retorno[0], mensagem=retorno[1])
+            return self.response.responseFormatado(True, 200, data=retorno) 
+        return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
 
     def delete(self, request, pk, *args, **kwargs):
         try:
             obj = ItemDoacao.objects.get(pk=pk)
             status_item = StatusItemDoacao.objects.get(pk=2)
             if obj.status.pk == 2 or obj.status.pk ==3:
-                return response.responseFormatado(False, 403, mensagem="Item doação finalizada.")
+                return self.response.responseFormatado(False, 403, mensagem="Item doação finalizada.")
             else:
                 obj.status = status_item
                 obj.save()
-                return response.responseFormatado(False, 200, mensagem="Item deletado com sucesso.")
+                return self.response.responseFormatado(False, 200, mensagem="Item deletado com sucesso.")
         except Exception as e:
             print(e)
-            return response.responseFormatado(False, 404, mensagem="Item não encontrado.")
+            return self.response.responseFormatado(False, 404, mensagem="Item não encontrado.")
 
     def patch(self, request, pk, *args, **kwargs):
         obj = ItemDoacao.objects.get(pk=pk)
         serializer = self.serializer_class_alteracao(obj, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return response.responseFormatado(True, 200, data=serializer.data) 
-        return response.responseFormatado(False, 403, mensagem=serializer.errors)
+            return self.responseFormatado(True, 200, data=serializer.data) 
+        return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
 
 def test_email(request):
     try:

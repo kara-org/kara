@@ -31,6 +31,7 @@ def gerar_senha():
 @permission_classes((AllowAny, ))
 class RecuperarSenhaUsuarioView(viewsets.ViewSet):
     serializer_class = UsuarioSerializer
+    response = PadronizacaoResponse()
 
     def create(self, request):
         email = request.data['email']
@@ -57,7 +58,8 @@ class RecuperarSenhaUsuarioView(viewsets.ViewSet):
 class UsuarioView(viewsets.ViewSet):
     serializer_class = UsuarioSerializer
     serializer_class_usuario_ong = UsuarioOngSerializer
-    
+    response = PadronizacaoResponse()
+
     def retrive(self, request):
         try:
             usuario = Usuario.objects.get(pk=request.user.pk)
@@ -67,8 +69,8 @@ class UsuarioView(viewsets.ViewSet):
             else:
                 serializer = self.serializer_class(usuario)
         except:
-            return response.responseFormatado(False, 403, mensagem=serializer.errors)
-        return response.responseFormatado(True, 200, data=serializer.data) 
+            return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
+        return self.response.responseFormatado(True, 200, data=serializer.data) 
 
     def list(self, request):
         print('ola')
@@ -77,7 +79,7 @@ class UsuarioView(viewsets.ViewSet):
             u.enderecos = Endereco.objects.filter(usuario=u.pk, desabilitado = False)
             u.telefones = Telefone.objects.filter(usuario=u.pk, desabilitado = False)
         serializer = self.serializer_class(usuarios, many=True)
-        return response.responseFormatado(True, 200, data=serializer.data) 
+        return self.response.responseFormatado(True, 200, data=serializer.data) 
 
     def create(self, request, *args, **kwargs):
         print(f"request: {request.data}")
@@ -92,13 +94,14 @@ class UsuarioView(viewsets.ViewSet):
                 EnviarEmail().send_mail(request.data['email'], request.data['nome_completo'], 'boas-vindas')
             except Exception as e:
                 print(e)
-            return response.responseFormatado(True, 200, data=serializer.data) 
-        return response.responseFormatado(False, 403, mensagem=serializer.errors)
+            return self.response.responseFormatado(True, 200, data=serializer.data) 
+        return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
 
 class UsuarioDetailView(viewsets.ViewSet):
 
     serializer_class = UsuarioSerializer
     queryset = Usuario.objects.all()
+    response = PadronizacaoResponse()
 
     def get_object(self, id):
         try:
@@ -114,8 +117,8 @@ class UsuarioDetailView(viewsets.ViewSet):
             serializer = self.serializer_class(obj)
             # disable = serializer.data.pop('desabilitado')
             # print(serializer.data)
-            return response.responseFormatado(True, 200, data=serializer.data) 
-        return response.responseFormatado(False, 403, mensagem=serializer.errors)
+            return self.response.responseFormatado(True, 200, data=serializer.data) 
+        return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
 
     def put(self, request, pk, *args, **kwargs):
         obj = self.get_object(pk)
@@ -124,16 +127,16 @@ class UsuarioDetailView(viewsets.ViewSet):
         serializer = self.serializer_class(obj, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return response.responseFormatado(True, 200, data=serializer.data) 
-        return response.responseFormatado(False, 403, mensagem=serializer.errors)
+            return self.response.responseFormatado(True, 200, data=serializer.data) 
+        return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
 
     def patch(self, request, pk, *args, **kwargs):
         obj = self.get_object(pk)
         serializer = self.serializer_class(obj, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return response.responseFormatado(True, 200, data=serializer.data) 
-        return response.responseFormatado(False, 403, mensagem=serializer.errors)
+            return self.response.responseFormatado(True, 200, data=serializer.data) 
+        return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
 
     def delete(self, request, pk, *args, **kwargs):
         obj = self.get_object(pk)
@@ -141,12 +144,13 @@ class UsuarioDetailView(viewsets.ViewSet):
         serializer = self.serializer_class(obj, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return response.responseFormatado(True, 200, data=serializer.data) 
-        return response.responseFormatado(False, 403, mensagem=serializer.errors)
+            return self.response.responseFormatado(True, 200, data=serializer.data) 
+        return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
 
 @permission_classes((AllowAny, ))
 class OngCreateListView(viewsets.ViewSet):
     serializer_class = OngSerializer
+    response = PadronizacaoResponse()
 
     def create(self, request, *args, **kwargs):
         data = request.data
@@ -157,8 +161,8 @@ class OngCreateListView(viewsets.ViewSet):
                 EnviarEmail().send_mail(request.data['usuario']['email'], request.data['usuario']['nome_completo'], 'boas-vindas')
             except Exception as e:
                 print(e)
-            return response.responseFormatado(True, 200, data=serializer.data) 
-        return response.responseFormatado(False, 403, mensagem=serializer.errors)
+            return self.response.responseFormatado(True, 200, data=serializer.data) 
+        return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
     
     def list(self, request):
         ongs = Ong.objects.filter(ativo=True)
@@ -171,7 +175,8 @@ class OngDetailView(viewsets.ViewSet):
     serializer_class = OngListSerializer
     serializer_class_retorno = OngDemandas
     queryset = Ong.objects.all()
-    
+    response = PadronizacaoResponse()
+   
     def valida_acesso(self, pk):
         pertence = UsuarioPertenceOng.objects.filter(usuario = self.request.user.pk, ong=pk)
         if pertence.exists():
@@ -191,9 +196,9 @@ class OngDetailView(viewsets.ViewSet):
             ong = self.get_object(pk)
             ong.demandas = Demanda.objects.filter(ong=pk)
             serializer = self.serializer_class_retorno(ong)
-            return response.responseFormatado(True, 200, data=serializer.data) 
+            return self.response.responseFormatado(True, 200, data=serializer.data) 
         except Exception as e:
-            return response.responseFormatado(False, 404, mensagem= "Ong não encontrada.")        
+            return self.response.responseFormatado(False, 404, mensagem= "Ong não encontrada.")        
 
     def put(self, request, pk, *args, **kwargs):
         sucesso, _ =  self.valida_acesso( pk)        
@@ -203,9 +208,9 @@ class OngDetailView(viewsets.ViewSet):
             serializer = self.serializer_class(obj, data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return response.responseFormatado(True, 200, data=serializer.data) 
-            return response.responseFormatado(False, 403, mensagem=serializer.errors)
-        return response.responseFormatado(False, 403, mensagem="Este usuário não tem acesso a esta ong.")
+                return self.response.responseFormatado(True, 200, data=serializer.data) 
+            return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
+        return self.response.responseFormatado(False, 403, mensagem="Este usuário não tem acesso a esta ong.")
 
     def patch(self, request, pk, *args, **kwargs):
         sucesso, _ =  self.valida_acesso( pk)        
@@ -215,9 +220,9 @@ class OngDetailView(viewsets.ViewSet):
             serializer = self.serializer_class(obj, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
-                return response.responseFormatado(True, 200, data=serializer.data) 
-            return response.responseFormatado(False, 403, mensagem=serializer.errors)
-        return response.responseFormatado(False, 403, mensagem="Este usuário não tem acesso a esta ong.")
+                return self.response.responseFormatado(True, 200, data=serializer.data) 
+            return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
+        return self.response.responseFormatado(False, 403, mensagem="Este usuário não tem acesso a esta ong.")
 
     def delete(self, request, pk, *args, **kwargs):
         sucesso, _ =  self.valida_acesso(pk)        
@@ -228,12 +233,13 @@ class OngDetailView(viewsets.ViewSet):
             serializer = self.serializer_class(obj, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
-                return response.responseFormatado(True, 200, data=serializer.data) 
-            return response.responseFormatado(False, 403, mensagem=serializer.errors)
-        return response.responseFormatado(False, 403, mensagem="Este usuário não tem acesso a esta ong.")
+                return self.response.responseFormatado(True, 200, data=serializer.data) 
+            return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
+        return self.response.responseFormatado(False, 403, mensagem="Este usuário não tem acesso a esta ong.")
 
 class TelefoneView(viewsets.ViewSet):
     serializer_class = TelefoneSerializer
+    response = PadronizacaoResponse()
 
     # def get_usuario(self, id):
     #     try:
@@ -251,7 +257,7 @@ class TelefoneView(viewsets.ViewSet):
         telefones = Telefone.objects.filter(usuario=usuario_id, ativo=True)
         serializer = TelefoneSerializer(telefones, many=True)
       
-        return response.responseFormatado(True, 200, data=serializer.data) 
+        return self.response.responseFormatado(True, 200, data=serializer.data) 
 
     def create(self, request,pk_usr, *args, **kwargs):
         request.data['usuario'] = self.get_usuario(pk_usr).pk
@@ -261,12 +267,13 @@ class TelefoneView(viewsets.ViewSet):
             # serializer.save()
             obj = TelefoneSerializer.create(self, request.data)
             serializer = TelefoneSerializer(obj)
-            return response.responseFormatado(True, 200, data=serializer.data) 
-        return response.responseFormatado(False, 403, mensagem=serializer.errors)
+            return self.response.responseFormatado(True, 200, data=serializer.data) 
+        return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
 
 class TelefoneViewDetail(viewsets.ViewSet):
     serializers_class = TelefoneSerializer
     queryset = Telefone.objects.all()
+    response = PadronizacaoResponse()
 
     def get_object(self, pk_usr, id):
         try:
@@ -286,16 +293,16 @@ class TelefoneViewDetail(viewsets.ViewSet):
         serializer = TelefoneSerializer(obj, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return response.responseFormatado(True, 200, data=serializer.data) 
-        return response.responseFormatado(False, 403, mensagem=serializer.errors)
+            return self.response.responseFormatado(True, 200, data=serializer.data) 
+        return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
 
     def patch(self, request,pk_usr, pk, *args, **kwargs):
         obj = self.get_object(pk_usr, pk)
         serializer = TelefoneSerializer(obj, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return response.responseFormatado(True, 200, data=serializer.data) 
-        return response.responseFormatado(False, 403, mensagem=serializer.errors)
+            return self.response.responseFormatado(True, 200, data=serializer.data) 
+        return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
 
     def delete(self, request,pk_usr, pk, *args, **kwargs):
         obj = self.get_object(pk_usr, pk)
@@ -303,14 +310,15 @@ class TelefoneViewDetail(viewsets.ViewSet):
         serializer = TelefoneSerializer(obj, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return response.responseFormatado(True, 200, data=serializer.data) 
-        return response.responseFormatado(False, 403, mensagem=serializer.errors)
+            return self.response.responseFormatado(True, 200, data=serializer.data) 
+        return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
 
 class BuscaOngsView(viewsets.ViewSet):
     serializer_class = OngSerializer
+    response = PadronizacaoResponse()
 
     def list(self, request):
 
         ongs = Ong.objects.filter(ativo=True)
         serializer = self.serializer_class(ongs, many=True)
-        return response.responseFormatado(True, 200, data=serializer.data) 
+        return self.response.responseFormatado(True, 200, data=serializer.data) 
