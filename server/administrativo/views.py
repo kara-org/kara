@@ -17,6 +17,7 @@ from doacoes.models import *
 from doacoes.serializers import OngDemandas
 from kara.email import EnviarEmail
 from django.core.files.storage import FileSystemStorage
+from kara.padronizacao_responser import *
 
 def gerar_senha():
     senha_numerica = randint(1000, 9999)
@@ -66,8 +67,8 @@ class UsuarioView(viewsets.ViewSet):
             else:
                 serializer = self.serializer_class(usuario)
         except:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        return Response(serializer.data)
+            return response.responseFormatado(False, 403, mensagem=serializer.errors)
+        return response.responseFormatado(True, 200, data=serializer.data) 
 
     def list(self, request):
         print('ola')
@@ -76,7 +77,7 @@ class UsuarioView(viewsets.ViewSet):
             u.enderecos = Endereco.objects.filter(usuario=u.pk, desabilitado = False)
             u.telefones = Telefone.objects.filter(usuario=u.pk, desabilitado = False)
         serializer = self.serializer_class(usuarios, many=True)
-        return Response(serializer.data)
+        return response.responseFormatado(True, 200, data=serializer.data) 
 
     def create(self, request, *args, **kwargs):
         print(f"request: {request.data}")
@@ -91,8 +92,8 @@ class UsuarioView(viewsets.ViewSet):
                 EnviarEmail().send_mail(request.data['email'], request.data['nome_completo'], 'boas-vindas')
             except Exception as e:
                 print(e)
-            return Response({'mesage':'ok'}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return response.responseFormatado(True, 200, data=serializer.data) 
+        return response.responseFormatado(False, 403, mensagem=serializer.errors)
 
 class UsuarioDetailView(viewsets.ViewSet):
 
@@ -113,8 +114,8 @@ class UsuarioDetailView(viewsets.ViewSet):
             serializer = self.serializer_class(obj)
             # disable = serializer.data.pop('desabilitado')
             # print(serializer.data)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return response.responseFormatado(True, 200, data=serializer.data) 
+        return response.responseFormatado(False, 403, mensagem=serializer.errors)
 
     def put(self, request, pk, *args, **kwargs):
         obj = self.get_object(pk)
@@ -123,16 +124,16 @@ class UsuarioDetailView(viewsets.ViewSet):
         serializer = self.serializer_class(obj, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return response.responseFormatado(True, 200, data=serializer.data) 
+        return response.responseFormatado(False, 403, mensagem=serializer.errors)
 
     def patch(self, request, pk, *args, **kwargs):
         obj = self.get_object(pk)
         serializer = self.serializer_class(obj, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return response.responseFormatado(True, 200, data=serializer.data) 
+        return response.responseFormatado(False, 403, mensagem=serializer.errors)
 
     def delete(self, request, pk, *args, **kwargs):
         obj = self.get_object(pk)
@@ -140,8 +141,8 @@ class UsuarioDetailView(viewsets.ViewSet):
         serializer = self.serializer_class(obj, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return response.responseFormatado(True, 200, data=serializer.data) 
+        return response.responseFormatado(False, 403, mensagem=serializer.errors)
 
 @permission_classes((AllowAny, ))
 class OngCreateListView(viewsets.ViewSet):
@@ -151,20 +152,18 @@ class OngCreateListView(viewsets.ViewSet):
         data = request.data
         serializer = self.serializer_class(data= data)
         if serializer.is_valid():
-            sucesso = serializer.save()
-            if sucesso:
-                try:
-                    EnviarEmail().send_mail(request.data['usuario']['email'], request.data['usuario']['nome_completo'], 'boas-vindas')
-                except Exception as e:
-                    print(e)
-                return Response(serializer.data , status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+            serializer.save()
+            try:
+                EnviarEmail().send_mail(request.data['usuario']['email'], request.data['usuario']['nome_completo'], 'boas-vindas')
+            except Exception as e:
+                print(e)
+            return response.responseFormatado(True, 200, data=serializer.data) 
+        return response.responseFormatado(False, 403, mensagem=serializer.errors)
+    
     def list(self, request):
         ongs = Ong.objects.filter(ativo=True)
         serializer = self.serializer_class(ongs, many=True)
-        return Response(serializer.data)
+        return response.responseFormatado(True, 200, data=serializer.data) 
 
 @permission_classes((AllowAny, ))
 class OngDetailView(viewsets.ViewSet):
@@ -192,10 +191,9 @@ class OngDetailView(viewsets.ViewSet):
             ong = self.get_object(pk)
             ong.demandas = Demanda.objects.filter(ong=pk)
             serializer = self.serializer_class_retorno(ong)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return response.responseFormatado(True, 200, data=serializer.data) 
         except Exception as e:
-            return Response({"message":print(e)}, status=status.HTTP_404_NOT_FOUND)
-            
+            return response.responseFormatado(False, 404, mensagem= "Ong não encontrada.")        
 
     def put(self, request, pk, *args, **kwargs):
         sucesso, _ =  self.valida_acesso( pk)        
@@ -205,10 +203,9 @@ class OngDetailView(viewsets.ViewSet):
             serializer = self.serializer_class(obj, data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        return Response({"message":"Este usuário não tem acesso a esta ong."}, status=status.HTTP_403_FORBIDDEN)
-
+                return response.responseFormatado(True, 200, data=serializer.data) 
+            return response.responseFormatado(False, 403, mensagem=serializer.errors)
+        return response.responseFormatado(False, 403, mensagem="Este usuário não tem acesso a esta ong.")
 
     def patch(self, request, pk, *args, **kwargs):
         sucesso, _ =  self.valida_acesso( pk)        
@@ -218,9 +215,9 @@ class OngDetailView(viewsets.ViewSet):
             serializer = self.serializer_class(obj, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        return Response({"message":"Este usuário não tem acesso a esta ong."}, status=status.HTTP_403_FORBIDDEN)
+                return response.responseFormatado(True, 200, data=serializer.data) 
+            return response.responseFormatado(False, 403, mensagem=serializer.errors)
+        return response.responseFormatado(False, 403, mensagem="Este usuário não tem acesso a esta ong.")
 
     def delete(self, request, pk, *args, **kwargs):
         sucesso, _ =  self.valida_acesso(pk)        
@@ -231,9 +228,9 @@ class OngDetailView(viewsets.ViewSet):
             serializer = self.serializer_class(obj, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
-                return Response(serializer.data)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        return Response({"message":"Este usuário não tem acesso a esta ong."}, status=status.HTTP_403_FORBIDDEN)
+                return response.responseFormatado(True, 200, data=serializer.data) 
+            return response.responseFormatado(False, 403, mensagem=serializer.errors)
+        return response.responseFormatado(False, 403, mensagem="Este usuário não tem acesso a esta ong.")
 
 class TelefoneView(viewsets.ViewSet):
     serializer_class = TelefoneSerializer
@@ -254,9 +251,8 @@ class TelefoneView(viewsets.ViewSet):
         telefones = Telefone.objects.filter(usuario=usuario_id, ativo=True)
         serializer = TelefoneSerializer(telefones, many=True)
       
-        return Response(serializer.data)
+        return response.responseFormatado(True, 200, data=serializer.data) 
 
-    
     def create(self, request,pk_usr, *args, **kwargs):
         request.data['usuario'] = self.get_usuario(pk_usr).pk
         data = request.data
@@ -265,8 +261,8 @@ class TelefoneView(viewsets.ViewSet):
             # serializer.save()
             obj = TelefoneSerializer.create(self, request.data)
             serializer = TelefoneSerializer(obj)
-            return Response(serializer.data , status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return response.responseFormatado(True, 200, data=serializer.data) 
+        return response.responseFormatado(False, 403, mensagem=serializer.errors)
 
 class TelefoneViewDetail(viewsets.ViewSet):
     serializers_class = TelefoneSerializer
@@ -290,16 +286,16 @@ class TelefoneViewDetail(viewsets.ViewSet):
         serializer = TelefoneSerializer(obj, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return response.responseFormatado(True, 200, data=serializer.data) 
+        return response.responseFormatado(False, 403, mensagem=serializer.errors)
 
     def patch(self, request,pk_usr, pk, *args, **kwargs):
         obj = self.get_object(pk_usr, pk)
         serializer = TelefoneSerializer(obj, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return response.responseFormatado(True, 200, data=serializer.data) 
+        return response.responseFormatado(False, 403, mensagem=serializer.errors)
 
     def delete(self, request,pk_usr, pk, *args, **kwargs):
         obj = self.get_object(pk_usr, pk)
@@ -307,8 +303,8 @@ class TelefoneViewDetail(viewsets.ViewSet):
         serializer = TelefoneSerializer(obj, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return response.responseFormatado(True, 200, data=serializer.data) 
+        return response.responseFormatado(False, 403, mensagem=serializer.errors)
 
 class BuscaOngsView(viewsets.ViewSet):
     serializer_class = OngSerializer
@@ -317,4 +313,4 @@ class BuscaOngsView(viewsets.ViewSet):
 
         ongs = Ong.objects.filter(ativo=True)
         serializer = self.serializer_class(ongs, many=True)
-        return Response(serializer.data)
+        return response.responseFormatado(True, 200, data=serializer.data) 

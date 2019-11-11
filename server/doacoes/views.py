@@ -21,6 +21,8 @@ from kara.email import *
 
 from django.shortcuts import render
 
+from kara.padronizacao_responser import PadronizacaoResponse
+
 @permission_classes((AllowAny, ))
 class DemandaView(viewsets.ViewSet):
     serializer_class = DemandaSerializer
@@ -38,7 +40,7 @@ class DemandaView(viewsets.ViewSet):
         print(id_ong)
         demandas = Demanda.objects.filter(ong_id=id_ong)
         serializer = self.serializer_retorno_class(demandas, many=True)
-        return Response(serializer.data)
+        return response.responseFormatado(True, 200, data=serializer.data) 
 
     def create(self, request, id_ong, *args, **kwargs):
         ong = Ong.objects.get(pk=id_ong)
@@ -47,24 +49,24 @@ class DemandaView(viewsets.ViewSet):
         if serializer.is_valid():
             demanda = serializer.save()
             serializer = self.serializer_retorno_class(demanda)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return response.responseFormatado(True, 200, data=serializer.data) 
+        return response.responseFormatado(False, 403, mensagem=serializer.errors)
 
     def put(self, request, pk, *args, **kwargs):
         obj = self.get_object(pk)
         serializer = self.serializer_class_alteracao(obj, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return response.responseFormatado(True, 200, data=serializer.data) 
+        return response.responseFormatado(False, 403, mensagem=serializer.errors)
 
     def patch(self, request, pk, *args, **kwargs):
         obj = self.get_object(pk)
         serializer = self.serializer_class_alteracao(obj, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return response.responseFormatado(True, 200, data=serializer.data) 
+        return response.responseFormatado(False, 403, mensagem=serializer.errors)
 
     def delete(self, request, pk, *args, **kwargs):
         obj = self.get_object(pk)
@@ -74,8 +76,9 @@ class DemandaView(viewsets.ViewSet):
         serializer = self.serializer_class_cancelamento(obj, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return response.responseFormatado(True, 200, data=serializer.data) 
+
+        return response.responseFormatado(False, 403, mensagem=serializer.errors)
 
 @permission_classes((AllowAny, ))
 class DemandaListView(viewsets.ViewSet):
@@ -85,7 +88,7 @@ class DemandaListView(viewsets.ViewSet):
     def list(self, request):
         demandas = Demanda.objects.all()
         serializer = self.serializer_retorno_class(demandas, many=True)
-        return Response(serializer.data)
+        return response.responseFormatado(True, 200, data=serializer.data) 
 
 class DoacaoView(viewsets.ViewSet):
     serializer_class = DoacaoSerializer
@@ -103,8 +106,8 @@ class DoacaoView(viewsets.ViewSet):
                     EnviarEmail().send_mail(request.user.email, request.user.nome_completo, 'Interesse de doação')
                 except Exception as e:
                     print(e)
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return response.responseFormatado(True, 200, data=serializer.data) 
+        return response.responseFormatado(False, 403, mensagem=serializer.errors)
 
     def list(self, request, id_ong):
         doacoes = Doacao.objects.filter(item_doacao__demanda__ong__id=id_ong).distinct()
@@ -112,7 +115,7 @@ class DoacaoView(viewsets.ViewSet):
         #     itens_doacao = ItemDoacao.objects.filter(doacao=doacao)
         #     doacao.itens_doacao = itens_doacao
         serializer = self.serializer_lista_class(doacoes, many=True)
-        return Response(serializer.data)
+        return response.responseFormatado(True, 200, data=serializer.data) 
 
 class DoacaoViewUser(viewsets.ViewSet):
     #serializer_class = DoacaoSerializer
@@ -124,11 +127,16 @@ class DoacaoViewUser(viewsets.ViewSet):
             itens_doacao = ItemDoacao.objects.filter(doacao=doacao)
             doacao.itens_doacao = itens_doacao
         serializer = self.serializer_lista_class(doacoes, many=True)
-        return Response(serializer.data)
+        return response.responseFormatado(True, 200, data=serializer.data) 
 
     def post(self, request, pk, *args, **kwargs):
         resposta = DoacaoDo(request)
-        return resposta.confirmarDoacao(pk)
+        retorno = resposta.confirmarDoacao(pk)
+        response = PadronizacaoResponse()
+        if isinstance(retorno, tuple):
+            return response.responseFormatado(False,retorno[0], mensagem=retorno[1])
+        
+        return response.responseFormatado(True, 200, data=retorno)
 
     # def patch(self, request, pk, *args, **kwargs):
     #     doacao = Doacao.objects.get(pk=pk)
@@ -140,7 +148,12 @@ class DoacaoViewUser(viewsets.ViewSet):
 
     def destroy(self, request, pk):
         resposta = DoacaoDo(request)
-        return resposta.cancelarDoacao(pk)
+        retorno = resposta.cancelarDoacao(pk)
+        response = PadronizacaoResponse()
+        if isinstance(retorno, tuple):
+            return response.responseFormatado(False,retorno[0], mensagem=retorno[1])
+        
+        return response.responseFormatado(True,200, data=retorno)
 
 @permission_classes((AllowAny, ))  
 class BuscaDemandasView(viewsets.ViewSet):
@@ -149,7 +162,7 @@ class BuscaDemandasView(viewsets.ViewSet):
     def list(self, request):
         demanda = Demanda.objects.filter(Q(ativo=True))
         serializer = self.serializer_class(demanda, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return response.responseFormatado(True, 200, data=serializer.data) 
 
 class ItemDoacaoView(viewsets.ViewSet):
     serializer_class = ItemDoacaoConfirmacaoSerializer
@@ -161,31 +174,34 @@ class ItemDoacaoView(viewsets.ViewSet):
         if serializer.is_valid():
             qtd = Decimal(request.data["quantidade_efetivada"]).quantize(Decimal('.01'), rounding=ROUND_DOWN)
             resposta = DoacaoDo(request)
-            return resposta.confirmarItemDoacao(pk, qtd)
+            retorno = resposta.confirmarItemDoacao(pk, qtd)
+            response = PadronizacaoResponse()
+            if isinstance(retorno, tuple):
+                return response.responseFormatado(False,retorno[0], mensagem=retorno[1])
+            return response.responseFormatado(True, 200, data=retorno) 
+        return response.responseFormatado(False, 403, mensagem=serializer.errors)
 
     def delete(self, request, pk, *args, **kwargs):
         try:
             obj = ItemDoacao.objects.get(pk=pk)
             status_item = StatusItemDoacao.objects.get(pk=2)
-            if obj.status.pk == 2:
-                return Response("Item doação já cancelado", status=status.HTTP_400_BAD_REQUEST)
-            elif obj.status.pk ==3:
-                return Response("Item doação já foi confirmada", status=status.HTTP_400_BAD_REQUEST)
+            if obj.status.pk == 2 or obj.status.pk ==3:
+                return response.responseFormatado(False,400, mensagem="Item doação finalizada.")
             else:
                 obj.status = status_item
                 obj.save()
-                return Response("Ok", status=status.HTTP_200_OK)
+                return response.responseFormatado(False, 200, mensagem="Item deletado com sucesso.")
         except Exception as e:
             print(e)
-            return Response("Objeto não encontrado", status=status.HTTP_400_BAD_REQUEST)
+            return response.responseFormatado(False, 404, mensagem="Item não encontrado.")
 
     def patch(self, request, pk, *args, **kwargs):
         obj = ItemDoacao.objects.get(pk=pk)
         serializer = self.serializer_class_alteracao(obj, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return response.responseFormatado(True, 200, data=serializer.data) 
+        return response.responseFormatado(False, 403, mensagem=serializer.errors)
 
 def test_email(request):
     try:
