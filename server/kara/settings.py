@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'administrativo',
-    'campanhas',
     'doacoes',
 ]
 
