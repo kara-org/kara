@@ -18,9 +18,10 @@ class DoacaoDo():
         
         doacao = Doacao.objects.get(pk=pk)
         
-        itens_doacao = ItemDoacao.objects.filter(Q(doacao=pk), ~Q(status=2))
+        itens_doacao = ItemDoacao.objects.filter(doacao=pk, status__pk=1)
         if itens_doacao.exists():
-            itens_doacao.update(status=2)
+            status_item = StatusItemDoacao.objects.get(pk=2)
+            itens_doacao.update(status=status_item)
             
             retorno = {
                 # 'usuario' : self.request.user,
@@ -42,8 +43,8 @@ class DoacaoDo():
         status_item = StatusItemDoacao.objects.get(pk=3)
 
         #verifica se todas as doacoes foram confirmadas
-        if all(item.status.id == 3 for item in itens_doacao):
-            return Response({'message': '403 - Essa doação já foi confirmada.'}, status=status.HTTP_403_FORBIDDEN)
+        if all((item.status.id == 3 or item.status.id == 2) for item in itens_doacao):
+            return Response({'message': '403 - Essa doação está indisponível.'}, status=status.HTTP_403_FORBIDDEN)
 
         for item_doacao in itens_doacao:
             # Consulta os objetos
@@ -75,8 +76,12 @@ class DoacaoDo():
             try:
                 item_doacao = ItemDoacao.objects.get(pk=pk)
                 status_item = StatusItemDoacao.objects.get(pk=3)
-                if item_doacao.status == status_item:
+                
+                if item_doacao.status.pk == 3:
                     return Response({'message': '403 - Esse item doação já foi confirmado.'},
+                                    status=status.HTTP_403_FORBIDDEN)
+                elif item_doacao.status.pk == 2:
+                    return Response({'message': '403 - Esse item doação foi cancelado.'},
                                     status=status.HTTP_403_FORBIDDEN)
 
                 demanda = Demanda.objects.get(pk=item_doacao.demanda.id)

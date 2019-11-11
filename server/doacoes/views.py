@@ -167,8 +167,10 @@ class ItemDoacaoView(viewsets.ViewSet):
         try:
             obj = ItemDoacao.objects.get(pk=pk)
             status_item = StatusItemDoacao.objects.get(pk=2)
-            if obj.status == status_item:
+            if obj.status.pk == 2:
                 return Response("Item doação já cancelado", status=status.HTTP_400_BAD_REQUEST)
+            elif obj.status.pk ==3:
+                return Response("Item doação já foi confirmada", status=status.HTTP_400_BAD_REQUEST)
             else:
                 obj.status = status_item
                 obj.save()
