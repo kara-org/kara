@@ -37,14 +37,15 @@ class DemandaSerializer(serializers.ModelSerializer):
         ong_data = self.context.get("ong")
         try:
             categoria = Categoria.objects.get(pk=id_categoria)
+            
+            print(validated_data)
         
             demanda = Demanda.objects.create(ong=ong_data, categoria=categoria, **validated_data)
-            if demanda:
-                return demanda
-            return Demanda.objects.none()
+            demanda.ong = ong_data
+            return demanda
         except Exception as e:
-                print(e)
-                return e
+            print(e)
+            return e
 
 class OngDemandas(serializers.ModelSerializer):
     demandas = serializers.ListField(child=DemandaSerializer())
@@ -57,7 +58,6 @@ class OngDemandas(serializers.ModelSerializer):
 
 class DemandaSerializerRetorno(serializers.ModelSerializer):
     categoria = CategoriaItemDoacaoSerializer()
-
     ong = OngSerializer()
 
     class Meta:

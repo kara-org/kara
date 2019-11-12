@@ -49,8 +49,8 @@ class DemandaView(viewsets.ViewSet):
         serializer = self.serializer_class(data=data, context={'ong': ong})
         if serializer.is_valid():
             try:
-                serializer.save()
-                serializer = self.serializer_retorno_class(serializer.data)
+                obj = serializer.save()
+                serializer = self.serializer_retorno_class(obj)
                 return self.response.responseFormatado(True, 200, data=serializer.data) 
             except Exception as e:
                 print(e)
