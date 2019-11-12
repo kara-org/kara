@@ -71,18 +71,43 @@ class DemandaSerializerRetorno(serializers.ModelSerializer):
                   'ativo']
 
 class DemandaSerializerAlteracao(serializers.ModelSerializer):
-    id_ong = serializers.IntegerField()
+    ong = serializers.IntegerField()
     id_categoria = serializers.IntegerField()
 
     class Meta:
         model = Demanda
         fields = ['id',
-                  'id_ong',
+                  'ong',
                   'id_categoria',
                   'quantidade_solicitada',
                   'quantidade_alcancada',
                   'descricao',
                   'ativo']
+        
+    def update(self, obj, validated_data):
+
+        try:
+            demanda = Demanda.objects.filter(pk=obj.pk)
+            
+            if 'ong' in validated_data:
+                id_ong = validated_data.pop('ong')
+                ong = Ong.objects.get(pk=id_ong)
+                demanda[0].ong = ong
+                
+            if 'id_categoria' in validated_data:
+                id_categoria = validated_data.pop('id_categoria')
+                categoria = Categoria.objects.get(pk=id_categoria)
+                demanda[0].categoria = categoria
+
+            
+            demanda[0].save()
+            
+            demanda.update( **validated_data)
+                
+            return demanda[0]
+        except Exception as e:
+            print(e)
+            raise Exception
 
 class DemandaSerializerCancelamento(serializers.ModelSerializer):
     ong = OngSerializer()
@@ -173,19 +198,19 @@ class DoacaoSerializer(serializers.ModelSerializer):
         model = Doacao
         fields = [
                     'id_usuario',
-                    'item_doacao'
+                    'item_doacao',
                   ]
 
     def create(self, validated_data):
-        itens_doacao = validated_data.pop("item_doacao")
-        id_usuario = validated_data.pop("id_usuario")
-
-        usuario = Usuario.objects.get(pk=id_usuario)
-        status = StatusItemDoacao.objects.get(pk=1)
         with transaction.atomic():
-            doacao = Doacao.objects.create(usuario=usuario, **validated_data)
-
             try:
+                itens_doacao = validated_data.pop("item_doacao")
+                id_usuario = validated_data.pop("id_usuario")
+
+                usuario = Usuario.objects.get(pk=id_usuario)
+                status = StatusItemDoacao.objects.get(pk=1)
+                doacao = Doacao.objects.create(usuario=usuario, **validated_data)
+                items = []
                 for item_doacao in itens_doacao:
                     id = int(item_doacao['id_demanda'])
                     quantidade = Decimal(item_doacao['quantidade_prometida']).quantize(Decimal('.01'),
@@ -193,6 +218,9 @@ class DoacaoSerializer(serializers.ModelSerializer):
                     demanda = Demanda.objects.get(pk=id)
                     item = ItemDoacao(doacao=doacao, demanda=demanda, status=status, quantidade_prometida=quantidade)
                     item.save()
+                    items.append(item)
+                doacao.item_doacao.set(items)
+                doacao.usuario = usuario
                 return doacao
             except Exception as e:
                 print(e)

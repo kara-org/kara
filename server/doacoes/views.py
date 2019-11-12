@@ -35,16 +35,17 @@ class DemandaView(viewsets.ViewSet):
         try:
             return Demanda.objects.get(id=id, ativo=True)
         except Demanda.DoesNotExist:
-            raise Http404
+            return None
 
     def list(self, request, id_ong):
-        print(id_ong)
         demandas = Demanda.objects.filter(ong_id=id_ong)
         serializer = self.serializer_retorno_class(demandas, many=True)
         return self.response.responseFormatado(True, 200, data=serializer.data) 
 
     def create(self, request, id_ong, *args, **kwargs):
         ong = Ong.objects.get(pk=id_ong)
+        if not obj:
+            return self.response.responseFormatado(False, 404, mensagem="Demanda não encontrada.")
         data = request.data
         serializer = self.serializer_class(data=data, context={'ong': ong})
         if serializer.is_valid():
@@ -60,24 +61,38 @@ class DemandaView(viewsets.ViewSet):
 
     def put(self, request, pk, *args, **kwargs):
         obj = self.get_object(pk)
-        serializer = self.serializer_class_alteracao(obj, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return self.response.responseFormatado(True, 200, data=serializer.data) 
-        return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
+        if not obj:
+            return self.response.responseFormatado(False, 404, mensagem="Demanda não encontrada.")
+        try:
+            serializer = self.serializer_class_alteracao(obj, data=request.data)
+            if serializer.is_valid():
+                    obj = serializer.save()
+                    retorno = self.serializer_retorno_class(obj)
+                    return self.response.responseFormatado(True, 200, data=retorno.data) 
+            return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
+        except Exception as e:
+            print(e)
+            return self.response.responseFormatado(False, 400, mensagem="Erro de processamento.")
 
     def patch(self, request, pk, *args, **kwargs):
         obj = self.get_object(pk)
+        if not obj:
+            return self.response.responseFormatado(False, 404, mensagem="Demanda não encontrada.")
         serializer = self.serializer_class_alteracao(obj, data=request.data, partial=True)
         if serializer.is_valid():
-            serializer.save()
-            return self.response.responseFormatado(True, 200, data=serializer.data) 
+            obj = serializer.save()
+            retorno = self.serializer_retorno_class(obj)
+            return self.response.responseFormatado(True, 200, data=retorno.data) 
         return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
 
     def delete(self, request, pk, *args, **kwargs):
         obj = self.get_object(pk)
-        # if not obj.ativo:
-        #     return Response("Demanda já cancelada", status=status.HTTP_400_BAD_REQUEST)
+        if not obj:
+            return self.response.responseFormatado(False, 404, mensagem="Demanda não encontrada.")
+        
+        if not obj.ativo:
+             return self.response.responseFormatado(False, 404, mensagem="Demanda já cancelada.")
+        
         request.data['ativo'] = False
         serializer = self.serializer_class_cancelamento(obj, data=request.data, partial=True)
         if serializer.is_valid():
@@ -109,7 +124,7 @@ class DoacaoView(viewsets.ViewSet):
         if serializer.is_valid():
             doacao = serializer.save()
             if doacao:
-                serializer = self.serializer_retorno_class(doacao)
+                serializer = self.serializer_lista_class(doacao)
                 try:
                     EnviarEmail().send_mail(request.user.email, request.user.nome_completo, 'Interesse de doação')
                 except Exception as e:
@@ -147,13 +162,13 @@ class DoacaoViewUser(viewsets.ViewSet):
         
         return self.response.responseFormatado(True, 200, data=retorno)
 
-    # def patch(self, request, pk, *args, **kwargs):
+    # region def patch(self, request, pk, *args, **kwargs):
     #     doacao = Doacao.objects.get(pk=pk)
     #     serializer = self.serializer_class(doacao, data=request.data, partial=True)
     #     if serializer.is_valid():
     #         serializer.save()
     #         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # endregion    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk):
         resposta = DoacaoDo(request)
