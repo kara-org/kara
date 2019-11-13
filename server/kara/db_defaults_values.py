@@ -1,3 +1,7 @@
+#abra o shell com o comando:
+#>> python manage.py shell
+#e execute o código a seguir
+
 from doacoes.models import Categoria, StatusItemDoacao
 
 StatusItemDoacao.objects.bulk_create(
