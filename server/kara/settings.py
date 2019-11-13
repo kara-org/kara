@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'administrativo',
     'doacoes',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [

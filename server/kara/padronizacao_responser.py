@@ -9,7 +9,8 @@ class PadronizacaoResponse():
                          202: status.HTTP_202_ACCEPTED,
                          400: status.HTTP_400_BAD_REQUEST, 
                          403: status.HTTP_403_FORBIDDEN, 
-                         404: status.HTTP_404_NOT_FOUND
+                         404: status.HTTP_404_NOT_FOUND,
+                         422: status.HTTP_422_UNPROCESSABLE_ENTITY
                         }
     
     def responseFormatado(self, possui_dados, status_code, data=None, mensagem=None):
