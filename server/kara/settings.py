@@ -47,8 +47,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'administrativo',
-    'campanhas',
     'doacoes',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
