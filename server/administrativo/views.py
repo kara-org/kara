@@ -18,6 +18,7 @@ from doacoes.serializers import OngDemandas
 from kara.email import EnviarEmail
 from django.core.files.storage import FileSystemStorage
 from kara.padronizacao_responser import *
+from drf_yasg.utils import swagger_auto_schema
 
 def gerar_senha():
     senha_numerica = randint(1000, 9999)
@@ -60,6 +61,9 @@ class UsuarioView(viewsets.ViewSet):
     serializer_class_usuario_ong = UsuarioOngSerializer
     response = PadronizacaoResponse()
 
+    @swagger_auto_schema(operation_id ='Obter usuário autenticado',
+                         operation_description='Obtem os dados do usuário autenticado na sessão',
+                         responses={200: UsuarioSerializer(),403: ''})
     def retrive(self, request):
         try:
             usuario = Usuario.objects.get(pk=request.user.pk)
@@ -70,17 +74,23 @@ class UsuarioView(viewsets.ViewSet):
                 serializer = self.serializer_class(usuario)
         except:
             return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
-        return self.response.responseFormatado(True, 200, data=serializer.data) 
+        return self.response.responseFormatado(True, 200, data=serializer.data)
 
+    @swagger_auto_schema(operation_id='Listar usuários',
+                         operation_description='Lista os usuários ativos do sistema',
+                         responses={200: UsuarioSerializer(many=True)})
     def list(self, request):
-        print('ola')
         usuarios = Usuario.objects.filter(ativo=True)
         for u in usuarios:
             u.enderecos = Endereco.objects.filter(usuario=u.pk, desabilitado = False)
             u.telefones = Telefone.objects.filter(usuario=u.pk, desabilitado = False)
         serializer = self.serializer_class(usuarios, many=True)
         return self.response.responseFormatado(True, 200, data=serializer.data) 
-
+    @swagger_auto_schema(   operation_id='Cadastrar usuário',
+                            operation_description='Cadastro de novos usuários',
+                            request_body=UsuarioSerializer(),
+                            responses={200: UsuarioSerializer(),
+                                    403: ''})
     def create(self, request, *args, **kwargs):
         print(f"request: {request.data}")
         data = request.data
@@ -109,6 +119,9 @@ class UsuarioDetailView(viewsets.ViewSet):
         except Usuario.DoesNotExist:
             raise Http404
 
+    @swagger_auto_schema(operation_id='Obter usuário',
+                         operation_description='Obtem os dados de um usuário',
+                         responses={200: UsuarioSerializer(), 403: ''})
     def get(self, request, pk, formar=True):
         obj = self.get_object(pk)
         if obj: 
@@ -120,6 +133,11 @@ class UsuarioDetailView(viewsets.ViewSet):
             return self.response.responseFormatado(True, 200, data=serializer.data) 
         return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
 
+    @swagger_auto_schema(   operation_id='Alterar usuário',
+                            operation_description='Altera um usuários',
+                            request_body=UsuarioSerializer(),
+                            responses={200: UsuarioSerializer(),
+                                    403: ''})
     def put(self, request, pk, *args, **kwargs):
         obj = self.get_object(pk)
         request.data['password'] = "a"
@@ -130,6 +148,11 @@ class UsuarioDetailView(viewsets.ViewSet):
             return self.response.responseFormatado(True, 200, data=serializer.data) 
         return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
 
+    @swagger_auto_schema(   operation_id='Alterar usuário',
+                            operation_description='Altera um usuários',
+                            request_body=UsuarioSerializer(),
+                            responses={200: UsuarioSerializer(),
+                                    403: ''})
     def patch(self, request, pk, *args, **kwargs):
         obj = self.get_object(pk)
         serializer = self.serializer_class(obj, data=request.data, partial=True)
@@ -138,6 +161,9 @@ class UsuarioDetailView(viewsets.ViewSet):
             return self.response.responseFormatado(True, 200, data=serializer.data) 
         return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
 
+    @swagger_auto_schema(operation_id='Deletar usuário',
+                         operation_description='Deleta logicamente um usuário',
+                         responses={200: UsuarioSerializer(), 403: ''})
     def delete(self, request, pk, *args, **kwargs):
         obj = self.get_object(pk)
         request.data['ativo'] = False
@@ -152,6 +178,11 @@ class OngCreateListView(viewsets.ViewSet):
     serializer_class = OngSerializer
     response = PadronizacaoResponse()
 
+    @swagger_auto_schema(   operation_id='Cadastar Ong',
+                            operation_description='Cadastra uma nova Ong',
+                            request_body=OngSerializer(),
+                            responses={200: OngSerializer(),
+                                    403: ''})
     def create(self, request, *args, **kwargs):
         data = request.data
         serializer = self.serializer_class(data= data)
@@ -163,7 +194,10 @@ class OngCreateListView(viewsets.ViewSet):
                 print(e)
             return self.response.responseFormatado(True, 200, data=serializer.data) 
         return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
-    
+
+    @swagger_auto_schema(   operation_id='Listar Ongs',
+                            operation_description='Lista as Ongs ativas',
+                            responses={200: OngSerializer(many=True)})
     def list(self, request):
         ongs = Ong.objects.filter(ativo=True)
         serializer = self.serializer_class(ongs, many=True)
@@ -184,13 +218,16 @@ class OngDetailView(viewsets.ViewSet):
         else:
             return False, None 
 
-
     def get_object(self, id):
         try:
             return Ong.objects.get(id = id, ativo=True)
         except Ong.DoesNotExist:
             raise Http404
 
+    @swagger_auto_schema(   operation_id='Obter Ong',
+                            operation_description='Obtém Ong ativas',
+                            responses={200: OngSerializer(),
+                                       404: 'Ong não encontrada.'})
     def get(self, request, pk, formar=True):
         try:
             ong = self.get_object(pk)
@@ -200,6 +237,10 @@ class OngDetailView(viewsets.ViewSet):
         except Exception as e:
             return self.response.responseFormatado(False, 404, mensagem= "Ong não encontrada.")        
 
+    @swagger_auto_schema(   operation_id='Alterar Ong',
+                            operation_description='Obtém Ong ativas',
+                            responses={200: OngSerializer(),
+                                       403: ''})
     def put(self, request, pk, *args, **kwargs):
         sucesso, _ =  self.valida_acesso( pk)        
         
@@ -212,6 +253,10 @@ class OngDetailView(viewsets.ViewSet):
             return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
         return self.response.responseFormatado(False, 403, mensagem="Este usuário não tem acesso a esta ong.")
 
+    @swagger_auto_schema(   operation_id='Alterar Ong',
+                            operation_description='Obtém Ong ativas',
+                            responses={200: OngSerializer(),
+                                       403: ''})
     def patch(self, request, pk, *args, **kwargs):
         sucesso, _ =  self.valida_acesso( pk)        
         
@@ -224,6 +269,10 @@ class OngDetailView(viewsets.ViewSet):
             return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
         return self.response.responseFormatado(False, 403, mensagem="Este usuário não tem acesso a esta ong.")
 
+    @swagger_auto_schema(   operation_id='Deletar Ong',
+                            operation_description='Deleta logicamente uma Ong',
+                            responses={200: OngSerializer(),
+                                       403: ''})
     def delete(self, request, pk, *args, **kwargs):
         sucesso, _ =  self.valida_acesso(pk)        
 
@@ -247,6 +296,9 @@ class TelefoneView(viewsets.ViewSet):
     #     except Usuario.DoesNotExist:
     #         raise Http404
 
+    @swagger_auto_schema(   operation_id='Listar telefones',
+                            operation_description='Lista telefones de um usuário',
+                            responses={200: TelefoneSerializer()})
     def list(self, request, pk_usr):
         usuario = self.get_usuario(pk_usr)
         if usuario:
@@ -259,6 +311,11 @@ class TelefoneView(viewsets.ViewSet):
       
         return self.response.responseFormatado(True, 200, data=serializer.data) 
 
+    @swagger_auto_schema(   operation_id='Adicionar telefone',
+                            request_body=TelefoneSerializer(),
+                            operation_description='Adicionar telefones para um usuário',
+                            responses={200: TelefoneSerializer(),
+                                       403: ''})
     def create(self, request,pk_usr, *args, **kwargs):
         request.data['usuario'] = self.get_usuario(pk_usr).pk
         data = request.data
@@ -288,6 +345,10 @@ class TelefoneViewDetail(viewsets.ViewSet):
     #         return Response(serializer.data)
     #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @swagger_auto_schema(operation_id='Alterar telefone',
+                         operation_description='Altera o telefone de um usuário',
+                         responses={200: TelefoneSerializer(),
+                                    403: ''})
     def put(self, request, pk_usr, pk, *args, **kwargs):
         obj = self.get_object(pk_usr, pk)
         serializer = TelefoneSerializer(obj, data=request.data)
@@ -296,6 +357,10 @@ class TelefoneViewDetail(viewsets.ViewSet):
             return self.response.responseFormatado(True, 200, data=serializer.data) 
         return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
 
+    @swagger_auto_schema(operation_id='Alterar telefone',
+                         operation_description='Altera o telefone de um usuário',
+                         responses={200: TelefoneSerializer(),
+                                    403: ''})
     def patch(self, request,pk_usr, pk, *args, **kwargs):
         obj = self.get_object(pk_usr, pk)
         serializer = TelefoneSerializer(obj, data=request.data, partial=True)
@@ -304,6 +369,10 @@ class TelefoneViewDetail(viewsets.ViewSet):
             return self.response.responseFormatado(True, 200, data=serializer.data) 
         return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
 
+    @swagger_auto_schema(operation_id='Deletar telefone',
+                         operation_description='Deleta logicamente um telefone de um usuário',
+                         responses={200: TelefoneSerializer(),
+                                    403: ''})
     def delete(self, request,pk_usr, pk, *args, **kwargs):
         obj = self.get_object(pk_usr, pk)
         request.data['desabilitado'] = True
