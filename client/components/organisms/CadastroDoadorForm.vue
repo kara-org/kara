@@ -262,9 +262,10 @@ export default {
           })
           .catch(err => {
             console.error(this.errors)
-
             if (!err.response) {
               err.message = 'Servidor desconectado'
+            } else if (err.response.data.mensagem.email != null) {
+              err.message = "Usuário com este email já existe"
             } else if (err.response.status === 400) {
               if (err.response.data.non_field_errors)
                 err.message = err.response.data.non_field_errors[0]
