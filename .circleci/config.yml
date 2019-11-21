@@ -19,7 +19,7 @@ jobs:
       - run:
           name: Deploy Over SSH
           command: |
-            ssh $SSH_USER@$SSH_HOST "ls && exit"
+            ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "ls && exit"
 workflows:
   version: 2
   build_and_test:
