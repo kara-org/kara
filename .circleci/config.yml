@@ -21,7 +21,7 @@ jobs:
           name: Copiando arquivos
           command: |            
             rsync -avh --delete --rsh="ssh -o StrictHostKeyChecking=no "  . $SSH_USER@$SSH_HOST:/root/karadoacoes.tk
-      - run: |
+      - run: 
           name: Instalando dependencias da api
           command: |
             ssh $SSH_USER@$SSH_HOST "cd /root/karadoacoes.tk/server && workon karaenv && pip install -r requirements/common.txt && exit"
