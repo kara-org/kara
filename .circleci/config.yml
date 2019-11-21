@@ -17,6 +17,10 @@ jobs:
           name: Capturando chaves de acesso
           command: ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
       - checkout # check out the code in the project directory
+      - run: 
+          name: Para os serviços do projeto
+          command: |
+            ssh $SSH_USER@$SSH_HOST "systemctl stop kara-api && systemctl stop kara-app"
       - run:
           name: Copiando arquivos
           command: |            
@@ -35,12 +39,16 @@ jobs:
             ssh $SSH_USER@$SSH_HOST "cd /root/karadoacoes.tk/client && yarn install && exit"
       - run:
           name: Constroi o front-end
-          command: |
+          command: |          
             ssh $SSH_USER@$SSH_HOST "cd /root/karadoacoes.tk/client && yarn build"
       - run:
           name: Constroi o front-end
           command: |
             ls
+      - run: 
+          name: Reinicia os serviços
+          command: |
+            ssh $SSH_USER@$SSH_HOST "systemctl start kara-api && systemctl start kara-app"
 
 
 workflows:
