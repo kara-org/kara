@@ -24,7 +24,7 @@ jobs:
       - run:
           name: Copiando arquivos
           command: |            
-            rsync -avh --delete --rsh="ssh -o StrictHostKeyChecking=no "  . $SSH_USER@$SSH_HOST:/root/karadoacoes.tk
+            rsync -avh --rsh="ssh -o StrictHostKeyChecking=no "  . $SSH_USER@$SSH_HOST:/root/karadoacoes.tk
       - run: 
           name: Instalando dependencias da api
           command: |
@@ -40,11 +40,7 @@ jobs:
       - run:
           name: Constroi o front-end
           command: |          
-            ssh $SSH_USER@$SSH_HOST "cd /root/karadoacoes.tk/client && yarn build"
-      - run:
-          name: Constroi o front-end
-          command: |
-            ls
+            ssh $SSH_USER@$SSH_HOST "cd /root/karadoacoes.tk/client && yarn build"      
       - run: 
           name: Reinicia os serviços
           command: |
