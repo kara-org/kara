@@ -1,18 +1,18 @@
- version: 2.1
-  jobs:
-    build:
-      docker: 
-        - image: fedora # the primary container, where your job's commands are run
-      steps:
-        - checkout # check out the code in the project directory
-        - run: ls
-    deploy:
-      machine:
-        enabled: true
-      steps:
-        - run:
-            name: Deploy Over SSH
-            command: |
-              ssh $SSH_USER@$SSH_HOST "ls"
-            environment:
-              SSH_USER: root
+version: 2.1
+jobs:
+  build:
+    docker: 
+      - image: fedora # the primary container, where your job's commands are run
+    steps:
+      - checkout # check out the code in the project directory
+      - run: ls
+  deploy:
+    machine:
+      enabled: true
+    steps:
+      - run:
+          name: Deploy Over SSH
+          command: |
+            ssh $SSH_USER@$SSH_HOST "ls"
+          environment:
+            SSH_USER: root
