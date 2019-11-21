@@ -14,13 +14,35 @@ jobs:
           fingerprints:
             - "5a:59:6e:f5:c0:a1:82:da:1e:61:2e:48:de:d3:4a:91"
       - run:
-          name: fix host authenticity for production server
+          name: Capturando chaves de acesso
           command: ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
       - checkout # check out the code in the project directory
       - run:
-          name: Deploy Over SSH in rsync
+          name: Copiando arquivos
           command: |            
             rsync -avh --delete --rsh="ssh -o StrictHostKeyChecking=no "  . $SSH_USER@$SSH_HOST:/root/karadoacoes.tk
+      - run: |
+          name: Instalando dependencias da api
+          command: |
+            ssh $SSH_USER@$SSH_HOST "cd /root/karadoacoes.tk/server && workon karaenv && pip install -r requirements/common.txt && exit"
+      - run:
+          name: Executa migrations do banco de dados
+          command: |
+            ssh $SSH_USER@$SSH_HOST "cd /root/karadoacoes.tk/server && workon karaenv && python manage.py makemigrations && python manage.py migrate && exit"      
+      - run:
+          name: Instalando dependencias do client
+          command: |
+            ssh $SSH_USER@$SSH_HOST "cd /root/karadoacoes.tk/client && yarn install && exit"
+      - run:
+          name: Constroi o front-end
+          command: |
+            ssh $SSH_USER@$SSH_HOST "cd /root/karadoacoes.tk/client && yarn build"
+      - run:
+          name: Constroi o front-end
+          command: |
+            ls
+
+
 workflows:
   version: 2
   build-and-deploy:
