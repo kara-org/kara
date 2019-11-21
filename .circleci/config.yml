@@ -7,19 +7,27 @@ jobs:
       - checkout # check out the code in the project directory
       - run: ls
   deploy:
-    machine:
-      enabled: true
-    steps:    
+    docker: 
+      - image: fedora
+    # machine:
+    #   enabled: true
+    steps:        
       - add_ssh_keys:
           fingerprints:
             - "5a:59:6e:f5:c0:a1:82:da:1e:61:2e:48:de:d3:4a:91"
+      - run:
+          name: install dependencias
+          command: dnf install rsync sshpass
+      - run:
+          name: add ssh key
+          command: ssh-add <(echo "$SSH_PRIVATE_KEY")
       - run:
           name: fix host authenticity for production server
           command: ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
       - run:
           name: Deploy Over SSH
           command: |
-            ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "ls && exit"
+            sshpass -p 19446719 ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "ls && exit"
 workflows:
   version: 2
   build_and_test:
