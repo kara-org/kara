@@ -12,10 +12,11 @@ jobs:
     steps:    
       - add_ssh_keys:
           fingerprints:
-            - "5a:59:6e:f5:c0:a1:82:da:1e:61:2e:48:de:d3:4a:91"      
+            - "5a:59:6e:f5:c0:a1:82:da:1e:61:2e:48:de:d3:4a:91"
       - run:
           name: fix host authenticity for production server
           command: ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
+      - checkout # check out the code in the project directory
       - run:
           name: Deploy Over SSH in rsync
           command: |            
