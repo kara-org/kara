@@ -52,7 +52,7 @@ export const mutations = {
       }
     })
   },
-  
+
   CANCELA_ITEM_DOACAO(state, id) {
     state.list = state.list.map((i) => {
       if (i.id === id) {
@@ -99,7 +99,7 @@ export const actions = {
   },
 
   fetchDoacoesOng(context, idComposer) {
-    this.$axios.$get(`/ong/${idComposer}/doacoes/`)
+    this.$OngService.$doacoes.index(idComposer)
       .then((response) => {
         context.commit('UPDATE_DOACOES', response)
         context.commit('UPDATE_ONG', response[0].item_doacao[0].demanda.ong)
@@ -108,10 +108,10 @@ export const actions = {
   },
 
   fetchDoacoesDoador(context, idComposer) {
-    this.$axios.$get(`/doador/${idComposer}/doacoes/`)
+    this.$DoadorService.$doacoes.index(idComposer)
       .then((response) => {
-        context.commit('UPDATE_DOACOES', response)
-        context.commit('UPDATE_USUARIO', response[0].usuario)
+        context.commit('UPDATE_DOACOES', response);
+        context.commit('UPDATE_USUARIO', response[0].usuario);
       })
       .catch((err) => console.log(err))
   },
@@ -120,13 +120,13 @@ export const actions = {
     this.$axios.$patch(`/item/${payload.id}/`, payload)
       .then((_) =>
         context.commit('SET_ITEM_DOACAO', payload))
-      .catch((err) => console.log(err))
+      .catch((err) => console.log(err));
   },
 
   deleteItemDoacao(context, id) {
     this.$axios.$delete(`/item/${id}/cancelar/`)
       .then(context.commit('CANCELA_ITEM_DOACAO', id))
-      .catch((err) => console.log(err))
+      .catch((err) => console.log(err));
   },
 
   deleteDoacao(context, id) {
