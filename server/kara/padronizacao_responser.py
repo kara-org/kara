@@ -26,12 +26,12 @@ class PadronizacaoResponse():
         self.retorno = {'data':None, 'mensagem': None}
 
         if possui_dados:
-            if not data:
-                raise Exception
+            # if not data:
+            #     raise Exception
             self.retorno['data'] = data
         else:
-            if not mensagem:
-                raise Exception
+            # if not mensagem:
+                # raise Exception
             self.retorno['mensagem'] = mensagem
             
         status = self.__getStatus(status_code)

@@ -27,6 +27,7 @@ export const mutations = {
 export const actions = {
   fetchOng (context, idOng) {
     this.$OngService.show(idOng).then((payload) => {
+
       context.commit('UPDATE_ONG', payload)
     })
   },
