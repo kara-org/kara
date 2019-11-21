@@ -178,11 +178,13 @@ class DoacaoViewUser(viewsets.ViewSet):
     response = PadronizacaoResponse()
 
     def list(self, request, id_user):
+        
         doacoes = Doacao.objects.filter(usuario__id=id_user)
         for doacao in doacoes:
             itens_doacao = ItemDoacao.objects.filter(doacao=doacao)
             doacao.itens_doacao = itens_doacao
         serializer = self.serializer_lista_class(doacoes, many=True)
+                
         return self.response.responseFormatado(True, 200, data=serializer.data) 
 
     def post(self, request, pk, *args, **kwargs):
