@@ -80,7 +80,7 @@ export default {
   methods: {
     ...mapActions('demandas', ['createDemanda', 'fetchOng']),
     async create() {
-      this.demanda.id_ong = this.$auth.user.ong.id
+      this.demanda.id_ong = this.ong.id
       await this.$axios
         .$post(`/ong/${this.ong.id}/demandas/`, this.demanda)
         .then(response => {
