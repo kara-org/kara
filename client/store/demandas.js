@@ -58,8 +58,8 @@ export const actions = {
   fetchDemandasOng(context, idComposer) {
     this.$axios.$get(`/ong/${idComposer}/demandas/`)
       .then((response) => {
-        context.commit('UPDATE_DEMANDAS', response)
-        context.commit('UPDATE_ONG', response[0].ong)
+        context.commit('UPDATE_DEMANDAS', response.data);
+        context.commit('UPDATE_ONG', response.data[0].ong);
       })
       .catch((err) => console.log(err))
   },

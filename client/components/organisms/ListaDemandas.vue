@@ -104,11 +104,11 @@ export default {
         onConfirm: async () => {
           if (acao == 'inativar') {
             await this.deleteDemanda(id)
-            await this.fetchDemandasOng(this.user.ong.id)
           } else {
             await this.changeDemanda(id, { ativo: true })
-            await this.fetchDemandasOng(this.user.ong.id)
           }
+          await this.fetchDemandasOng(this.$auth.user.ong.id)
+          console.log(this.demandas)
         }
       })
     }

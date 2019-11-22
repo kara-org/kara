@@ -164,7 +164,7 @@ class OngSerializer(serializers.ModelSerializer):
                 
                 end, created = Endereco.objects.get_or_create(**endereco)
                 
-                user = Usuario.objects.get_or_create(endereco= end,  **usuario_data)
+                user = Usuario.objects.create_user(endereco= end,  **usuario_data)
                 for t in telefone:
                     fone = Telefone(**t)
                     fone.save()
