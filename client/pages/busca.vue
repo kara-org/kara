@@ -11,8 +11,7 @@
       <div class="hero-head">
         <div class="container">
             <h1 class="title is-4  has-text-centered is-primary">Demandas</h1>
-            <p class="has-text-centered"><small >Encontre itens, caso não encontre, veja nossas sugestões abaixo</small></p>
-
+            <p class="has-text-centered"><small >Busque por itens, caso não encontre, veja nossas sugestões abaixo </small></p>
             <ListagemOngs :list="list" :isBusca="true"/>
         </div>
       </div>
@@ -24,6 +23,7 @@
 <script>
 import ListagemOngs from '../components/organisms/ListagemCards'
 import Buscar from '../components/molecules/BuscarForm'
+import { mapActions } from 'vuex';
 
 export default {
   name: 'HomePage',
@@ -36,7 +36,12 @@ export default {
       return this.$store.state.busca.list
     }
   },
-  created: function() {}
+  methods: {
+    ...mapActions('carrinho', ['limparCarrinho'])
+  },
+  mounted: function() {
+    this.limparCarrinho()
+  }
 }
 </script>
 <style>

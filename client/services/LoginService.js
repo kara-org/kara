@@ -1,4 +1,4 @@
-export default $auth => $toast => ({
+export default $auth => () => ({
 
   login (email, password) {
     return $auth.loginWith('local', {
@@ -6,7 +6,7 @@ export default $auth => $toast => ({
         email: email,
         password: password
       }
-    })
+    });
   }
-})
+});
 

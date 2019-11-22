@@ -1,19 +1,18 @@
 export default ({ $axios, $store }) => resource => ({
   async index() {
-    return await $axios
-      .$get(resource)
-      // .catch(err => {
-      //   dispatch('global/addErro', err, { root: true })
-      // })
-      // .then(() => dispatch('global/stopLoading', null, { root: true }))
+    return await $axios.$get(resource).then((response) => {
+      return response.data;
+    });
   },
 
   async create(payload) {
-    return await $axios.$post(resource, payload)
+    return await $axios.$post(resource, payload);
   },
 
   async show(id) {
-    return await $axios.$get(`${resource}${id}`)
+    return await $axios.$get(`${resource}${id}`).then((response) => {
+      return response.data;
+    });
   },
 
   async update(id, payload) {

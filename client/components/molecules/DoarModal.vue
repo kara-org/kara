@@ -22,16 +22,12 @@
             <p class="modal-card-title">Item Doação</p>
           </header>
           <section class="modal-card-body">
-            <b-field label="Quantidade">
-              <b-input
-                type="number"
-                min="0.5"
-                step=".5"
-                v-model="quantidade"
-                placeholder="Quantidade a doar"
-                required
-              ></b-input>
-            </b-field>
+              <b-numberinput
+              v-model.number="quantidade"
+              name="quantidade"
+              min="1"
+              v-validate="'required'"
+            ></b-numberinput>
           </section>
           <footer class="modal-card-foot">
             <button class="button" type="button" @click="isComponentModalActive = false">Cancelar</button>
@@ -44,7 +40,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
   props: {
     text: {
@@ -56,6 +52,9 @@ export default {
     },
     item: {
       type: Object
+    },
+    idOng: {
+      type: Number
     }
   },
   data() {
@@ -65,10 +64,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({ carrinhoVazio: 'carrinho/isEmpty' })
+    ...mapGetters({ carrinhoVazio: 'carrinho/isEmpty' }),
   },
   methods: {
-    ...mapActions('carrinho', ['fetchOng', 'adicionarItemNoCarrinho']),
+    ...mapGetters({ itensOng: 'busca/demandasPorOng' }),
+    ...mapActions('carrinho', ['fetchOng', 'fetchItens','adicionarItemNoCarrinho']),
     ...mapActions('doacoes', ['confirmaItemDoacao', 'fetchDoacoesOng']),
     confirmado() {
       if (this.text === 'Confirmar') {
@@ -77,10 +77,11 @@ export default {
             quantidade_efetivada: this.quantidade
           })
           .then(response => {
-            this.fetchDoacoesOng(this.$auth.user.ong.id)
+            this.fetchDoacoesOng(this.idOng)
           })
       } else {
-        this.fetchOng(1)
+        this.fetchOng(this.idOng)
+        this.fetchItens(this.itensOng()(this.idOng))
         this.adicionarItemNoCarrinho({
           demanda: this.item,
           quantidade_prometida: this.quantidade

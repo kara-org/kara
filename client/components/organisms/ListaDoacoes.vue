@@ -14,7 +14,7 @@
         <b-table-column field="id" label="ID Doação" centered>{{ fProps.row.id }}</b-table-column>
 
         <b-table-column v-if="isDoador" field="ong" label="ONG" centered>
-          <span>{{ fProps.row.item_doacao[0].demanda.ong.nome }}</span>
+          <span>{{ fProps && fProps.row.item_doacao[0]  && fProps.row.item_doacao[0].demanda.ong.nome }}</span>
         </b-table-column>
         <b-table-column
           v-else
@@ -46,14 +46,6 @@
               :label="columnsVisible['demanda'].title"
               centered
             >{{ props.row.demanda.descricao }}</b-table-column>
-
-            <b-table-column
-              field="ong"
-              :visible="columnsVisible['ong'].display"
-              :label="columnsVisible['ong'].title"
-              centered
-            >{{ fProps.row.usuario }}</b-table-column>
-
             <b-table-column
               field="prometido"
               :visible="columnsVisible['prometido'].display"
@@ -109,10 +101,10 @@ import EditarModal from '@/components/molecules/EditarDoacaoModal.vue'
 import { mapActions, mapGetters } from 'vuex'
 export default {
   components: { EditarModal, DoarModal },
+  props: {
+    isDoador: Boolean,
+  },
   computed: {
-    isDoador() {
-      return !this.$auth.user.vinculo_ong
-    },
     user() {
       return this.$auth.user
     },
@@ -159,7 +151,8 @@ export default {
       return date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear()
     },
     async confirm(id, acao) {
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
+
         message: `Tem certeza que deseja ${acao} essa doação?`,
         confirmText: 'Sim',
         cancelText: 'Não',
@@ -168,8 +161,8 @@ export default {
           if (acao == 'cancelar') {
             await this.deleteItemDoacao(id)
             if (this.isDoador) {
-              await this.fetchDoacoesOng(this.$auth.user.ong.id)
-            } else await this.fetchDoacoesDoador(this.$auth.user.id)
+              await this.fetchDoacoesOng(this.user.ong.id)
+            } else await this.fetchDoacoesDoador(this.user.id)
           } else {
             await this.confirmaItemDoacao(id)
           }
