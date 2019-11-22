@@ -49,6 +49,11 @@ a.navbar-item.is-active,
   background-color: $secondary;
 }
 
+.button:not(.is-outlined).is-primary:active,
+.button:not(.is-outlined).is-primary.is-active {
+  background-color: $primary;
+}
+
 .button.is-primary[disabled],
 fieldset[disabled] .button.is-primary {
   background-color: $secondary-disable;
@@ -68,4 +73,32 @@ fieldset[disabled] .button.is-primary {
 
 .has-background-primary {
   background-color: $primary !important;
+}
+
+
+.tabs.is-toggle li.is-active a {
+  background-color: $primary;
+  border-color: $primary
+}
+
+
+.input:focus,
+.taginput .taginput-container.is-focusable:focus,
+.textarea:focus,
+.select select:focus,
+.is-focused.input,
+.taginput .is-focused.taginput-container.is-focusable,
+.is-focused.textarea,
+.select select.is-focused,
+.input:active,
+.taginput .taginput-container.is-focusable:active,
+.textarea:active,
+.select select:active,
+.is-active.input,
+.taginput .is-active.taginput-container.is-focusable,
+.is-active.textarea,
+.select select.is-active {
+  border-color: $primary;
+  -webkit-box-shadow: 0 0 0 0.125em rgba(82, 164, 137, 0.25);
+  box-shadow: 0 0 0 0.125em rgba(82, 164, 137, 0.25);
 }
