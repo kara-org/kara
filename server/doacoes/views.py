@@ -52,9 +52,10 @@ class DemandaView(viewsets.ViewSet):
                                     403: 'Categoria não encontrada.'})
     def create(self, request, id_ong, *args, **kwargs):
         ong = Ong.objects.get(pk=id_ong)
-        if not obj:
+        if not ong:
             return self.response.responseFormatado(False, 404, mensagem="Demanda não encontrada.")
         data = request.data
+        data["quantidade_alcancada"] = 0
         serializer = self.serializer_class(data=data, context={'ong': ong})
         if serializer.is_valid():
             try:
