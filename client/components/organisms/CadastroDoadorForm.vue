@@ -1,6 +1,6 @@
 <template>
   <section>
-    <form @submit.prevent="validateBeforeSubmit" method="post">
+    <form v-if="!success" @submit.prevent="validateBeforeSubmit" method="post">
       <template v-if="isCadastro">
         <b-field class="has-text-centered">
           <b-switch
@@ -144,6 +144,15 @@
         >Voltar</nuxt-link>
       </div>
     </form>
+    <div v-else class="column has-text-centered">
+      <h1>Atualização realizada com sucesso!</h1>
+      <hr />
+      <button
+        class="button is-primary is-outlined is-rounded"
+        @click="success=false"
+        exact-active-class="is-active"
+      >Voltar</button>
+    </div>
   </section>
 </template>
 <script>
@@ -228,7 +237,6 @@ export default {
               type: 'is-success',
               position: 'is-top'
             })
-            this.$router.push('/editarPerfil')
           })
           .catch(err => {
             if (!err.response) {
