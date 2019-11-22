@@ -1,0 +1,71 @@
+// Mudar cores básicas dos elementos
+
+.button.is-primary {
+  background-color: $primary;
+}
+
+.button.is-primary.is-outlined {
+  background-color: transparent;
+  border-color: $primary;
+  color: $primary;
+}
+
+.button.is-primary.is-outlined:hover,
+.button.is-primary.is-outlined.is-hovered,
+.button.is-primary.is-outlined:focus,
+.button.is-primary.is-outlined.is-focused {
+  background-color: $primary;
+  border-color: $primary;
+  color: white;
+}
+
+a.navbar-item:focus,
+a.navbar-item:focus-within,
+a.navbar-item:hover,
+a.navbar-item.is-active,
+.navbar-link:focus,
+.navbar-link:focus-within,
+.navbar-link:hover,
+.navbar-link.is-active {
+  color: $primary;
+}
+
+.tag:not(body).is-primary {
+  background-color: $primary;
+}
+
+
+.has-text-primary {
+  color: $primary !important;
+}
+
+.menu-list a.is-active {
+  background-color: $primary;
+}
+
+
+.button.is-primary:hover,
+.button.is-primary.is-hovered {
+  background-color: $secondary;
+}
+
+.button.is-primary[disabled],
+fieldset[disabled] .button.is-primary {
+  background-color: $secondary-disable;
+}
+
+.pagination-link.is-current {
+  background-color: $primary;
+  border-color: $primary
+}
+
+.pagination-previous:focus,
+.pagination-next:focus,
+.pagination-link:focus {
+  border-color: $primary
+}
+
+
+.has-background-primary {
+  background-color: $primary !important;
+}
