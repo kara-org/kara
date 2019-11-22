@@ -228,7 +228,7 @@ export default {
               type: 'is-success',
               position: 'is-top'
             })
-            this.$router.push('/editarPerfil')
+            this.$router.push('/doador/editar')
           })
           .catch(err => {
             if (!err.response) {
