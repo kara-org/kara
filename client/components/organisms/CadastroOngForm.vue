@@ -250,8 +250,11 @@ export default {
     }
   },
   async mounted() {
-    if (this.$auth.user && this.$auth.user.ong) {
-        this.ong = this.$auth.user.ong
+    if (this.user && this.user.ong) {
+      this.ong.id = this.user.ong.id
+      this.ong.nome = this.user.ong.nome
+      this.ong.cnpj = this.user.ong.cnpj
+      this.ong.historia = this.user.ong.historia
     }
   },
   methods: {
@@ -261,7 +264,8 @@ export default {
     },
     async register() {
       try {
-        await this.$OngService.create(this.ong)
+        await this.$OngService
+          .create(this.ong)
           .then(response => {
             this.$buefy.toast.open({
               message: 'Cadastro realizado com successo!',
@@ -299,7 +303,8 @@ export default {
     },
     async change() {
       try {
-        await this.$OngService.update(this.ong.id, {
+        await this.$OngService
+          .update(this.ong.id, {
             nome: this.ong.nome,
             historia: this.ong.historia
           })
@@ -326,7 +331,6 @@ export default {
             })
             this.success = false
           })
-
       } catch (e) {
         this.error = e.response.data.message
       }
