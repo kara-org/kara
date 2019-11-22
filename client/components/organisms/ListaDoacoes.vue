@@ -46,14 +46,6 @@
               :label="columnsVisible['demanda'].title"
               centered
             >{{ props.row.demanda.descricao }}</b-table-column>
-
-            <b-table-column
-              field="ong"
-              :visible="columnsVisible['ong'].display"
-              :label="columnsVisible['ong'].title"
-              centered
-            >{{ fProps.row.usuario }}</b-table-column>
-
             <b-table-column
               field="prometido"
               :visible="columnsVisible['prometido'].display"
@@ -169,8 +161,8 @@ export default {
           if (acao == 'cancelar') {
             await this.deleteItemDoacao(id)
             if (this.isDoador) {
-              await this.fetchDoacoesOng(this.$auth.user.ong.id)
-            } else await this.fetchDoacoesDoador(this.$auth.user.id)
+              await this.fetchDoacoesOng(this.user.ong.id)
+            } else await this.fetchDoacoesDoador(this.user.id)
           } else {
             await this.confirmaItemDoacao(id)
           }
