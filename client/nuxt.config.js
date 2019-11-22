@@ -1,4 +1,4 @@
-const env = require('dotenv').config()
+const env = require('dotenv').config();
 const nodeExternals = require('webpack-node-externals');
 
 export default {
@@ -107,4 +107,4 @@ export default {
       }
     }
   }
-}
+};
