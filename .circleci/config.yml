@@ -1,0 +1,57 @@
+version: 2.1
+jobs:
+  build:
+    docker: 
+      - image: fedora # the primary container, where your job's commands are run
+    steps:
+      - checkout # check out the code in the project directory
+      - run: ls
+  deploy:    
+    machine:
+      enabled: true
+    steps:    
+      - add_ssh_keys:
+          fingerprints:
+            - "5a:59:6e:f5:c0:a1:82:da:1e:61:2e:48:de:d3:4a:91"
+      - run:
+          name: Capturando chaves de acesso
+          command: ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
+      - checkout # check out the code in the project directory
+      - run: 
+          name: Para os serviços do projeto
+          command: |
+            ssh $SSH_USER@$SSH_HOST "systemctl stop kara-api && systemctl stop kara-app"
+      - run:
+          name: Copiando arquivos
+          command: |            
+            rsync -avh --rsh="ssh -o StrictHostKeyChecking=no "  . $SSH_USER@$SSH_HOST:/root/karadoacoes.tk
+      - run: 
+          name: Instalando dependencias da api
+          command: |
+            ssh $SSH_USER@$SSH_HOST "cd /root/karadoacoes.tk/server && workon karaenv && pip install -r requirements/common.txt && exit"
+      - run:
+          name: Executa migrations do banco de dados
+          command: |
+            ssh $SSH_USER@$SSH_HOST "cd /root/karadoacoes.tk/server && workon karaenv && python manage.py makemigrations && python manage.py migrate && exit"      
+      - run:
+          name: Instalando dependencias do client
+          command: |
+            ssh $SSH_USER@$SSH_HOST "cd /root/karadoacoes.tk/client && yarn install && exit"
+      - run:
+          name: Constroi o front-end
+          command: |          
+            ssh $SSH_USER@$SSH_HOST "cd /root/karadoacoes.tk/client && yarn build"      
+      - run: 
+          name: Reinicia os serviços
+          command: |
+            ssh $SSH_USER@$SSH_HOST "systemctl start kara-api && systemctl start kara-app"
+
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:      
+      - deploy:         
+          filters:
+            branches:
+              only: master
