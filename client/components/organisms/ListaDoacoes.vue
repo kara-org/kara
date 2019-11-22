@@ -101,10 +101,10 @@ import EditarModal from '@/components/molecules/EditarDoacaoModal.vue'
 import { mapActions, mapGetters } from 'vuex'
 export default {
   components: { EditarModal, DoarModal },
+  props: {
+    isDoador: Boolean,
+  },
   computed: {
-    isDoador() {
-      return !this.$auth.user.vinculo_ong
-    },
     user() {
       return this.$auth.user
     },
