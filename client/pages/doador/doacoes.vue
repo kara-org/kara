@@ -1,15 +1,15 @@
 <template>
   <div class="columns is-fullheight">
-    <MenuLateral :isDoador="isDoador" />
+    <MenuLateral :isDoador="true" />
     <section class="column is-main-content hero is-medium is-bold">
       <div class="hero-body">
         <div class="container">
           <div class="columns is-centered">
             <article class="card is-rounded" style="width:800px">
               <div class="card-content">
-                <p class="form-section-title">Doações {{isDoador ? 'marcadas' : 'da ONG'}}</p>
+                <p class="form-section-title">Doações marcadas</p>
                 <hr />
-                <ListaDoacoes :isDoador="isDoador" />
+                <ListaDoacoes :isDoador="true" />
               </div>
             </article>
           </div>
@@ -22,21 +22,12 @@
 <script>
 import ListaDoacoes from '@/components/organisms/ListaDoacoes'
 import MenuLateral from '@/components/organisms/MenuLateral'
-
 export default {
   layout: 'default',
   components: {
     ListaDoacoes,
     MenuLateral
   },
-  data() {
-    return {
-      isDoador: null
-    }
-  },
-  created() {
-    this.isDoador = !this.$auth.user.vinculo_ong
-  }
 }
 </script>
 
