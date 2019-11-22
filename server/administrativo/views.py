@@ -99,7 +99,8 @@ class UsuarioView(viewsets.ViewSet):
             serializer.profile = request.FILES['profile']
             print(f"foto: {serializer.profile}")
         if serializer.is_valid():
-            serializer = serializer.save()
+            usuario = serializer.save()
+            serializer = self.serializer_class(usuario)
             try:
                 EnviarEmail().send_mail(request.data['email'], request.data['nome_completo'], 'boas-vindas')
             except Exception as e:
@@ -201,7 +202,7 @@ class OngCreateListView(viewsets.ViewSet):
     def list(self, request):
         ongs = Ong.objects.filter(ativo=True)
         serializer = self.serializer_class(ongs, many=True)
-        return response.responseFormatado(True, 200, data=serializer.data) 
+        return self.response.responseFormatado(True, 200, data=serializer.data) 
 
 @permission_classes((AllowAny, ))
 class OngDetailView(viewsets.ViewSet):
@@ -321,7 +322,7 @@ class TelefoneView(viewsets.ViewSet):
         data = request.data
         serializer = self.serializer_class(data=data)
         if serializer.is_valid():
-            # serializer.save()
+            serializer.save()
             obj = TelefoneSerializer.create(self, request.data)
             serializer = TelefoneSerializer(obj)
             return self.response.responseFormatado(True, 200, data=serializer.data) 
