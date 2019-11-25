@@ -2,15 +2,6 @@
   <section>
     <form v-if="!success" @submit.prevent="validateBeforeSubmit" method="post">
       <hr />
-      <b-field class="file is-centered" style="margin:10px;">
-        <b-upload v-model="ong.foto">
-          <img
-            class="profile-image"
-            :src="ong.foto != null ? loadFoto() : 'https://bulma.io/images/placeholders/128x128.png'"
-          />
-        </b-upload>
-      </b-field>
-      <hr />
       <b-field
         label="Razão social"
         :type="{'is-danger': errors.has('razão social')}"
@@ -187,7 +178,6 @@ export default {
   data() {
     return {
       ong: {
-        foto: null,
         nome: null,
         cnpj: null,
         historia: null,
@@ -259,9 +249,6 @@ export default {
   },
   methods: {
     ...mapActions('ongs', ['fetchPerfilOng']),
-    loadFoto() {
-      return URL.createObjectURL(this.ong.foto)
-    },
     async register() {
       try {
         await this.$OngService
