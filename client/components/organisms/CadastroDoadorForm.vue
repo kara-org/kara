@@ -10,15 +10,6 @@
         </b-field>
       </template>
       <hr />
-      <b-field class="file is-centered" style="margin:10px;">
-        <b-upload v-model="doador.foto">
-          <img
-            class="profile-image"
-            :src="doador.foto != null ? loadFoto() : 'https://bulma.io/images/placeholders/128x128.png'"
-          />
-        </b-upload>
-      </b-field>
-      <hr />
       <b-field
         label="Nome/Razão social"
         :type="{'is-danger': errors.has('nome')}"
@@ -167,7 +158,6 @@ export default {
   data() {
     return {
       doador: {
-        foto: null,
         nome_completo: null,
         cpf: null,
         ativo: true,
@@ -219,9 +209,6 @@ export default {
     }
   },
   methods: {
-    loadFoto() {
-      return URL.createObjectURL(this.doador.foto)
-    },
     async patch() {
       try {
         await this.$axios
@@ -229,7 +216,6 @@ export default {
             nome_completo: this.doador.nome_completo,
             //telefone: this.doador.telefone,
             email: this.doador.email
-            //foto: this.doador.foto
           })
           .then(response => {
             this.$buefy.toast.open({
