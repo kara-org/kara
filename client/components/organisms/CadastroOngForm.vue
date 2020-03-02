@@ -21,7 +21,7 @@
           v-model.trim="ong.cnpj"
           maxlength="18"
           name="CNPJ"
-          v-validate="'required|cnpj'"
+          v-validate="'cnpj'"
         ></b-input>
       </b-field>
       <b-field
