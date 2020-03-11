@@ -2,15 +2,6 @@
   <section>
     <form v-if="!success" @submit.prevent="validateBeforeSubmit" method="post">
       <hr />
-      <b-field class="file is-centered" style="margin:10px;">
-        <b-upload v-model="ong.foto">
-          <img
-            class="profile-image"
-            :src="ong.foto != null ? loadFoto() : 'https://bulma.io/images/placeholders/128x128.png'"
-          />
-        </b-upload>
-      </b-field>
-      <hr />
       <b-field
         label="Razão social"
         :type="{'is-danger': errors.has('razão social')}"
@@ -30,7 +21,7 @@
           v-model.trim="ong.cnpj"
           maxlength="18"
           name="CNPJ"
-          v-validate="'required|cnpj'"
+          v-validate="'cnpj'"
         ></b-input>
       </b-field>
       <b-field
@@ -187,7 +178,6 @@ export default {
   data() {
     return {
       ong: {
-        foto: null,
         nome: null,
         cnpj: null,
         historia: null,
@@ -250,18 +240,19 @@ export default {
     }
   },
   async mounted() {
-    if (this.$auth.user && this.$auth.user.ong) {
-        this.ong = this.$auth.user.ong
+    if (this.user && this.user.ong) {
+      this.ong.id = this.user.ong.id
+      this.ong.nome = this.user.ong.nome
+      this.ong.cnpj = this.user.ong.cnpj
+      this.ong.historia = this.user.ong.historia
     }
   },
   methods: {
     ...mapActions('ongs', ['fetchPerfilOng']),
-    loadFoto() {
-      return URL.createObjectURL(this.ong.foto)
-    },
     async register() {
       try {
-        await this.$OngService.create(this.ong)
+        await this.$OngService
+          .create(this.ong)
           .then(response => {
             this.$buefy.toast.open({
               message: 'Cadastro realizado com successo!',
@@ -299,7 +290,8 @@ export default {
     },
     async change() {
       try {
-        await this.$OngService.update(this.ong.id, {
+        await this.$OngService
+          .update(this.ong.id, {
             nome: this.ong.nome,
             historia: this.ong.historia
           })
@@ -326,7 +318,6 @@ export default {
             })
             this.success = false
           })
-
       } catch (e) {
         this.error = e.response.data.message
       }

@@ -38,18 +38,24 @@ class DemandaView(viewsets.ViewSet):
         except Demanda.DoesNotExist:
             return None
 
-    @swagger_auto_schema(operation_description ='Lista de demandas', responses={200: DemandaSerializerRetorno(many=True)})
+    @swagger_auto_schema(operation_id='Lista de demandas',
+                         operation_description='Lista de demandas',
+                         responses={200: DemandaSerializerRetorno(many=True)})
     def list(self, request, id_ong):
         demandas = Demanda.objects.filter(ong_id=id_ong)
         serializer = self.serializer_retorno_class(demandas, many=True)
         return self.response.responseFormatado(True, 200, data=serializer.data) 
 
-    @swagger_auto_schema(operation_description ='Criar demandas', responses={200: DemandaSerializerRetorno(), 403: 'Categoria não encontrada.'})
+    @swagger_auto_schema(operation_id='Criar demandas',
+                         operation_description='Criar demandas',
+                         responses={200: DemandaSerializerRetorno(),
+                                    403: 'Categoria não encontrada.'})
     def create(self, request, id_ong, *args, **kwargs):
         ong = Ong.objects.get(pk=id_ong)
-        if not obj:
+        if not ong:
             return self.response.responseFormatado(False, 404, mensagem="Demanda não encontrada.")
         data = request.data
+        data["quantidade_alcancada"] = 0
         serializer = self.serializer_class(data=data, context={'ong': ong})
         if serializer.is_valid():
             try:
@@ -62,7 +68,13 @@ class DemandaView(viewsets.ViewSet):
 
         return self.response.responseFormatado(False, 422, mensagem=serializer.errors)
 
-    @swagger_auto_schema(operation_description ='Atualizar demandas', request_body=DemandaSerializerAlteracao ,responses={200: DemandaSerializerRetorno(), 400: 'Erro de processamento.'})
+    @swagger_auto_schema(operation_id='Atualizar de demandas',
+                         operation_description='Atualizar demandas',
+                         request_body=DemandaSerializerAlteracao,
+                         responses={200: DemandaSerializerRetorno(),
+                                    400: 'Erro de processamento.',
+                                    403: '',
+                                    404: 'Demanda não encontrada.'})
     def put(self, request, pk, *args, **kwargs):
         obj = self.get_object(pk)
         if not obj:
@@ -78,6 +90,13 @@ class DemandaView(viewsets.ViewSet):
             print(e)
             return self.response.responseFormatado(False, 400, mensagem="Erro de processamento.")
 
+    @swagger_auto_schema(operation_id='Atualizar de demandas',
+                         operation_description='Atualizar demandas',
+                         request_body=DemandaSerializerAlteracao,
+                         responses={200: DemandaSerializerRetorno(),
+                                    400: 'Erro de processamento.',
+                                    403: '',
+                                    404: 'Demanda não encontrada.'})
     def patch(self, request, pk, *args, **kwargs):
         obj = self.get_object(pk)
         if not obj:
@@ -89,6 +108,13 @@ class DemandaView(viewsets.ViewSet):
             return self.response.responseFormatado(True, 200, data=retorno.data) 
         return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
 
+    @swagger_auto_schema(operation_id='Deletar de demandas',
+                         operation_description='Deletar demandas',
+                         request_body=DemandaSerializerCancelamento,
+                         responses={200: DemandaSerializerRetorno(),
+                                    400: 'Erro de processamento.',
+                                    403: '',
+                                    404: 'Demanda não encontrada.'})
     def delete(self, request, pk, *args, **kwargs):
         obj = self.get_object(pk)
         if not obj:
@@ -111,7 +137,9 @@ class DemandaListView(viewsets.ViewSet):
     serializer_retorno_class = DemandaSerializerRetorno
     response = PadronizacaoResponse()
 
-    @swagger_auto_schema(operation_description ='Lista de demandas', responses={200: DemandaSerializerRetorno(many=True)})
+    @swagger_auto_schema(operation_id= 'Listar demandas',
+                         operation_description='Lista de demandas',
+                         responses={200: DemandaSerializerRetorno(many=True)})
     def list(self, request):
         demandas = Demanda.objects.all()
         serializer = self.serializer_retorno_class(demandas, many=True)
@@ -151,11 +179,13 @@ class DoacaoViewUser(viewsets.ViewSet):
     response = PadronizacaoResponse()
 
     def list(self, request, id_user):
+        
         doacoes = Doacao.objects.filter(usuario__id=id_user)
         for doacao in doacoes:
             itens_doacao = ItemDoacao.objects.filter(doacao=doacao)
             doacao.itens_doacao = itens_doacao
         serializer = self.serializer_lista_class(doacoes, many=True)
+                
         return self.response.responseFormatado(True, 200, data=serializer.data) 
 
     def post(self, request, pk, *args, **kwargs):

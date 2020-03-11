@@ -1,4 +1,4 @@
-const env = require('dotenv').config()
+const env = require('dotenv').config();
 const nodeExternals = require('webpack-node-externals');
 
 export default {
@@ -75,7 +75,7 @@ export default {
         endpoints: {
           login: { url: 'login/', method: 'post', propertyName: 'token' },
           logout: false,
-          user: { url: 'auth/usuario/', method: 'get', propertyName: false },
+          user: { url: 'auth/usuario/', method: 'get', propertyName: 'data' },
         },
         tokenRequired: true,
         tokenType: 'JWT '
@@ -107,4 +107,4 @@ export default {
       }
     }
   }
-}
+};

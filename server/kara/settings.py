@@ -145,6 +145,21 @@ REST_FRAMEWORK = {
     ),
 }
 
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,
+    # 'LOGIN_URL': '/admin/login/',
+    # 'LOGOUT_URL': '/admin/logout/',
+    'SUPPORTED_SUBMIT_METHODS': [],
+    'DEEP_LINKING': False,
+    'SECURITY_DEFINITIONS': {
+        'JWT' : {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
+}
+
 ##################### SMTP EMAIL ###################################
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 

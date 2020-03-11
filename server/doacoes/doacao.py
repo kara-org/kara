@@ -87,7 +87,7 @@ class DoacaoDo():
                     return Response(403, 'Esse item doação foi cancelado.')
 
                 demanda = Demanda.objects.get(pk=item_doacao.demanda.id)
-
+                
                 #Salva a quantidade do item doada e incrementa a quantidade alcançada da demanda
                 item_doacao.quantidade_efetivada = qtd
                 if demanda.quantidade_alcancada:
@@ -98,7 +98,7 @@ class DoacaoDo():
                 item_doacao.save()
                 demanda.save()
                 
-                serializer = ItemDoacaoListSerializer({'item_doacao': item_doacao, 'demanda':demanda})
+                serializer = ItemDoacaoListSerializer(item_doacao)
                 return serializer.data
             except:
                 return (404, "Doação não existe")

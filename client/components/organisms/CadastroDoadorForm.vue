@@ -1,6 +1,6 @@
 <template>
   <section>
-    <form @submit.prevent="validateBeforeSubmit" method="post">
+    <form v-if="!success" @submit.prevent="validateBeforeSubmit" method="post">
       <template v-if="isCadastro">
         <b-field class="has-text-centered">
           <b-switch
@@ -9,15 +9,6 @@
           >{{ pessoaFisica ? "Pessoa Física" : "Pessoa Juridíca" }}</b-switch>
         </b-field>
       </template>
-      <hr />
-      <b-field class="file is-centered" style="margin:10px;">
-        <b-upload v-model="doador.foto">
-          <img
-            class="profile-image"
-            :src="doador.foto != null ? loadFoto() : 'https://bulma.io/images/placeholders/128x128.png'"
-          />
-        </b-upload>
-      </b-field>
       <hr />
       <b-field
         label="Nome/Razão social"
@@ -144,6 +135,15 @@
         >Voltar</nuxt-link>
       </div>
     </form>
+    <div v-else class="column has-text-centered">
+      <h1>Atualização realizada com sucesso!</h1>
+      <hr />
+      <button
+        class="button is-primary is-outlined is-rounded"
+        @click="success=false"
+        exact-active-class="is-active"
+      >Voltar</button>
+    </div>
   </section>
 </template>
 <script>
@@ -158,7 +158,6 @@ export default {
   data() {
     return {
       doador: {
-        foto: null,
         nome_completo: null,
         cpf: null,
         ativo: true,
@@ -210,9 +209,6 @@ export default {
     }
   },
   methods: {
-    loadFoto() {
-      return URL.createObjectURL(this.doador.foto)
-    },
     async patch() {
       try {
         await this.$axios
@@ -220,7 +216,6 @@ export default {
             nome_completo: this.doador.nome_completo,
             //telefone: this.doador.telefone,
             email: this.doador.email
-            //foto: this.doador.foto
           })
           .then(response => {
             this.$buefy.toast.open({
@@ -228,7 +223,6 @@ export default {
               type: 'is-success',
               position: 'is-top'
             })
-            this.$router.push('/editarPerfil')
           })
           .catch(err => {
             if (!err.response) {
@@ -262,9 +256,10 @@ export default {
           })
           .catch(err => {
             console.error(this.errors)
-
             if (!err.response) {
               err.message = 'Servidor desconectado'
+            } else if (err.response.data.mensagem.email != null) {
+              err.message = "Usuário com este email já existe"
             } else if (err.response.status === 400) {
               if (err.response.data.non_field_errors)
                 err.message = err.response.data.non_field_errors[0]

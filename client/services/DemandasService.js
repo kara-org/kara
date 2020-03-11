@@ -1,6 +1,8 @@
 export default $axios => resource => ({
   getDemandasOng(idComposer) {
-    return $axios.$get(`ong/${idComposer}${resource}`)
+    return $axios.$get(`ong/${idComposer}${resource}`).then((response) => {
+      return response.data;
+    });
   },
   create(idComposer, payload) {
     return $axios.$post(`${resource}/ong/${idComposer}/demandas/`, payload)

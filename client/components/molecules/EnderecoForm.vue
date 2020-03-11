@@ -40,7 +40,6 @@
         type="text"
         v-model.trim="endereco.complemento"
         name="complemento"
-        v-validate="'required'"
       ></b-input>
     </b-field>
     <b-field
