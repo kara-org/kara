@@ -143,7 +143,7 @@ class OngSerializer(serializers.ModelSerializer):
         endereco = validated_data.pop("endereco")
         telefone = validated_data.pop("telefone")
         
-        ong, created = Ong.objects.get_or_create(cnpj = validated_data['cnpj'], defaults= validated_data)
+        ong, created = Ong.objects.get_or_create(**validated_data)
         
         end, created = Endereco.objects.get_or_create(**endereco)
         if created:

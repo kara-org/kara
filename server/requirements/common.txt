@@ -8,4 +8,6 @@ pytz==2019.1
 sqlparse==0.3.0
 gunicorn==19.9.0
 drf-yasg==1.17.0
+sendgrid==3.6.5
+sendgrid-django==4.2.0
 
