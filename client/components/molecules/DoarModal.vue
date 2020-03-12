@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     ...mapGetters({ itensOng: 'busca/demandasPorOng' }),
-    ...mapActions('carrinho', ['fetchOng', 'fetchItens','adicionarItemNoCarrinho']),
+    ...mapActions('carrinho', ['fetchOng', 'fetchItens','adicionarItemNoCarrinho', 'alterarItemNoCarrinho']),
     ...mapActions('doacoes', ['confirmaItemDoacao', 'fetchDoacoesOng']),
     confirmado() {
       if (this.text === 'Confirmar') {
@@ -79,7 +79,12 @@ export default {
           .then(response => {
             this.fetchDoacoesOng(this.idOng)
           })
-      } else {
+      } else if(this.text === 'Editar'){
+        this.alterarItemNoCarrinho({
+          demanda: this.item,
+          quantidade_prometida: this.quantidade
+        })
+      }else {
         this.fetchOng(this.idOng)
         this.fetchItens(this.itensOng()(this.idOng))
         this.adicionarItemNoCarrinho({

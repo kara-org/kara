@@ -37,6 +37,7 @@ export default {
   },
   mounted() {
     this.quantidade = this.doacao.quantidade_prometida
+
   },
   methods: {
     async confirm() {

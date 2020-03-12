@@ -81,7 +81,7 @@
                   label="Confirmar doação"
                   position="is-right"
                 >
-                  <DoarModal text="Confirmar" :id="props.row.id" />
+                  <DoarModal text="Confirmar" :id="props.row.id" :item="props.row"  />
                 </b-tooltip>
               </template>
 
