@@ -21,7 +21,6 @@
           v-model.trim="ong.cnpj"
           maxlength="18"
           name="CNPJ"
-          v-validate="'required|cnpj'"
         ></b-input>
       </b-field>
       <b-field
@@ -353,7 +352,7 @@ export default {
                   ''
                 )
                 this.ong.usuario.telefone[0].numero = this.ong.telefone[0].numero
-                this.ong.cnpj = this.ong.cnpj.replace(/\D/g, '')
+                this.ong.cnpj = this.ong.cnpj != null ? this.ong.cnpj.replace(/\D/g, '') : null
                 this.isCadastro ? this.register() : this.change()
                 return
               } else {

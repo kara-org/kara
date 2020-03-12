@@ -262,7 +262,7 @@ class ItemDoacaoView(viewsets.ViewSet):
         serializer = self.serializer_class_alteracao(obj, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return self.responseFormatado(True, 200, data=serializer.data) 
+            return self.response.responseFormatado(True, 200, data=serializer.data)
         return self.response.responseFormatado(False, 403, mensagem=serializer.errors)
 
 def test_email(request):
