@@ -352,7 +352,7 @@ export default {
                   ''
                 )
                 this.ong.usuario.telefone[0].numero = this.ong.telefone[0].numero
-                // this.ong.cnpj = this.ong.cnpj.replace(/\D/g, '')
+                this.ong.cnpj = this.ong.cnpj != null ? this.ong.cnpj.replace(/\D/g, '') : null
                 this.isCadastro ? this.register() : this.change()
                 return
               } else {
