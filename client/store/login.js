@@ -1,22 +1,20 @@
-export default {
-  namespaced: true,
-  state() {
-    return {
-      auth: {
-        loggedIn: {},
-        user: {},
-      },
-    }
-  }
-  /* getters: {
-    isAuthenticated(state) {
-      if (state.auth)
-      return state.auth.loggedIn
-    },
+import LoginService from "../services/LoginService";
 
-    loggedInUser(state) {
-      if (state.auth)
-      return state.auth.user
-    },
-  }, */
-}
+let serviceUser = new LoginService();
+
+export const state = () => ({
+    usuario: {}
+});
+
+export const mutations = {
+    SET(state, user) {
+        state.usuario = user;
+    }
+};
+
+export const actions = {
+    async fetch({ commit }) {
+        let user = await serviceUser.currentUser();
+        commit("SET", user);
+    }
+};

@@ -22,7 +22,7 @@
           v-validate="'required|min:4'"
         />
       </b-field>
-        <div class="level has-text-centered">
+      <div class="level has-text-centered">
         <nuxt-link
           class="is-primary is-inverted"
           to="/esqueciSenha"
@@ -51,45 +51,52 @@
 </template>
 
 <script>
+import LoginService from "../../services/LoginService";
+
 export default {
   data() {
     return {
       email: null,
-      password: null
-    }
+      password: null,
+      loginService: null
+    };
+  },
+  mounted() {
+    this.loginService = new LoginService();
   },
   methods: {
     async login() {
-        await this.$LoginService.login(this.email, this.password)
-                .catch((err) => {
-                  if (!err.response) {
-                    err.message = 'Servidor desconectado'
-                  } else if (err.response.status === 400) {
-                    err.message = "Login ou senha inválidos, confira os dados e tente novamente"
-                  }
+      await this.loginService.login(this.email, this.password).catch(err => {
+        console.log(err.response)
+        if (!err.response) {
+          err.message = 'Servidor desconectado';
+        } else if (err.response.status === 400) {
+          err.message =
+            'Login ou senha inválidos, confira os dados e tente novamente';
+        }
 
-                  this.$buefy.toast.open({
-                    message: err.message,
-                    type: 'is-danger',
-                    position: 'is-bottom'
-                  })
-                return
-              })
+        this.$buefy.toast.open({
+          message: err.message,
+          type: 'is-danger',
+          position: 'is-bottom'
+        });
+        return;
+      });
     },
 
     validateBeforeSubmit() {
       this.$validator.validateAll().then(result => {
         if (result) {
-          this.login()
-          return
+          this.login();
+          return;
         }
         this.$buefy.toast.open({
           message: 'Formulário inválido, verifique os campos em vermelho',
           type: 'is-danger',
           position: 'is-bottom'
-        })
-      })
+        });
+      });
     }
   }
-}
+};
 </script>

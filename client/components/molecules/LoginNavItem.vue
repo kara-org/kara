@@ -57,16 +57,16 @@
 export default {
   computed: {
     isAuthenticated() {
-      return this.$auth.loggedIn
+      // return this.$auth.loggedIn
     },
     user() {
-      return this.$auth.user
+      // return this.$auth.user
     },
     userName() {
-      return this.isAuthenticated ? this.user.nome_completo.split(' ')[0] : null
+      // return this.isAuthenticated ? this.user.nome_completo.split(' ')[0] : null
     },
     vinculoOng() {
-      return this.isAuthenticated ? this.user.vinculo_ong : null
+      // return this.isAuthenticated ? this.user.vinculo_ong : null
     }
   },
   methods: {
