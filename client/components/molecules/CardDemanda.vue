@@ -18,7 +18,7 @@
         </div>
         <div class="level" v-else>
           <button class="delete is-medium" @click="remover">Remover</button>
-          <DoarModal :idOng="demanda && demanda.ong && demanda.ong.id  ? demanda.ong.id : ong.id" :text="'Editar'" />
+          <DoarModal :item="demanda" :idOng="demanda && demanda.ong && demanda.ong.id  ? demanda.ong.id : ong.id" :text="'Editar'" />
         </div>
       </div>
     </div>
@@ -41,7 +41,7 @@ export default {
   methods: {
     ...mapActions('carrinho', ['removerItemNoCarrinho']),
     remover: function() {
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         message: 'Tem certeza que deseja remover este item?',
         confirmText: 'Sim',
         onConfirm: () => {

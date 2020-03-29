@@ -15,8 +15,11 @@
             <b-field label="Título">
               <b-input type="text" v-model="titulo" placeholder="Açucar"></b-input>
             </b-field>
-            <b-field label="Quantidade">
-              <b-input type="number" v-model="quantidade" placeholder="Quantidade esperada"></b-input>
+            <b-field label="Quantidade esperada">
+              <b-input type="number" step="0.01" v-model="quantidade_solicitada" placeholder="Quantidade esperada"></b-input>
+            </b-field>
+            <b-field label="Quantidade alcançada">
+              <b-input type="number" step="0.01" v-model="quantidade_alcancada" placeholder="Quantidade alcançada"></b-input>
             </b-field>
           </section>
           <footer class="modal-card-foot">
@@ -35,18 +38,21 @@ export default {
   data() {
     return {
       isComponentModalActive: false,
-      quantidade: null,
+      quantidade_alcancada: null,
+      quantidade_solicitada: null,
       titulo: null
     }
   },
   mounted() {
     this.titulo = this.demanda.descricao
-    this.quantidade = this.demanda.quantidade_solicitada
+    this.quantidade_solicitada = this.demanda.quantidade_solicitada
+    this.quantidade_alcancada = this.demanda.quantidade_alcancada
   },
   methods: {
     async confirm() {
       this.$axios.$patch(`/demanda/${this.demanda.id}/`, {
-        quantidade_solicitada: this.quantidade,
+        quantidade_solicitada: this.quantidade_solicitada,
+        quantidade_alcancada: this.quantidade_alcancada,
         descricao: this.titulo
       })
       this.isComponentModalActive = false

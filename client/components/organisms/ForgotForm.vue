@@ -22,7 +22,7 @@
       <div class="column has-text-centered">
         <nuxt-link
           class="voltar is-primary is-inverted"
-          to="/login"
+          to="/auth/login"
           exact-active-class="is-active"
         >Voltar</nuxt-link>
       </div>
@@ -46,12 +46,12 @@ export default {
             email: this.email
           })
           .then(response => {
-            this.$toast.open({
+            this.$buefy.toast.open({
               message: 'Recuperação de senha enviada para email com successo!',
               type: 'is-success',
               position: 'is-top'
             })
-            this.$router.push('/login')
+            this.$router.push('/auth/login')
           })
           .catch(err => {
             if (!err.response) {
@@ -61,7 +61,7 @@ export default {
                 err.message = err.response.data.non_field_errors[0]
               } else if (err.response.data.usuario) {
                 Object.keys(err.response.data.usuario).forEach(key => {
-                  this.$toast.open({
+                  this.$buefy.toast.open({
                     message: err.response.data.usuario[key][0],
                     type: 'is-danger',
                     position: 'is-bottom'
@@ -70,7 +70,7 @@ export default {
                 return
               }
             }
-            this.$toast.open({
+            this.$buefy.toast.open({
               message: 'Email não encontrado.',
               type: 'is-danger',
               position: 'is-bottom'
@@ -87,7 +87,7 @@ export default {
           this.resetPassword()
           return
         }
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: 'Formulário inválido, verifique os campos em vermelho',
           type: 'is-danger',
           position: 'is-bottom'

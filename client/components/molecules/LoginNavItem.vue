@@ -4,14 +4,14 @@
       <div class="navbar-item">
         <nuxt-link
           class="button is-primary is-outlined is-rounded"
-          to="/login"
+          to="/auth/login"
           exact-active-class="is-active"
         >Entrar</nuxt-link>
       </div>
       <div class="navbar-item">
         <nuxt-link
           class="button is-primary is-rounded"
-          to="/cadastro"
+          to="/auth/cadastro"
           exact-active-class="is-active"
         >
           <!-- <b-icon :icon="item.icon" /> {{ item.title }} -->
@@ -35,14 +35,14 @@
       <div class="navbar-item" v-show="vinculoOng">
         <nuxt-link
           class="button is-primary is-outlined is-rounded"
-          to="/gerenciarDemandas"
+          :to="`/ong/demandas`"
           exact-active-class="is-active"
         >Gerenciamento</nuxt-link>
       </div>
       <div class="navbar-item" v-show="!vinculoOng">
         <nuxt-link
           class="button is-primary is-outlined is-rounded"
-          to="/editarPerfil"
+          :to="`/doador/editar`"
           exact-active-class="is-active"
         >Perfil</nuxt-link>
       </div>
@@ -71,13 +71,13 @@ export default {
   },
   methods: {
     logout: function() {
-      this.$dialog.confirm({
+      this.$buefy.dialog.confirm({
         message: 'Deseja mesmo sair?',
         confirmText: 'Sim',
         onConfirm: () => {
           this.$auth.logout()
           this.$router.push('/')
-          this.$toast.open('Logout realizado com sucesso')
+          this.$buefy.toast.open('Logout realizado com sucesso')
         }
       })
     }

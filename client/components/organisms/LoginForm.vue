@@ -31,7 +31,7 @@
         <br />
         <nuxt-link
           class="is-primary is-inverted"
-          to="/cadastro"
+          to="/auth/cadastro"
           exact-active-class="is-active"
         >Não sou cadastrado</nuxt-link>
       </div>
@@ -68,7 +68,7 @@ export default {
                     err.message = "Login ou senha inválidos, confira os dados e tente novamente"
                   }
 
-                  this.$toast.open({
+                  this.$buefy.toast.open({
                     message: err.message,
                     type: 'is-danger',
                     position: 'is-bottom'
@@ -83,7 +83,7 @@ export default {
           this.login()
           return
         }
-        this.$toast.open({
+        this.$buefy.toast.open({
           message: 'Formulário inválido, verifique os campos em vermelho',
           type: 'is-danger',
           position: 'is-bottom'

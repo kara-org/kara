@@ -25,15 +25,15 @@ export default $axios => ({
   },
   async fetch(tipo) {
     return await $axios.$get(`busca/${tipo}`)
-      .then(response => { index.add(response); return (response) });
+      .then(response => { index.add(response.data); return (response.data)});
   },
 
   getResource () {
-    return resource
+    return resource;
   },
   getAxios () {
-    return $axios
+    return $axios;
   },
 
-})
+});
 

@@ -1,4 +1,4 @@
-const env = require('dotenv').config()
+const env = require('dotenv').config();
 const nodeExternals = require('webpack-node-externals');
 
 export default {
@@ -64,12 +64,18 @@ export default {
   },
 
   auth: {
+    redirect: {
+      login: '/auth/login',
+      logout: '/',
+      callback: '/auth/login',
+      home: '/'
+    },
     strategies: {
       local: {
         endpoints: {
           login: { url: 'login/', method: 'post', propertyName: 'token' },
           logout: false,
-          user: { url: 'auth/usuario/', method: 'get', propertyName: false },
+          user: { url: 'auth/usuario/', method: 'get', propertyName: 'data' },
         },
         tokenRequired: true,
         tokenType: 'JWT '
@@ -91,13 +97,14 @@ export default {
     extend(config,  { isServer }) {
       // const vueLoader = config.module.rules.find((rule) => rule.loader === 'vue-loader')
       // vueLoader.query.loaders.scss = 'vue-style-loader!css-loader!sass-loader?' + JSON.stringify({ includePaths: [path.resolve(__dirname), 'node_modules'] })
+
       if (isServer) {
         config.externals = [
           nodeExternals({
             whitelist: [/\.(?!(?:js|json)$).{1,5}$/i, /^vue-videobg/]
           })
-        ]
+        ];
       }
     }
   }
-}
+};

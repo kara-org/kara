@@ -2,15 +2,6 @@
   <section>
     <form v-if="!success" @submit.prevent="validateBeforeSubmit" method="post">
       <hr />
-      <b-field class="file is-centered" style="margin:10px;">
-        <b-upload v-model="ong.foto">
-          <img
-            class="profile-image"
-            :src="ong.foto != null ? loadFoto() : 'https://bulma.io/images/placeholders/128x128.png'"
-          />
-        </b-upload>
-      </b-field>
-      <hr />
       <b-field
         label="Razão social"
         :type="{'is-danger': errors.has('razão social')}"
@@ -30,7 +21,6 @@
           v-model.trim="ong.cnpj"
           maxlength="18"
           name="CNPJ"
-          v-validate="'required|cnpj'"
         ></b-input>
       </b-field>
       <b-field
@@ -142,7 +132,7 @@
         Já tem um cadastro?
         <nuxt-link
           class="is-primary is-inverted"
-          to="/login"
+          to="/auth/login"
           exact-active-class="is-active"
         >Logue-se</nuxt-link>
       </div>
@@ -187,7 +177,6 @@ export default {
   data() {
     return {
       ong: {
-        foto: null,
         nome: null,
         cnpj: null,
         historia: null,
@@ -250,27 +239,26 @@ export default {
     }
   },
   async mounted() {
-    if (this.$auth.user && this.$auth.user.vinculo_ong) {
-      this.$OngService.show(this.$auth.user.ong.id).then(response => {
-        this.ong = response
-      })
+    if (this.user && this.user.ong) {
+      this.ong.id = this.user.ong.id
+      this.ong.nome = this.user.ong.nome
+      this.ong.cnpj = this.user.ong.cnpj
+      this.ong.historia = this.user.ong.historia
     }
   },
   methods: {
     ...mapActions('ongs', ['fetchPerfilOng']),
-    loadFoto() {
-      return URL.createObjectURL(this.ong.foto)
-    },
     async register() {
       try {
-        await this.$OngService.create(this.ong)
+        await this.$OngService
+          .create(this.ong)
           .then(response => {
-            this.$toast.open({
+            this.$buefy.toast.open({
               message: 'Cadastro realizado com successo!',
               type: 'is-success',
               position: 'is-top'
             })
-            this.$router.push('/login')
+            this.$router.push('/auth/login')
           })
           .catch(err => {
             if (!err.response) {
@@ -280,7 +268,7 @@ export default {
                 err.message = err.response.data.non_field_errors[0]
               } else if (err.response.data.usuario) {
                 Object.keys(err.response.data.usuario).forEach(key => {
-                  this.$toast.open({
+                  this.$buefy.toast.open({
                     message: err.response.data.usuario[key][0],
                     type: 'is-danger',
                     position: 'is-bottom'
@@ -289,7 +277,7 @@ export default {
                 return
               }
             }
-            this.$toast.open({
+            this.$buefy.toast.open({
               message: err.response.data.message,
               type: 'is-danger',
               position: 'is-bottom'
@@ -301,18 +289,19 @@ export default {
     },
     async change() {
       try {
-        await this.$OngService.update(this.ong.id, {
+        await this.$OngService
+          .update(this.ong.id, {
             nome: this.ong.nome,
             historia: this.ong.historia
           })
           .then(response => {
-            this.$toast.open({
+            this.$buefy.toast.open({
               message: 'Atualização realizada com successo!',
               type: 'is-success',
               position: 'is-top'
             })
             this.success = true
-            // this.$router.push('/editarOng')
+            // this.$router.push('/ong/editar')
           })
           .catch(err => {
             if (!err.response) {
@@ -321,19 +310,18 @@ export default {
               if (err.response.data.non_field_errors)
                 err.message = err.response.data.non_field_errors[0]
             }
-            this.$toast.open({
+            this.$buefy.toast.open({
               message: err.response.data.message,
               type: 'is-danger',
               position: 'is-bottom'
             })
             this.success = false
           })
-
       } catch (e) {
         this.error = e.response.data.message
       }
     },
-    //todo
+    //TODO
     validateBeforeSubmit() {
       this.submitted = true
       if (!this.isCadastro) {
@@ -343,7 +331,7 @@ export default {
             return
           } else {
             this.submitted = false
-            this.$toast.open({
+            this.$buefy.toast.open({
               message: 'Formulário inválido, verifique os campos em vermelho',
               type: 'is-danger',
               position: 'is-bottom'
@@ -364,12 +352,12 @@ export default {
                   ''
                 )
                 this.ong.usuario.telefone[0].numero = this.ong.telefone[0].numero
-                this.ong.cnpj = this.ong.cnpj.replace(/\D/g, '')
+                this.ong.cnpj = this.ong.cnpj != null ? this.ong.cnpj.replace(/\D/g, '') : null
                 this.isCadastro ? this.register() : this.change()
                 return
               } else {
                 this.submitted = false
-                this.$toast.open({
+                this.$buefy.toast.open({
                   message:
                     'Formulário inválido, verifique os campos em vermelho',
                   type: 'is-danger',

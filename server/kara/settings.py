@@ -49,8 +49,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'administrativo',
-    'campanhas',
     'doacoes',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -145,6 +145,21 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
+}
+
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,
+    # 'LOGIN_URL': '/admin/login/',
+    # 'LOGOUT_URL': '/admin/logout/',
+    'SUPPORTED_SUBMIT_METHODS': [],
+    'DEEP_LINKING': False,
+    'SECURITY_DEFINITIONS': {
+        'JWT' : {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
 }
 
 ##################### SMTP EMAIL ###################################
