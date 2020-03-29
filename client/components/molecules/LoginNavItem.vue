@@ -54,35 +54,41 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   computed: {
     isAuthenticated() {
-      // return this.$auth.loggedIn
+      return this.$store.state.login.usuario != null;
     },
     user() {
-      // return this.$auth.user
+      return this.$store.state.login.usuario;
     },
     userName() {
-      // return this.isAuthenticated ? this.user.nome_completo.split(' ')[0] : null
+      return this.isAuthenticated ? this.$store.state.login.usuario.nome : "" ;
     },
     vinculoOng() {
-      // return this.isAuthenticated ? this.user.vinculo_ong : null
+      return null;
     }
   },
   methods: {
+    ...mapActions({
+      logoutParse: 'login/logout'
+    }),
     logout: function() {
       this.$buefy.dialog.confirm({
         message: 'Deseja mesmo sair?',
         confirmText: 'Sim',
         onConfirm: () => {
-          this.$auth.logout()
-          this.$router.push('/')
-          this.$buefy.toast.open('Logout realizado com sucesso')
+          this.logoutParse().then(() => {
+            this.$router.push('/');
+            this.$buefy.toast.open('Logout realizado com sucesso');
+          });
         }
-      })
+      });
     }
-  },
-}
+  }
+};
 </script>
 
 <style lang="scss">

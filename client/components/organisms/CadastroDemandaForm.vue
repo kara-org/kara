@@ -74,7 +74,7 @@ export default {
   },
   computed: {
     ong() {
-      return this.$auth.user.ong
+      return this.$store.state.login.usuario.ong
     }
   },
   methods: {

@@ -77,11 +77,11 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   components: { EditarModal },
   async mounted() {
-    await this.fetchDemandasOng(this.$auth.user.ong.id)
+    await this.fetchDemandasOng(this.$store.state.login.usuario.ong.id)
   },
   computed: {
     user() {
-      this.$auth.user
+      this.$store.login.user
     },
     ...mapGetters({ demandas: 'demandas/demandas' })
   },
@@ -107,7 +107,7 @@ export default {
           } else {
             await this.changeDemanda(id, { ativo: true })
           }
-          await this.fetchDemandasOng(this.$auth.user.ong.id)
+          await this.fetchDemandasOng(this.$store.state.login.usuario.ong.id)
           console.log(this.demandas)
         }
       })

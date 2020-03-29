@@ -7,19 +7,16 @@ export default class UserService {
   }
 
   async resetPassword(email) {
-    Parse.User.requestPasswordReset(email)
-      .then(function() {
-        console.log('Password reset request was sent successfully');
-      })
-      .catch(function(error) {
-        console.log(
-          'The login failed with error: ' + error.code + ' ' + error.message
-        );
-      });
+    return Parse.User.requestPasswordReset(email);
   }
 
   async currentUser() {
     let user = Parse.User.current();
     return user.toJSON();
+  }
+
+  async logout() {
+    var response = Parse.User.logOut();
+    return response;
   }
 }

@@ -28,7 +28,7 @@
 export default {
   computed: {
     isDoador() {
-      return !this.$auth.user.vinculo_ong
+      return !this.$store.state.login.ong
     }
   }
 }

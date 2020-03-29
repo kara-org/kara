@@ -25,7 +25,7 @@
       <div class="level has-text-centered">
         <nuxt-link
           class="is-primary is-inverted"
-          to="/esqueciSenha"
+          to="/auth/esqueciSenha"
           exact-active-class="is-active"
         >Esqueci minha senha</nuxt-link>
         <br />
@@ -51,7 +51,8 @@
 </template>
 
 <script>
-import LoginService from "../../services/LoginService";
+import LoginService from '../../services/LoginService';
+import { mapActions } from 'vuex';
 
 export default {
   data() {
@@ -65,12 +66,17 @@ export default {
     this.loginService = new LoginService();
   },
   methods: {
+    ...mapActions({ loginParse: 'login/login' }),
     async login() {
-      await this.loginService.login(this.email, this.password).catch(err => {
-        console.log(err.response)
-        if (!err.response) {
+      console.log(this.password)
+      await this.loginParse({ login: this.email, senha: this.password })
+      .then(() => {
+        this.$router.push("/");
+      })
+      .catch(err => {
+        if (!err.code === 404) {
           err.message = 'Servidor desconectado';
-        } else if (err.response.status === 400) {
+        } else if (err.code == 101) {
           err.message =
             'Login ou senha inválidos, confira os dados e tente novamente';
         }
@@ -82,6 +88,7 @@ export default {
         });
         return;
       });
+
     },
 
     validateBeforeSubmit() {

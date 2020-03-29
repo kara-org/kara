@@ -17,12 +17,12 @@
       >
         <b-input
           type="text"
-          v-model.trim="doador.nome_completo"
+          v-model.trim="doador.nome"
           name="nome"
           v-validate="'required'"
         ></b-input>
       </b-field>
-      <div v-show="pessoaFisica">
+      <!-- <div v-show="pessoaFisica">
         <b-field
           label="CPF"
           :type="{'is-danger': errors.has('CPF')}"
@@ -38,8 +38,8 @@
             v-validate="{required: pessoaFisica, cpf: pessoaFisica}"
           ></b-input>
         </b-field>
-      </div>
-      <div v-show="!pessoaFisica">
+      </div> -->
+      <!-- <div v-show="!pessoaFisica">
         <b-field
           label="CNPJ"
           :type="{'is-danger': errors.has('CNPJ')}"
@@ -55,7 +55,7 @@
             v-validate="{required: !pessoaFisica, cnpj:!pessoaFisica}"
           ></b-input>
         </b-field>
-      </div>
+      </div> -->
       <b-field
         label="Telefone"
         :type="{'is-danger': errors.has('telefone')}"
@@ -63,14 +63,14 @@
       >
         <b-input
           type="text"
-          v-model.trim="doador.telefone[0].numero"
+          v-model.trim="doador.telefones[0]"
           v-cleave="masks.phone"
           maxlength="15"
           name="telefone"
           v-validate="'required|phone'"
         ></b-input>
       </b-field>
-      <b-checkbox v-model="doador.telefone[0].whatsapp" type="is-black">
+      <b-checkbox v-model="doador.telefones[0]" type="is-black">
         Whatsapp?
         <img width="15" src="~assets/wpp-icon.png" />
       </b-checkbox>
@@ -147,6 +147,7 @@
   </section>
 </template>
 <script>
+
 import cleave from '@/plugins/cleave-directive.js'
 import { ErrorBag } from 'vee-validate'
 
@@ -158,16 +159,13 @@ export default {
   data() {
     return {
       doador: {
-        nome_completo: null,
+        nome: null,
         cpf: null,
         ativo: true,
         vinculo_ong: false,
         ultimo_login: '2019-07-24T22:39:02.543520Z',
-        telefone: [
-          {
-            numero: null,
-            whatsapp: false
-          }
+        telefones: [
+         ""
         ],
         endereco: {
           cep: '49000000',
@@ -205,43 +203,44 @@ export default {
   },
   created() {
     if (!this.isCadastro) {
-      this.doador = JSON.parse(JSON.stringify(this.$auth.user))
+      this.doador = JSON.parse(JSON.stringify(this.$store.state.login.usuario))
     }
   },
   methods: {
-    async patch() {
-      try {
-        await this.$axios
-          .patch(`/usuario/${this.$auth.user.id}/`, {
-            nome_completo: this.doador.nome_completo,
-            //telefone: this.doador.telefone,
-            email: this.doador.email
-          })
-          .then(response => {
-            this.$buefy.toast.open({
-              message: 'Atualização realizada com successo!',
-              type: 'is-success',
-              position: 'is-top'
-            })
-          })
-          .catch(err => {
-            if (!err.response) {
-              err.message = 'Servidor desconectado'
-            } else if (err.response.status === 400) {
-              if (err.response.data.non_field_errors)
-                err.message = err.response.data.non_field_errors[0]
-            }
-            this.$buefy.toast.open({
-              message: err.message,
-              type: 'is-danger',
-              position: 'is-bottom'
-            })
-          })
-        this.success = true
-      } catch (e) {
-        this.error = e.response.data.message
-      }
-    },
+    // TODO: Alterar
+    // async patch() {
+    //   try {
+    //     await this.$axios
+    //       .patch(`/usuario/${this.$auth.user.id}/`, {
+    //         nome_completo: this.doador.nome_completo,
+    //         //telefone: this.doador.telefone,
+    //         email: this.doador.email
+    //       })
+    //       .then(response => {
+    //         this.$buefy.toast.open({
+    //           message: 'Atualização realizada com successo!',
+    //           type: 'is-success',
+    //           position: 'is-top'
+    //         })
+    //       })
+    //       .catch(err => {
+    //         if (!err.response) {
+    //           err.message = 'Servidor desconectado'
+    //         } else if (err.response.status === 400) {
+    //           if (err.response.data.non_field_errors)
+    //             err.message = err.response.data.non_field_errors[0]
+    //         }
+    //         this.$buefy.toast.open({
+    //           message: err.message,
+    //           type: 'is-danger',
+    //           position: 'is-bottom'
+    //         })
+    //       })
+    //     this.success = true
+    //   } catch (e) {
+    //     this.error = e.response.data.message
+    //   }
+    // },
     async register() {
       try {
         await this.$axios
