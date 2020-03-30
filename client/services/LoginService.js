@@ -6,6 +6,23 @@ export default class UserService {
     return response;
   }
 
+  async signUp(email, password, nome, telefones) {
+    var response = Parse.User.signUp(email, password, { email: email, nome: nome, telefones: telefones });
+    return response;
+  }
+
+  async update(email, nome, telefones) {
+    var currentUser = Parse.User.current();
+
+    currentUser.setEmail(email);
+    currentUser.set('nome', nome);
+    currentUser.set('telefones', telefones);
+
+    currentUser.save();
+    currentUser.fetch();
+    return currentUser;
+  }
+
   async resetPassword(email) {
     return Parse.User.requestPasswordReset(email);
   }
