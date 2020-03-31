@@ -1,61 +1,14 @@
 <template>
   <section>
     <form v-if="!success" @submit.prevent="validateBeforeSubmit" method="post">
-      <template v-if="isCadastro">
-        <b-field class="has-text-centered">
-          <b-switch
-            type="is-black"
-            v-model="pessoaFisica"
-          >{{ pessoaFisica ? "Pessoa Física" : "Pessoa Juridíca" }}</b-switch>
-        </b-field>
-      </template>
       <hr />
       <b-field
-        label="Nome/Razão social"
+        label="Nome"
         :type="{'is-danger': errors.has('nome')}"
         :message="errors.first('nome')"
       >
-        <b-input
-          type="text"
-          v-model.trim="doador.nome"
-          name="nome"
-          v-validate="'required'"
-        ></b-input>
+        <b-input type="text" v-model.trim="usuario.nome" name="nome" v-validate="'required'"></b-input>
       </b-field>
-      <!-- <div v-show="pessoaFisica">
-        <b-field
-          label="CPF"
-          :type="{'is-danger': errors.has('CPF')}"
-          :message="errors.first('CPF')"
-        >
-          <b-input
-            :disabled="!isCadastro"
-            type="text"
-            v-model.trim="doador.cpf"
-            name="CPF"
-            v-cleave="masks.cpf"
-            maxlength="14"
-            v-validate="{required: pessoaFisica, cpf: pessoaFisica}"
-          ></b-input>
-        </b-field>
-      </div> -->
-      <!-- <div v-show="!pessoaFisica">
-        <b-field
-          label="CNPJ"
-          :type="{'is-danger': errors.has('CNPJ')}"
-          :message="errors.first('CNPJ')"
-        >
-          <b-input
-            :disabled="!isCadastro"
-            type="text"
-            v-model.trim="doador.cpf"
-            maxlength="18"
-            v-cleave="masks.cnpj"
-            name="CNPJ"
-            v-validate="{required: !pessoaFisica, cnpj:!pessoaFisica}"
-          ></b-input>
-        </b-field>
-      </div> -->
       <b-field
         label="Telefone"
         :type="{'is-danger': errors.has('telefone')}"
@@ -63,17 +16,13 @@
       >
         <b-input
           type="text"
-          v-model.trim="doador.telefones[0]"
-          v-cleave="masks.phone"
+          v-model.trim="usuario.telefones[0]"
+          v-cleave="phoneMask"
           maxlength="15"
           name="telefone"
           v-validate="'required|phone'"
         ></b-input>
       </b-field>
-      <b-checkbox v-model="doador.telefones[0]" type="is-black">
-        Whatsapp?
-        <img width="15" src="~assets/wpp-icon.png" />
-      </b-checkbox>
       <b-field
         label="Email"
         :type="{'is-danger': errors.has('email')}"
@@ -81,7 +30,7 @@
       >
         <b-input
           type="text"
-          v-model.trim="doador.email"
+          v-model.trim="usuario.email"
           name="email"
           v-validate="'required|email'"
         />
@@ -95,7 +44,7 @@
           <b-input
             type="password"
             name="senha"
-            v-model="doador.password"
+            v-model="usuario.password"
             v-validate="'required|min:4'"
             ref="senha"
           />
@@ -147,9 +96,10 @@
   </section>
 </template>
 <script>
-
-import cleave from '@/plugins/cleave-directive.js'
-import { ErrorBag } from 'vee-validate'
+import LoginService from '../../services/LoginService';
+import cleave from '@/plugins/cleave-directive.js';
+import { ErrorBag } from 'vee-validate';
+import { mapActions } from 'vuex';
 
 export default {
   props: {
@@ -158,143 +108,132 @@ export default {
   },
   data() {
     return {
-      doador: {
-        nome: null,
-        cpf: null,
-        ativo: true,
-        vinculo_ong: false,
-        ultimo_login: '2019-07-24T22:39:02.543520Z',
-        telefones: [
-         ""
-        ],
-        endereco: {
-          cep: '49000000',
-          logradouro: 'logradouro',
-          bairro: 'bairro',
-          cidade: 'cidade',
-          estado: 'estado',
-          numero: 2,
-          principal: true
-        },
+      usuario: {
         email: null,
-        password: null
+        password: null,
+        nome: null,
+        telefones: [null]
       },
-      pessoaFisica: true,
       passwordConfirm: null,
-      success: false, //toremove
-      masks: {
-        cpf: {
-          delimiters: ['.', '.', '-'],
-          blocks: [3, 3, 3, 2],
-          numericOnly: true
-        },
-        phone: {
-          delimiters: ['(', ')', ' ', '-'],
-          blocks: [0, 2, 0, 4, 5],
-          numericOnly: true
-        },
-        cnpj: {
-          delimiters: ['.', '.', '/', '-'],
-          blocks: [2, 3, 3, 4, 2],
-          numericOnly: true
-        }
+      success: false,
+      loginService: null,
+      phoneMask: {
+        delimiters: ['(', ')', ' ', '-'],
+        blocks: [0, 2, 0, 4, 5],
+        numericOnly: true
       }
-    }
+    };
   },
+
+  mounted() {
+    this.loginService = new LoginService();
+  },
+
   created() {
     if (!this.isCadastro) {
-      this.doador = JSON.parse(JSON.stringify(this.$store.state.login.usuario))
+      this.usuario = JSON.parse(
+        JSON.stringify(this.$store.state.login.usuario)
+      );
     }
   },
+
   methods: {
-    // TODO: Alterar
-    // async patch() {
-    //   try {
-    //     await this.$axios
-    //       .patch(`/usuario/${this.$auth.user.id}/`, {
-    //         nome_completo: this.doador.nome_completo,
-    //         //telefone: this.doador.telefone,
-    //         email: this.doador.email
-    //       })
-    //       .then(response => {
-    //         this.$buefy.toast.open({
-    //           message: 'Atualização realizada com successo!',
-    //           type: 'is-success',
-    //           position: 'is-top'
-    //         })
-    //       })
-    //       .catch(err => {
-    //         if (!err.response) {
-    //           err.message = 'Servidor desconectado'
-    //         } else if (err.response.status === 400) {
-    //           if (err.response.data.non_field_errors)
-    //             err.message = err.response.data.non_field_errors[0]
-    //         }
-    //         this.$buefy.toast.open({
-    //           message: err.message,
-    //           type: 'is-danger',
-    //           position: 'is-bottom'
-    //         })
-    //       })
-    //     this.success = true
-    //   } catch (e) {
-    //     this.error = e.response.data.message
-    //   }
-    // },
+    ...mapActions({ signUpParse: 'login/signUp', updateParse: 'login/update' }),
     async register() {
       try {
-        await this.$axios
-          .post('usuario/', this.doador)
+        await this.signUpParse({
+          email: this.usuario.email,
+          password: this.usuario.password,
+          nome: this.usuario.nome,
+          telefones: this.usuario.telefones
+        })
           .then(response => {
             this.$buefy.toast.open({
               message: 'Cadastro realizado com successo!',
               type: 'is-success',
               position: 'is-top'
-            })
-            this.$router.push('/auth/login')
+            });
+            this.$router.push('/auth/login');
           })
           .catch(err => {
-            console.error(this.errors)
+            //console.error(this.errors)
+            console.log(err);
             if (!err.response) {
-              err.message = 'Servidor desconectado'
+              err.message = 'Servidor desconectado';
             } else if (err.response.data.mensagem.email != null) {
-              err.message = "Usuário com este email já existe"
+              err.message = 'Usuário com este email já existe';
             } else if (err.response.status === 400) {
               if (err.response.data.non_field_errors)
-                err.message = err.response.data.non_field_errors[0]
+                err.message = err.response.data.non_field_errors[0];
             }
             this.$buefy.toast.open({
               message: err.message,
               type: 'is-danger',
               position: 'is-bottom'
-            })
-          })
+            });
+          });
       } catch (e) {
-        this.error = e.response.data.message
+        console.log(e);
+        //this.error = e.response.data.message;
+      }
+    },
+
+    async patch() {
+      try {
+        await this.updateParse({
+          email: this.usuario.email,
+          nome: this.usuario.nome,
+          telefones: this.usuario.telefones
+        })
+          .then(response => {
+            this.$buefy.toast.open({
+              message: 'Alteração realizada com successo!',
+              type: 'is-success',
+              position: 'is-top'
+            });
+          })
+          .catch(err => {
+            //console.error(this.errors)
+            console.log(err);
+            if (!err.response) {
+              err.message = 'Servidor desconectado';
+            } else if (err.response.data.mensagem.email != null) {
+              err.message = 'Usuário com este email já existe';
+            } else if (err.response.status === 400) {
+              if (err.response.data.non_field_errors)
+                err.message = err.response.data.non_field_errors[0];
+            }
+            this.$buefy.toast.open({
+              message: err.message,
+              type: 'is-danger',
+              position: 'is-bottom'
+            });
+          });
+        this.success = true;
+      } catch (e) {
+        console.log(e);
+        //this.error = e.response.data.message;
       }
     },
 
     validateBeforeSubmit() {
       this.$validator.validateAll().then(result => {
         if (result) {
-          this.doador.telefone[0].numero = this.doador.telefone[0].numero.replace(
+          this.usuario.telefones[0] = this.usuario.telefones[0].replace(
             /\D/g,
             ''
-          )
-          this.doador.cpf = this.doador.cpf.replace(/\D/g, '')
-          this.isCadastro ? this.register() : this.patch()
-
-          return
+          );
+          return this.isCadastro ? this.register() : this.patch();
         }
         this.$buefy.toast.open({
           message: 'Formulário inválido, verifique os campos em vermelho',
           type: 'is-danger',
           position: 'is-bottom'
-        })
-      })
+        });
+      });
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 .profile-image {
