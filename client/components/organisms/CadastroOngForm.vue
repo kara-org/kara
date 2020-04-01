@@ -4,15 +4,10 @@
       <h1 class="title is-5 has-text-centered">Dados da ONG</h1>
       <b-field
         label="Nome da ong"
-        :type="{'is-danger': errors.has('nome_da_ong')}"
-        :message="errors.first('nome_da_ong')"
+        :type="{'is-danger': errors.has('ong_nome')}"
+        :message="errors.first('ong_nome')"
       >
-        <b-input
-          type="text"
-          v-model.trim="ong.nome_da_ong"
-          name="nome_da_ong"
-          v-validate="'required'"
-        ></b-input>
+        <b-input type="text" v-model.trim="ong.nome" name="ong_nome" v-validate="'required'"></b-input>
       </b-field>
       <hr />
       <h1 class="title is-5 has-text-centered">Responsável</h1>
@@ -122,7 +117,7 @@ export default {
   data() {
     return {
       ong: {
-        nome_da_ong: null
+        nome: null
       },
       usuario: {
         email: null,
@@ -139,17 +134,18 @@ export default {
       }
     };
   },
-
-  mounted() {},
-
   created() {
     if (!this.isCadastro) {
       this.usuario = this.$store.state.login.usuario;
+      this.ong = this.$store.state.login.usuario.ong;
     }
   },
 
   methods: {
-    ...mapActions({ signUpParse: 'login/signUp', updateParse: 'login/update' }),
+    ...mapActions({
+      signUpParse: 'login/signUpOng',
+      updateParse: 'login/update'
+    }),
     async register() {
       try {
         await this.signUpParse({
@@ -157,7 +153,7 @@ export default {
           password: this.usuario.password,
           nome: this.usuario.nome,
           telefones: this.usuario.telefones,
-          nomeDaOng: this.nome_da_ong
+          nomeDaOng: this.ong.nome
         })
           .then(response => {
             this.$buefy.toast.open({
@@ -165,17 +161,14 @@ export default {
               type: 'is-success',
               position: 'is-top'
             });
-            this.$router.push('/auth/login');
+            this.$router.push('/');
           })
           .catch(err => {
             console.log(err);
-            if (!err.response) {
-              err.message = 'Servidor desconectado';
-            } else if (err.code === 202) {
+            if (err.code === 202) {
               err.message = 'Usuário com este email já existe';
             } else if (err.code === 101) {
-              if (err.response.data.non_field_errors)
-                err.message = err.response.data.non_field_errors[0];
+              console.log(err);
             }
             this.$buefy.toast.open({
               message: err.message,
@@ -202,6 +195,7 @@ export default {
               type: 'is-success',
               position: 'is-top'
             });
+            this.$router.push('/');
           })
           .catch(err => {
             //console.error(this.errors)

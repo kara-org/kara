@@ -68,7 +68,7 @@ export default {
       return this.isAuthenticated ? this.$store.state.login.usuario.nome : "" ;
     },
     vinculoOng() {
-      return null;
+      return (this.isAuthenticated ? this.$store.state.login.usuario.ong : null) != null;
     }
   },
   methods: {

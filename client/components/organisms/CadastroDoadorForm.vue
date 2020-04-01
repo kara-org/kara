@@ -123,9 +123,6 @@ export default {
     };
   },
 
-  mounted() {
-  },
-
   created() {
     if (!this.isCadastro) {
       this.usuario = this.$store.state.login.usuario
@@ -148,7 +145,7 @@ export default {
               type: 'is-success',
               position: 'is-top'
             });
-            this.$router.push('/auth/login');
+            this.$router.push('/');
           })
           .catch(err => {
             //console.error(this.errors)

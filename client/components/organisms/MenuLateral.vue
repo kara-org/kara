@@ -28,7 +28,7 @@
 export default {
   computed: {
     isDoador() {
-      return !this.$store.state.login.ong
+      return !this.$store.state.login.usuario.ong
     }
   }
 }

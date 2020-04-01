@@ -4,8 +4,16 @@ import OngService from '../services/OngService';
 let serviceUser = new UserService();
 let serviceOng = new OngService();
 
+
 export const state = () => ({
-  usuario: null
+  usuario: {
+    nome: "",
+    email: "",
+    telefones: [null],
+    ong: {
+      nome:" "
+    }
+  }
 });
 
 export const mutations = {
@@ -25,8 +33,9 @@ export const actions = {
     return serviceUser.signUp(email, password, nome, telefones);
   },
 
-  async signUpOng(_, { email, password, nome, telefones, nomeDaOng }) {
-    let ong = serviceOng.build({ nomeDaOng });
+  async signUpOng({ commit }, { email, password, nome, telefones, nomeDaOng }) {
+
+    let ong = serviceOng.build({ nome: nomeDaOng });
     return serviceUser
       .signUp(email, password, nome, telefones, ong)
       .then(user => commit('SET', user.toJSON()));
@@ -50,3 +59,4 @@ export const actions = {
     commit('SET', user);
   }
 };
+
