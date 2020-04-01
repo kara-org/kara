@@ -1,4 +1,4 @@
-import createServiceLogin from '~/services/LoginService';
+// import createServiceLogin from '~/services/LoginService';
 
 export default function ({ app }, inject) {
   // const serviceLogin = createServiceLogin(app.$auth);

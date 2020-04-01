@@ -96,7 +96,6 @@
   </section>
 </template>
 <script>
-import LoginService from '../../services/LoginService';
 import cleave from '@/plugins/cleave-directive.js';
 import { ErrorBag } from 'vee-validate';
 import { mapActions } from 'vuex';
@@ -116,7 +115,6 @@ export default {
       },
       passwordConfirm: null,
       success: false,
-      loginService: null,
       phoneMask: {
         delimiters: ['(', ')', ' ', '-'],
         blocks: [0, 2, 0, 4, 5],
@@ -126,14 +124,11 @@ export default {
   },
 
   mounted() {
-    this.loginService = new LoginService();
   },
 
   created() {
     if (!this.isCadastro) {
-      this.usuario = JSON.parse(
-        JSON.stringify(this.$store.state.login.usuario)
-      );
+      this.usuario = this.$store.state.login.usuario
     }
   },
 

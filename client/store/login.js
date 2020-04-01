@@ -1,6 +1,8 @@
-import LoginService from '../services/LoginService';
+import UserService from '../services/UserService';
+import OngService from '../services/OngService';
 
-let serviceUser = new LoginService();
+let serviceUser = new UserService();
+let serviceOng = new OngService();
 
 export const state = () => ({
   usuario: null
@@ -14,15 +16,26 @@ export const mutations = {
 
 export const actions = {
   async login({ commit }, { login, senha }) {
-    return serviceUser.login(login, senha).then(response => commit('SET', response.toJSON()));
+    return serviceUser
+      .login(login, senha)
+      .then(user => commit('SET', user.toJSON()));
   },
 
   async signUp(_, { email, password, nome, telefones }) {
     return serviceUser.signUp(email, password, nome, telefones);
   },
 
+  async signUpOng(_, { email, password, nome, telefones, nomeDaOng }) {
+    let ong = serviceOng.build({ nomeDaOng });
+    return serviceUser
+      .signUp(email, password, nome, telefones, ong)
+      .then(user => commit('SET', user.toJSON()));
+  },
+
   async update({ commit }, { email, nome, telefones }) {
-    return serviceUser.update(email, nome, telefones).then(response => commit('SET', response.toJSON()));
+    return serviceUser
+      .update(email, nome, telefones)
+      .then(user => commit('SET', user.toJSON()));
   },
 
   async logout({ commit }) {

@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import LoginService from '../../services/LoginService';
+
 import { mapActions } from 'vuex';
 
 export default {
@@ -63,7 +63,6 @@ export default {
     };
   },
   mounted() {
-    this.loginService = new LoginService();
   },
   methods: {
     ...mapActions({ loginParse: 'login/login' }),
