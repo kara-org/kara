@@ -72,23 +72,23 @@
 </template>
 
 <script>
-import EditarModal from '@/components/molecules/EditarDemandaModal.vue'
-import { mapActions, mapGetters } from 'vuex'
+import EditarModal from '@/components/molecules/EditarDemandaModal.vue';
+import { mapActions, mapGetters } from 'vuex';
 export default {
   components: { EditarModal },
   async mounted() {
-    await this.fetchDemandasOng(this.$store.state.login.usuario.ong.id)
+    await this.fetchDemandasOng(this.$store.state.login.usuario.ong.objectId);
   },
   computed: {
     user() {
-      this.$store.login.user
+      this.$store.state.login.usuario;
     },
     ...mapGetters({ demandas: 'demandas/demandas' })
   },
   methods: {
     qtdRestante(qtdSolicitada, qtdAlcancada) {
-      var restante = qtdSolicitada - qtdAlcancada
-      return restante >= 0 ? restante : 0
+      var restante = qtdSolicitada - qtdAlcancada;
+      return restante >= 0 ? restante : 0;
     },
     ...mapActions('demandas', [
       'fetchDemandasOng',
@@ -103,14 +103,14 @@ export default {
 
         onConfirm: async () => {
           if (acao == 'inativar') {
-            await this.deleteDemanda(id)
+            await this.deleteDemanda(id);
           } else {
-            await this.changeDemanda(id, { ativo: true })
+            await this.changeDemanda(id, { ativo: true });
           }
-          await this.fetchDemandasOng(this.$store.state.login.usuario.ong.id)
-          console.log(this.demandas)
+          console.log(this.$store.state.login.usuario.ong.id);
+          await this.fetchDemandasOng(this.$store.state.login.usuario.ong.id);
         }
-      })
+      });
     }
   },
   data() {
@@ -128,9 +128,9 @@ export default {
       currentPage: 1,
       perPage: 5,
       isPaginationSimple: true
-    }
+    };
   }
-}
+};
 </script>
 
 <style lang="scss">
