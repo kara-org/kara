@@ -81,10 +81,10 @@
         </div>
       </template>
       <hr />
-      <button
-        type="submit"
-        class="button is-primary is-outlined is-medium is-rounded is-fullwidth"
-      >Confirmar</button>
+      <button type="submit" class="button is-primary is-outlined is-medium is-rounded is-fullwidth">
+        Confirmar
+        <b-loading :is-full-page="true" :active.sync="isLoading" :can-cancel="false"></b-loading>
+      </button>
       <div class="column has-text-centered">
         <nuxt-link
           class="voltar is-primary is-inverted"
@@ -131,7 +131,8 @@ export default {
         delimiters: ['(', ')', ' ', '-'],
         blocks: [0, 2, 0, 4, 5],
         numericOnly: true
-      }
+      },
+      isLoading: null
     };
   },
   created() {
@@ -147,78 +148,65 @@ export default {
       updateParse: 'login/update'
     }),
     async register() {
-      try {
-        await this.signUpParse({
-          email: this.usuario.email,
-          password: this.usuario.password,
-          nome: this.usuario.nome,
-          telefones: this.usuario.telefones,
-          nomeDaOng: this.ong.nome
-        })
-          .then(response => {
-            this.$buefy.toast.open({
-              message: 'Cadastro realizado com successo!',
-              type: 'is-success',
-              position: 'is-top'
-            });
-            this.$router.push('/');
-          })
-          .catch(err => {
-            console.log(err);
-            if (err.code === 202) {
-              err.message = 'Usuário com este email já existe';
-            } else if (err.code === 101) {
-              console.log(err);
-            }
-            this.$buefy.toast.open({
-              message: err.message,
-              type: 'is-danger',
-              position: 'is-bottom'
-            });
+      await this.signUpParse({
+        email: this.usuario.email,
+        password: this.usuario.password,
+        nome: this.usuario.nome,
+        telefones: this.usuario.telefones,
+        nomeDaOng: this.ong.nome
+      })
+        .then(response => {
+          this.$buefy.toast.open({
+            message: 'Cadastro realizado com successo!',
+            type: 'is-success',
+            position: 'is-top'
           });
-      } catch (e) {
-        console.log(e);
-        //this.error = e.response.data.message;
-      }
+          this.$router.push('/');
+        })
+        .catch(err => {
+          console.log(err);
+          if (err.code === 202) {
+            err.message = 'Usuário com este email já existe';
+          } else if (err.code === 101) {
+            console.log(err);
+          }
+          this.$buefy.toast.open({
+            message: err.message,
+            type: 'is-danger',
+            position: 'is-bottom'
+          });
+        });
+      this.isLoading = false;
     },
 
     async patch() {
-      try {
-        await this.updateParse({
-          email: this.usuario.email,
-          nome: this.usuario.nome,
-          telefones: this.usuario.telefones
-        })
-          .then(response => {
-            this.$buefy.toast.open({
-              message: 'Alteração realizada com successo!',
-              type: 'is-success',
-              position: 'is-top'
-            });
-            this.$router.push('/');
-          })
-          .catch(err => {
-            //console.error(this.errors)
-            console.log(err);
-            if (!err.response) {
-              err.message = 'Servidor desconectado';
-            } else if (err.response.data.mensagem.email != null) {
-              err.message = 'Usuário com este email já existe';
-            } else if (err.response.status === 400) {
-              if (err.response.data.non_field_errors)
-                err.message = err.response.data.non_field_errors[0];
-            }
-            this.$buefy.toast.open({
-              message: err.message,
-              type: 'is-danger',
-              position: 'is-bottom'
-            });
+      await this.updateParse({
+        email: this.usuario.email,
+        nome: this.usuario.nome,
+        telefones: this.usuario.telefones
+      })
+        .then(response => {
+          this.$buefy.toast.open({
+            message: 'Alteração realizada com successo!',
+            type: 'is-success',
+            position: 'is-top'
           });
-        this.success = true;
-      } catch (e) {
-        console.log(e);
-        //this.error = e.response.data.message;
-      }
+          this.$router.push('/');
+        })
+        .catch(err => {
+          //console.error(this.errors)
+          console.log(err);
+          if (err.code == 202) {
+            err.message = 'Usuário com este email já existe';
+          }
+          this.$buefy.toast.open({
+            message: err.message,
+            type: 'is-danger',
+            position: 'is-bottom'
+          });
+        });
+      this.success = true;
+      this.isLoading = false;
     },
 
     validateBeforeSubmit() {
@@ -228,6 +216,7 @@ export default {
             /\D/g,
             ''
           );
+          this.isLoading = true;
           return this.isCadastro ? this.register() : this.patch();
         }
         this.$buefy.toast.open({

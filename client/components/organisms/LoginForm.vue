@@ -35,10 +35,10 @@
           exact-active-class="is-active"
         >Não sou cadastrado</nuxt-link>
       </div>
-      <button
-        type="submit"
-        class="button is-primary is-outlined is-medium is-rounded is-fullwidth"
-      >Entrar</button>
+      <button type="submit" class="button is-primary is-outlined is-medium is-rounded is-fullwidth">
+        Entrar
+        <b-loading :is-full-page="true" :active.sync="isLoading" :can-cancel="false"></b-loading>
+      </button>
       <div class="column has-text-centered">
         <nuxt-link
           class="voltar is-primary is-inverted"
@@ -51,7 +51,6 @@
 </template>
 
 <script>
-
 import { mapActions } from 'vuex';
 
 export default {
@@ -59,35 +58,33 @@ export default {
     return {
       email: null,
       password: null,
-      loginService: null
+      isLoading: null
     };
-  },
-  mounted() {
   },
   methods: {
     ...mapActions({ loginParse: 'login/login' }),
     async login() {
-      console.log(this.password)
+      this.isLoading = true;
       await this.loginParse({ login: this.email, senha: this.password })
-      .then(() => {
-        this.$router.push("/");
-      })
-      .catch(err => {
-        if (!err.code === 404) {
-          err.message = 'Servidor desconectado';
-        } else if (err.code == 101) {
-          err.message =
-            'Login ou senha inválidos, confira os dados e tente novamente';
-        }
+        .then(() => {
+          this.$router.push('/');
+        })
+        .catch(err => {
+          if (!err.code === 404) {
+            err.message = 'Servidor desconectado';
+          } else if (err.code == 101) {
+            err.message =
+              'Login ou senha inválidos, confira os dados e tente novamente';
+          }
 
-        this.$buefy.toast.open({
-          message: err.message,
-          type: 'is-danger',
-          position: 'is-bottom'
+          this.$buefy.toast.open({
+            message: err.message,
+            type: 'is-danger',
+            position: 'is-bottom'
+          });
+          return;
         });
-        return;
-      });
-
+      this.isLoading = false;
     },
 
     validateBeforeSubmit() {
