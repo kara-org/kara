@@ -35,9 +35,9 @@ export const mutations = {
 export const actions = {
   async buscar({ commit, dispatch }, { tipo, palavraChave }) {
     commit('UPDATE_SEARCH_TERM', palavraChave);
-    return await serviceBuscar.buscar(palavraChave).then(response => {
-      if (response.length !== 0) {
-        commit('UPDATE_RESULTADOS', response);
+    return await serviceBuscar.buscar(palavraChave).then(demandas => {
+      if (demandas.length !== 0) {
+        commit('UPDATE_RESULTADOS', demandas);
       } else {
         commit('TO_DEFEAULT_RESULTADOS');
       }
@@ -46,11 +46,11 @@ export const actions = {
   },
   async fetchBusca({ commit, dispatch }, tipo) {
     return await serviceDemanda.index()
-      .then(response => {
-        let jReponse = response.map(m => m.toJSON())
-        serviceBuscar.indexAdd(jReponse);
-        commit('UPDATE_RESULTADOS', jReponse);
-        commit('SET_DEFEAULT_RESULTADOS', jReponse);
+      .then(demandas => {
+        let demandasJson = demandas.map(demanda => demanda.toJSON())
+        serviceBuscar.indexAdd(demandasJson);
+        commit('UPDATE_RESULTADOS', demandasJson);
+        commit('SET_DEFEAULT_RESULTADOS', demandasJson);
         commit('ORDER_ITENS');
       })
       .catch(err => {
