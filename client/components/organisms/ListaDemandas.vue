@@ -3,31 +3,31 @@
     <b-table class="table" :data="demandas" ref="table" :bordered="false" :striped="true">
       <template slot-scope="props">
         <b-table-column
-          field="descricao"
-          :visible="columnsVisible['descricao'].display"
-          :label="columnsVisible['descricao'].title"
+          field="nome"
+          :visible="columnsVisible['nome'].display"
+          :label="columnsVisible['nome'].title"
           centered
-        >{{ props.row.descricao }}</b-table-column>
+        >{{ props.row.nome }}</b-table-column>
         <b-table-column
-          field="quantidade_solicitada"
-          :visible="columnsVisible['quantidade_solicitada'].display"
-          :label="columnsVisible['quantidade_solicitada'].title"
+          field="quantidadeDesejada"
+          :visible="columnsVisible['quantidadeDesejada'].display"
+          :label="columnsVisible['quantidadeDesejada'].title"
           centered
-        >{{ props.row.quantidade_solicitada }}</b-table-column>
+        >{{ props.row.quantidadeDesejada }}</b-table-column>
 
         <b-table-column
-          field="quantidade_alcancada"
-          :visible="columnsVisible['quantidade_alcancada'].display"
-          :label="columnsVisible['quantidade_alcancada'].title"
+          field="quantidadeAlcancada"
+          :visible="columnsVisible['quantidadeAlcancada'].display"
+          :label="columnsVisible['quantidadeAlcancada'].title"
           centered
-        >{{ !props.row.quantidade_alcancada ? 0 : props.row.quantidade_alcancada }}</b-table-column>
+        >{{ !props.row.quantidadeAlcancada ? 0 : props.row.quantidadeAlcancada }}</b-table-column>
 
         <b-table-column
           field="restante"
           :visible="columnsVisible['restante'].display"
           :label="columnsVisible['restante'].title"
           centered
-        >{{ qtdRestante(props.row.quantidade_solicitada, props.row.quantidade_alcancada)}}</b-table-column>
+        >{{ qtdRestante(props.row.quantidadeDesejada, props.row.quantidadeAlcancada)}}</b-table-column>
 
         <b-table-column
           field="acao"
@@ -64,7 +64,7 @@
         >
           <span
             class="tag is-success"
-          >{{ Math.round(( !props.row.quantidade_alcancada ? 0 : props.row.quantidade_alcancada / props.row.quantidade_solicitada) * 100) }}%</span>
+          >{{ Math.round(( !props.row.quantidadeAlcancada ? 0 : props.row.quantidadeAlcancada / props.row.quantidadeDesejada) * 100) }}%</span>
         </b-table-column>
       </template>
     </b-table>
@@ -77,7 +77,10 @@ import { mapActions, mapGetters } from 'vuex';
 export default {
   components: { EditarModal },
   async mounted() {
-    await this.fetchDemandasOng(this.$store.state.login.usuario.ong.objectId);
+    await this.fetchDemandasOng(null);
+  },
+  async updated() {
+    console.log(this.demandas);
   },
   computed: {
     user() {
@@ -116,9 +119,9 @@ export default {
   data() {
     return {
       columnsVisible: {
-        descricao: { title: 'Título', display: true },
-        quantidade_solicitada: { title: 'Esperado', display: true },
-        quantidade_alcancada: { title: 'Doado', display: true },
+        nome: { title: 'Título', display: true },
+        quantidadeDesejada: { title: 'Esperado', display: true },
+        quantidadeAlcancada: { title: 'Doado', display: true },
         restante: { title: 'Restante', display: true },
         acao: { title: 'Ação', display: true },
         progresso: { title: 'Progresso', display: true }
