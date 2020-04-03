@@ -12,7 +12,7 @@ export default class DemandaService {
   async indexOng({ idOng }) {
     let ong;
     if (!idOng)
-      ong = Parse.User.current().currentUser.get('ong');
+      ong = Parse.User.current().get('ong');
     else {
       const Ong = Parse.Object.extend('Ong');
       ong = new Ong();
@@ -21,7 +21,7 @@ export default class DemandaService {
 
     let query = new Parse.Query(Demanda);
     query.equalTo('ong', ong);
-    return await query.get();
+    return await query.find();
   }
 
   async create({ nome, quantidadeDesejada, categoria, ong }) {
