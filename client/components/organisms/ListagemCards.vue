@@ -2,7 +2,7 @@
   <div class="container">
     <div class="columns is-desktop">
       <div v-for="item in list" :key="item.id" class="column" :class="isBusca ? 'is-one-third is-full-mobile' : 'is-half'">
-        <CardOng
+        <CardDemanda
           :demanda="item"
           :ong="ong"
           :isCarrinho="false"
@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import CardOng from '../molecules/CardDemanda'
+import CardDemanda from '../molecules/CardDemanda'
 
 import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
@@ -22,7 +22,7 @@ export default {
     list: Array
   },
   components: {
-    CardOng
+    CardDemanda
   },
   async asyncData() {
     return {}
@@ -34,6 +34,7 @@ export default {
     ...mapActions('busca', ['fetchBusca', 'buscar'])
   },
   mounted () {
+    this.fetchBusca()
   }
 }
 </script>
