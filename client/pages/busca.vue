@@ -12,7 +12,7 @@
         <div class="container">
             <h1 class="title is-4  has-text-centered is-primary">Demandas</h1>
             <p class="has-text-centered"><small >Busque por itens, caso não encontre, veja nossas sugestões abaixo </small></p>
-            <ListagemOngs :list="list" :isBusca="true"/>
+            <ListagemCards :list="list" :isBusca="true"/>
         </div>
       </div>
     </section>
@@ -21,14 +21,14 @@
 </template>
 
 <script>
-import ListagemOngs from '../components/organisms/ListagemCards'
+import ListagemCards from '../components/organisms/ListagemCards'
 import Buscar from '../components/molecules/BuscarForm'
 import { mapActions } from 'vuex';
 
 export default {
   name: 'HomePage',
   components: {
-    ListagemOngs,
+    ListagemCards,
     Buscar
   },
   computed: {

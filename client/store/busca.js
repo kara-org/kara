@@ -1,3 +1,9 @@
+import DemandaService from "../services/DemandaService"
+import BuscarService from "../services/BuscarService"
+
+let serviceBuscar = new BuscarService();
+let serviceDemanda = new DemandaService();
+
 export const state = () => ({
   list: [],
   default: [],
@@ -7,7 +13,7 @@ export const state = () => ({
 
 export const mutations = {
   ORDER_ITENS(state){
-    state.list.sort((a, b) => a.descricao.localeCompare(b.descricao));
+    state.list.sort((a, b) => a.nome.localeCompare(b.nome));
   },
   UPDATE_TIPO(state, payload) {
     state.tipo = payload;
@@ -28,9 +34,8 @@ export const mutations = {
 
 export const actions = {
   async buscar({ commit, dispatch }, { tipo, palavraChave }) {
-    commit('UPDATE_TIPO', tipo);
     commit('UPDATE_SEARCH_TERM', palavraChave);
-    return await this.$BuscarService.buscar(palavraChave).then(response => {
+    return await serviceBuscar.buscar(palavraChave).then(response => {
       if (response.length !== 0) {
         commit('UPDATE_RESULTADOS', response);
       } else {
@@ -40,11 +45,12 @@ export const actions = {
     })
   },
   async fetchBusca({ commit, dispatch }, tipo) {
-    return await this.$BuscarService
-      .fetch(tipo)
+    return await serviceDemanda.index()
       .then(response => {
-        commit('UPDATE_RESULTADOS', response);
-        commit('SET_DEFEAULT_RESULTADOS', response);
+        let jReponse = response.map(m => m.toJSON())
+        serviceBuscar.indexAdd(jReponse);
+        commit('UPDATE_RESULTADOS', jReponse);
+        commit('SET_DEFEAULT_RESULTADOS', jReponse);
         commit('ORDER_ITENS');
       })
       .catch(err => {

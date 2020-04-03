@@ -5,6 +5,7 @@ const Demanda = Parse.Object.extend('Demanda');
 export default class DemandaService {
   async index() {
     let query = new Parse.Query(Demanda);
+    query.include("ong");
     return await query.find();
   }
 
@@ -20,8 +21,7 @@ export default class DemandaService {
 
     let query = new Parse.Query(Demanda);
     query.equalTo('ong', ong);
-    let demandas = await query.find();
-    return demandas;
+    return await query.get();
   }
 
   async create({ nome, quantidadeDesejada, categoria, ong }) {
@@ -30,7 +30,7 @@ export default class DemandaService {
   }
 
   async show(id) {
-    return await query.include('ong').get(id);
+    return await query.include('ong').get(id).toJSON();
   }
 
   async update({
