@@ -2,7 +2,7 @@
   <span>
     <b-tooltip class="is-success" label="Editar demanda" position="is-right">
       <b-button @click="isComponentModalActive = true" class="is-outlined is-success is-small">
-        <b-icon icon="settings"></b-icon>
+        <b-icon icon="apps"></b-icon>
       </b-button>
     </b-tooltip>
     <b-modal :active.sync="isComponentModalActive" has-modal-card>

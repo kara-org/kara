@@ -101,10 +101,10 @@ export default {
   computed: {
   },
   methods: {
-     ...mapActions('busca', ['fetchBusca', 'buscar']),
+     ...mapActions('demandas', ['fetchDemandas']),
   },
   created: function() {
-    this.fetchBusca('demandas')
+    this.fetchDemandas()
   }
 }
 </script>
