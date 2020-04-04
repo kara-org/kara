@@ -16,8 +16,8 @@
       <h3 class="title is-size-5 has-text-light">Contato</h3>
       <p>
         Telefone: {{formataTelefone(ong.telefone[0].numero)}}
-        <br />
-        Email: {{email}}
+        <!-- <br />
+        Email: {{email}} -->
       </p>
     </div>
   </div>
@@ -29,9 +29,9 @@ export default {
     ong() {
       return this.$store.state.carrinho.ong
     },
-    email() {
+    /* email() {
       return this.$auth.user.email
-    }
+    } */
   },
   methods: {
     formataTelefone(telefone) {
