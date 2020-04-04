@@ -1,0 +1,10 @@
+{
+  "applications": {
+    "_default": {
+      "link": "kara"
+    },
+    "kara": {
+      "applicationId": "ElfuZaaNpkOuF9DvMrAnfPxOypoxH1HT72jxLmTG"
+    }
+  }
+}
