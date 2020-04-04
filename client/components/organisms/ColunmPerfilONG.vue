@@ -8,17 +8,16 @@
       </figure>
       <hr />
       <h3 class="title is-size-5 has-text-light">História</h3>
-      <p>
-        {{ ong.historia }}
-      </p>
+      <p>{{ ong.historia }}</p>
       <hr />
       <h3 class="title is-size-5 has-text-light">Endereço</h3>
-      <p>Rua Maria Miralda dos Santos, nº 4. Parque Ilza, Av. Central C Dois, Nossa Sra. do Socorro - SE, 49160-000.</p>
+      <p>{{formataEndereco(ong.endereco)}}</p>
       <hr />
       <h3 class="title is-size-5 has-text-light">Contato</h3>
       <p>
-        Telefone: 3248-1413
-        <br />Email: almir@mail.com.br
+        Telefone: {{formataTelefone(ong.telefone[0].numero)}}
+        <br />
+        Email: {{email}}
       </p>
     </div>
   </div>
@@ -27,8 +26,36 @@
 <script>
 export default {
   computed: {
-    ong () {
+    ong() {
       return this.$store.state.carrinho.ong
+    },
+    email() {
+      return this.$auth.user.email
+    }
+  },
+  methods: {
+    formataTelefone(telefone) {
+      return (
+        '(' +
+        telefone.substring(0, 2) +
+        ') ' +
+        telefone.substring(2, 6) +
+        '-' +
+        telefone.substring(6)
+      )
+    },
+    formataEndereco(endereco) {
+      return (
+        endereco.logradouro +
+        ', ' +
+        endereco.numero +
+        ', ' +
+        endereco.bairro +
+        ', ' +
+        endereco.cidade +
+        ' - ' +
+        endereco.estado
+      )
     }
   }
 }
