@@ -12,7 +12,7 @@ jobs:
     steps:    
       - add_ssh_keys:
           fingerprints:
-            - "5a:59:6e:f5:c0:a1:82:da:1e:61:2e:48:de:d3:4a:91"
+            - "83:42:48:36:f0:e1:d9:20:b9:be:72:60:92:4d:7b:25"
       - run:
           name: Capturando chaves de acesso
           command: ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
