@@ -36,7 +36,9 @@
           centered
         >
           <template v-if="props.row.ativo">
-            <EditarModal :demanda="props.row" />
+            <nuxt-link :to="`/ong/demandas/editar/${props.row.objectId }`" exact-active-class="is-outlined is-success is-small">
+                <b-icon icon="apps"></b-icon>
+            </nuxt-link>
             <b-tooltip class="is-danger" label="Inativar demanda" position="is-right">
               <b-button
                 class="is-danger is-outlined is-small"
@@ -76,17 +78,13 @@ import EditarModal from '@/components/molecules/EditarDemandaModal.vue';
 import { mapActions, mapGetters } from 'vuex';
 export default {
   components: { EditarModal },
-  async mounted() {
-    await this.fetchDemandasOng(null);
-  },
-  async updated() {
-    console.log(this.demandas);
+  props: {
+    demandas: Array
   },
   computed: {
     user() {
       this.$store.state.login.usuario;
-    },
-    ...mapGetters({ demandas: 'demandas/demandas' })
+    }
   },
   methods: {
     qtdRestante(qtdSolicitada, qtdAlcancada) {
@@ -110,8 +108,7 @@ export default {
           } else {
             await this.changeDemanda(id, { ativo: true });
           }
-          console.log(this.$store.state.login.usuario.ong.id);
-          await this.fetchDemandasOng(this.$store.state.login.usuario.ong.id);
+          await this.fetchDemandasOng();
         }
       });
     }
@@ -119,7 +116,7 @@ export default {
   data() {
     return {
       columnsVisible: {
-        nome: { title: 'Título', display: true },
+       nome: { title: 'Título', display: true },
         quantidadeDesejada: { title: 'Esperado', display: true },
         quantidadeAlcancada: { title: 'Doado', display: true },
         restante: { title: 'Restante', display: true },

@@ -111,7 +111,7 @@ export default {
     ...mapGetters({ doacoes: 'doacoes/doacoes' })
   },
 
-  async mounted() {
+  async asyncData() {
     if (this.isDoador) {
       await this.fetchDoacoesDoador(this.user.id)
     } else {

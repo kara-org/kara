@@ -5,14 +5,13 @@ const Demanda = Parse.Object.extend('Demanda');
 export default class DemandaService {
   async index() {
     let query = new Parse.Query(Demanda);
-    query.include("ong");
+    query.include('ong');
     return await query.find();
   }
 
   async indexOng({ idOng }) {
     let ong;
-    if (!idOng)
-      ong = Parse.User.current().get('ong');
+    if (!idOng) ong = Parse.User.current().get('ong');
     else {
       const Ong = Parse.Object.extend('Ong');
       ong = new Ong();
@@ -30,26 +29,32 @@ export default class DemandaService {
   }
 
   async show(id) {
-    return await query.include('ong').get(id).toJSON();
+    let query = new Parse.Query(Demanda);
+    return await query.include('ong').get(id);
   }
 
   async update({
-    id,
+    objectId,
     nome,
-    quantidadeAlcancada,
     quantidadeDesejada,
+    quantidadeAlcancada,
     categoria,
-    ativo
+    ativo,
+    ong
   }) {
-    const demanda = Parse.Object.createWithoutData(id);
+    let query = new Parse.Query(Demanda);
+    let demanda = new Demanda();
+    demanda.set('objectId', objectId);
     demanda.set('nome', nome);
     demanda.set('quantidadeAlcancada', quantidadeAlcancada);
     demanda.set('quantidadeDesejada', quantidadeDesejada);
     demanda.set('categoria', categoria);
-    demanda.set('ativo', ativo);
-    demanda.set('ong', ong);
-    await demanda.save();
-    return await demanda.fetch();
+    demanda.set('ativo', true);
+
+    const params = { demanda: demanda.toJSON() };
+    let response = await Parse.Cloud.run('editarDemanda', params);
+    console.log(response);
+    return response;
   }
 
   async delete(id) {
@@ -69,13 +74,17 @@ export default class DemandaService {
     ativo = ativo || true;
 
     const demanda = new Demanda();
-
     demanda.set('nome', nome);
     demanda.set('quantidadeAlcancada', quantidadeAlcancada);
     demanda.set('quantidadeDesejada', quantidadeDesejada);
     demanda.set('categoria', categoria);
     demanda.set('ativo', ativo);
-    demanda.set('ong', ong);
+
+    if (ong) {
+      let Ong = Parse.Object.extend('Ong');
+      let ongPoint = Ong.createWithoutData(ong.objectId);
+      demanda.set('ong', ongPoint);
+    }
 
     return demanda;
   }
