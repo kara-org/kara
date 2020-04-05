@@ -58,8 +58,8 @@ import { mapActions } from 'vuex';
 
 export default {
   computed: {
-    isAuthenticated() {
-      return this.$store.state.login.usuario != null;
+    isAuthenticated() {      
+      return this.$store.state.login.usuario.nome != "";
     },
     user() {
       return this.$store.state.login.usuario;
