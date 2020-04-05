@@ -5,7 +5,7 @@
       <div class="hero-body">
         <div class="container">
           <div class="columns is-centered">
-            <article class="card is-rounded" style="width:800px">
+            <article class="card is-rounded" style="width:1000px">
               <div class="card-content">
                 <p class="form-section-title">Doações marcadas</p>
                 <hr />
