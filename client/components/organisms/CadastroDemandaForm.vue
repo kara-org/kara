@@ -59,7 +59,7 @@
 
 <script>
 import cleave from '@/plugins/cleave-directive.js';
-import { mapActions, mapMutations } from 'vuex';
+import { mapActions, mapMutations, mapGetters } from 'vuex';
 export default {
   props: {
     isCadastro: Boolean
@@ -76,9 +76,7 @@ export default {
     };
   },
   computed: {
-    ong() {
-      return this.$store.state.login.usuario.ong;
-    }
+    ...mapGetters({ ong: 'login/ong' })
   },
   methods: {
     ...mapMutations('demandas', ['SET_DEMANDA']),

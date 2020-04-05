@@ -36,8 +36,11 @@
           centered
         >
           <template v-if="props.row.ativo">
-            <nuxt-link :to="`/ong/demandas/editar/${props.row.objectId }`" exact-active-class="is-outlined is-success is-small">
-                <b-icon icon="apps"></b-icon>
+            <nuxt-link
+              :to="`/ong/demandas/editar/${props.row.objectId }`"
+              exact-active-class="is-outlined is-success is-small"
+            >
+              <b-icon icon="settings"></b-icon>
             </nuxt-link>
             <b-tooltip class="is-danger" label="Inativar demanda" position="is-right">
               <b-button
@@ -82,9 +85,7 @@ export default {
     demandas: Array
   },
   computed: {
-    user() {
-      this.$store.state.login.usuario;
-    }
+    ...mapGetters({ user: 'login/usuario' })
   },
   methods: {
     qtdRestante(qtdSolicitada, qtdAlcancada) {
@@ -116,7 +117,7 @@ export default {
   data() {
     return {
       columnsVisible: {
-       nome: { title: 'Título', display: true },
+        nome: { title: 'Título', display: true },
         quantidadeDesejada: { title: 'Esperado', display: true },
         quantidadeAlcancada: { title: 'Doado', display: true },
         restante: { title: 'Restante', display: true },

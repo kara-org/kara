@@ -4,32 +4,50 @@
       <h3 class="title is-size-5 has-text-light">{{ ong.nome }}</h3>
       <hr />
       <figure class="image is-128x128" style="margin: 0 auto">
-        <img class="is-rounded" src="https://bulma.io/images/placeholders/128x128.png" />
+        <img
+          class="is-rounded"
+          src="https://bulma.io/images/placeholders/128x128.png"
+        />
       </figure>
       <hr />
       <h3 class="title is-size-5 has-text-light">História</h3>
       <p>
-        {{ ong.historia }}
+        {{ ong.biografia }}
       </p>
       <hr />
       <h3 class="title is-size-5 has-text-light">Endereço</h3>
-      <p>Rua Maria Miralda dos Santos, nº 4. Parque Ilza, Av. Central C Dois, Nossa Sra. do Socorro - SE, 49160-000.</p>
+      <p>
+        {{ ong.enderecos[0] }}
+      </p>
       <hr />
       <h3 class="title is-size-5 has-text-light">Contato</h3>
       <p>
-        Telefone: 3248-1413
-        <br />Email: almir@mail.com.br
+        {{ telefone(ong.telefones[0]) }}
+        <br />Email:
+        {{ ong.email }}
       </p>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   computed: {
-    ong () {
-      return this.$store.state.carrinho.ong
+    ...mapGetters({ ong: 'carrinho/ong' })
+  },
+  methods: {
+    telefone(telefone) {
+      if (telefone) {
+        let last = telefone.length - 4;
+        telefone = `(${telefone.substring(0, 2)}) ${telefone.substring(
+          2,
+          last
+        )}-${telefone.substring(last)}`;
+      }
+      return telefone;
     }
   }
-}
+};
 </script>

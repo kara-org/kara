@@ -20,9 +20,14 @@
           :visible="columnsVisible['doador'].display"
           :label="columnsVisible['doador'].title"
           centered
-        >{{ nome(columnDoacoes.row.user.nome) }}</b-table-column>
-        <b-table-column field="telefone" label="Telefone" centered>{{ telefone(columnDoacoes.row) }}</b-table-column>
-        <b-table-column field="email" label="Email" centered>{{ email(columnDoacoes.row) }}</b-table-column>
+          >{{ nome(columnDoacoes.row.user.nome) }}</b-table-column
+        >
+        <b-table-column field="telefone" label="Telefone" centered>{{
+          telefone(columnDoacoes.row)
+        }}</b-table-column>
+        <b-table-column field="email" label="Email" centered>{{
+          email(columnDoacoes.row)
+        }}</b-table-column>
 
         <b-table-column
           field="situacao"
@@ -31,8 +36,11 @@
           centered
         >
           <span
-            :class="getTagStatusDoacao(getStatusDoacao(columnDoacoes.row.demandas))"
-          >{{ getStatusDoacao(columnDoacoes.row.demandas) }}</span>
+            :class="
+              getTagStatusDoacao(getStatusDoacao(columnDoacoes.row.demandas))
+            "
+            >{{ getStatusDoacao(columnDoacoes.row.demandas) }}</span
+          >
         </b-table-column>
       </template>
       <template slot="detail" slot-scope="columnDoacoes">
@@ -43,19 +51,26 @@
               :visible="columnsVisible['demanda'].display"
               :label="columnsVisible['demanda'].title"
               centered
-            >{{ columnItemDoacao.row.demanda.nome }}</b-table-column>
+              >{{ columnItemDoacao.row.demanda.nome }}</b-table-column
+            >
             <b-table-column
               field="prometido"
               :visible="columnsVisible['prometido'].display"
               :label="columnsVisible['prometido'].title"
               centered
-            >{{ columnItemDoacao.row.quantidadePrometida }}</b-table-column>
+              >{{ columnItemDoacao.row.quantidadePrometida }}</b-table-column
+            >
             <b-table-column
               field="efetivado"
               :visible="columnsVisible['efetivado'].display"
               :label="columnsVisible['efetivado'].title"
               centered
-            >{{ !columnItemDoacao.row.quantidadeEfetivada ? 0 : columnItemDoacao.row.quantidadeEfetivada }}</b-table-column>
+              >{{
+                !columnItemDoacao.row.quantidadeEfetivada
+                  ? 0
+                  : columnItemDoacao.row.quantidadeEfetivada
+              }}</b-table-column
+            >
 
             <b-table-column
               field="acao"
@@ -63,14 +78,24 @@
               :label="columnsVisible['acao'].title"
               centered
             >
-              <span v-if="columnItemDoacao.row.entregue" class="tag is-success">ENTREGUE</span>
-              <span v-else-if="columnItemDoacao.row.cancelado" class="tag is-danger">CANCELADA</span>
+              <span v-if="columnItemDoacao.row.entregue" class="tag is-success"
+                >ENTREGUE</span
+              >
+              <span
+                v-else-if="columnItemDoacao.row.cancelado"
+                class="tag is-danger"
+                >CANCELADA</span
+              >
               <template v-else>
                 <EditarModal v-if="isDoador" :doacao="columnItemDoacao.row" />
-                <b-tooltip class="is-danger" label="Cancelar doação" position="is-right">
+                <b-tooltip
+                  class="is-danger"
+                  label="Cancelar doação"
+                  position="is-right"
+                >
                   <b-button
                     class="is-danger is-outlined is-small"
-                    @click="cancell(columnItemDoacao.row.objectId)"
+                    @click="cancel(columnItemDoacao.row.objectId)"
                   >
                     <b-icon icon="cancel"></b-icon>
                   </b-button>
@@ -106,20 +131,12 @@ export default {
     isDoador: Boolean
   },
   computed: {
-    user() {
-      return this.$store.state.login.usuario;
-    },
-    ...mapGetters({ doacoes: 'doacoes/doacoes' })
+    ...mapGetters({ doacoes: 'doacoes/doacoes', user: 'login/usuario' })
   },
-
-  async asyncData() {
-    if (this.isDoador) {
-      this.fetchDoacoesDoador(this.user.objectId);
-    } else {
-      this.fetchDoacoesOng(this.user.ong.objectId);
-    }
+  mounted() {
+    if (this.isDoador) this.fetchDoacoesDoador(this.user.objectId);
+    else this.fetchDoacoesOng(this.user.ong.objectId);
   },
-
   methods: {
     nome(nome) {
       let nomes = nome.split(' ');
@@ -141,10 +158,10 @@ export default {
     },
     email(doacao) {
       if (this.isDoador) return doacao.ong.email;
-      if (!this.isDoador) return doacao.user.email;
+      if (!this.isDoador)
+        return doacao.user.email ? doacao.user.email : doacao.user.username;
     },
     getStatusDoacao(itensDoacao) {
-      console.log(this.doacoes);
       let status = 'CANCELADA';
       itensDoacao.forEach(item => {
         if (item.entregue) status = 'ENTREGUE';
@@ -179,7 +196,7 @@ export default {
       date = new Date(date);
       return date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear();
     },
-    async cancell(objectId) {
+    async cancel(objectId) {
       this.$buefy.dialog.confirm({
         message: `Tem certeza que deseja cancelar este item?`,
         confirmText: 'Sim',
@@ -208,5 +225,4 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

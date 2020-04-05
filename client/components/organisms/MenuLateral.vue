@@ -25,11 +25,11 @@
   </b-menu>
 </template>
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   computed: {
-    isDoador() {
-      return !this.$store.state.login.usuario.ong
-    }
+    ...mapGetters({ isDoador: 'login/isDoador' })
   }
-}
+};
 </script>

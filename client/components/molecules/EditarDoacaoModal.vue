@@ -27,7 +27,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
+
 export default {
   props: { doacao: Object },
   data() {
@@ -37,9 +38,7 @@ export default {
     };
   },
   computed: {
-    user() {
-      return this.$store.state.login.usuario;
-    }
+    ...mapGetters({ user: 'login/usuario' })
   },
   mounted() {
     this.quantidade = this.doacao.quantidadePrometida;
