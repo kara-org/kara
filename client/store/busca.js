@@ -1,5 +1,5 @@
-import DemandaService from "../services/DemandaService"
-import BuscarService from "../services/BuscarService"
+import DemandaService from '../services/DemandaService';
+import BuscarService from '../services/BuscarService';
 
 let serviceBuscar = new BuscarService();
 let serviceDemanda = new DemandaService();
@@ -9,10 +9,10 @@ export const state = () => ({
   default: [],
   searchTerm: '',
   tipo: ''
-})
+});
 
 export const mutations = {
-  ORDER_ITENS(state){
+  ORDER_ITENS(state) {
     state.list.sort((a, b) => a.nome.localeCompare(b.nome));
   },
   UPDATE_TIPO(state, payload) {
@@ -30,7 +30,7 @@ export const mutations = {
   SET_DEFEAULT_RESULTADOS(state, payload) {
     state.default = payload;
   }
-}
+};
 
 export const actions = {
   async buscar({ commit, dispatch }, { tipo, palavraChave }) {
@@ -42,12 +42,13 @@ export const actions = {
         commit('TO_DEFEAULT_RESULTADOS');
       }
       commit('ORDER_ITENS');
-    })
+    });
   },
   async fetchBusca({ commit, dispatch }, tipo) {
-    return await serviceDemanda.index()
+    return await serviceDemanda
+      .index()
       .then(demandas => {
-        let demandasJson = demandas.map(demanda => demanda.toJSON())
+        let demandasJson = demandas.map(demanda => demanda.toJSON());
         serviceBuscar.indexAdd(demandasJson);
         commit('UPDATE_RESULTADOS', demandasJson);
         commit('SET_DEFEAULT_RESULTADOS', demandasJson);
@@ -59,10 +60,16 @@ export const actions = {
       })
       .then(() => dispatch('global/stopLoading', null, { root: true }));
   }
-}
+};
 
 export const getters = {
-  demandasPorOng: (state) => idOng => {
+  demandasPorOng: state => idOng => {
     return state.default.filter(i => i.ong.objectId === idOng);
   },
-}
+  list: state => {
+    return state.list;
+  },
+  searchTerm: state => {
+    return state.searchTerm;
+  }
+};

@@ -4,16 +4,18 @@ import OngService from '../services/OngService';
 let serviceUser = new UserService();
 let serviceOng = new OngService();
 
+let usuarioDefaut = {
+  nome: '',
+  email: '',
+  telefones: [null],
+  ong: {
+    nome: ' ',
+    objectId: ''
+  }
+};
 
 export const state = () => ({
-  usuario: {
-    nome: "",
-    email: "",
-    telefones: [null],
-    ong: {
-      nome:" "
-    }
-  }
+  usuario: usuarioDefaut
 });
 
 export const mutations = {
@@ -34,7 +36,6 @@ export const actions = {
   },
 
   async signUpOng({ commit }, { email, password, nome, telefones, nomeDaOng }) {
-
     let ong = serviceOng.build({ nome: nomeDaOng });
     return serviceUser
       .signUp(email, password, nome, telefones, ong)
@@ -48,7 +49,7 @@ export const actions = {
   },
 
   async logout({ commit }) {
-    return serviceUser.logout().then(() => commit('SET', null));
+    return serviceUser.logout().then(() => commit('SET', usuarioDefaut));
   },
   async resetPassword(_, email) {
     return serviceUser.resetPassword(email);
@@ -60,3 +61,17 @@ export const actions = {
   }
 };
 
+export const getters = {
+  isAuthenticated: state => {
+    return state.usuario && state.usuario.email != '';
+  },
+  isDoador: state => {
+    return !(state.usuario.ong && state.usuario.ong.objectId != '');
+  },
+  usuario: state => {
+    return state.usuario;
+  },
+  ong: state => {
+    return state.usuario.ong;
+  }
+};
