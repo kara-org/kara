@@ -1,3 +1,9 @@
+import OngService from "../services/OngService"
+import DoacaoService from "../services/DoacaoService"
+
+let serviceOng = new OngService();
+let serviceDoacao = new DoacaoService();
+
 export const state = () => ({
   ong: {
     demandas: []
@@ -15,13 +21,13 @@ export const mutations = {
   },
   REMOVE_ITEM(state, item) {
     state.itensSelecionados = state.itensSelecionados.filter(
-      i => i.demanda.id !== item.id
+      i => i.demanda.objectId !== item.objectId
     );
   },
   UPDATE_ITEM(state, payload) {
     state.itensSelecionados.forEach((element, index) => {
-      if (element.demanda.id == payload.demanda.id) {
-        state.itensSelecionados[index].quantidade_prometida = payload.quantidade_prometida;
+      if (element.demanda.objectId == payload.demanda.objectId) {
+        state.itensSelecionados[index].quantidadePrometida = payload.quantidadePrometida;
       }
     });
   },
@@ -35,9 +41,11 @@ export const mutations = {
 
 export const actions = {
   fetchOng(context, idOng) {
-    this.$OngService.show(idOng).then(payload => {
-      context.commit('UPDATE_ONG', payload)
-    })
+    serviceOng.show(idOng)
+      .then(ong => {
+        context.commit('UPDATE_ONG', ong.toJSON())
+      })
+      .catch(err => console.log(err));
   },
 
   fetchItens(context, payload) {
@@ -45,25 +53,23 @@ export const actions = {
   },
 
   sendDoacao(context) {
-    let doacao = {
-      item_doacao: context.state.itensSelecionados.map(item => {
-        return {
-          id_demanda: item.demanda.id,
-          quantidade_prometida: item.quantidade_prometida
-        }
-      }),
-      id_usuario: context.rootState.auth.user.id,
-      data_agendamento: '2019-12-30'
-    }
+    let itensDoacao = context.state.itensSelecionados.map(item => {
+      return {
+        demanda: item.demanda,
+        quantidadePrometida: item.quantidadePrometida,
+        quantidadeEfetivada: item.quantidadeEfetivada
+      }
+    })
 
-    return this.$DoacaoService.create(doacao).then(() => {
+    serviceDoacao.create(itensDoacao).then(() => {
       context.commit('ESVAZIAR_CARRINHO')
     })
+    .catch(err => console.log(err));
   },
 
   adicionarItemNoCarrinho(context, item) {
     for (const itemSelecionado of context.state.itensSelecionados) {
-      if (itemSelecionado.demanda.id === item.id) {
+      if (itemSelecionado.demanda.objectId === item.objectId) {
         return
       }
     }
@@ -94,7 +100,7 @@ export const getters = {
     return (
       state.itensDisponiveis &&
       state.itensDisponiveis.filter(
-        x => !getters.itensNoCarrinho.map(i => i.demanda.id).includes(x.id)
+        x => !getters.itensNoCarrinho.map(i => i.demanda.objectId).includes(x.objectId)
       )
     )
   }

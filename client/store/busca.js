@@ -63,6 +63,6 @@ export const actions = {
 
 export const getters = {
   demandasPorOng: (state) => idOng => {
-    return state.default.filter(i => i.ong.id === idOng);
+    return state.default.filter(i => i.ong.objectId === idOng);
   },
 }
