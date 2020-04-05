@@ -58,7 +58,7 @@ import { mapActions } from 'vuex';
 
 export default {
   computed: {
-    isAuthenticated() {      
+    isAuthenticated() {
       return this.$store.state.login.usuario.nome != "";
     },
     user() {
