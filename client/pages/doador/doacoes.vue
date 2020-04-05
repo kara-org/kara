@@ -20,15 +20,16 @@
 </template>
 
 <script>
-import ListaDoacoes from '@/components/organisms/ListaDoacoes'
-import MenuLateral from '@/components/organisms/MenuLateral'
+import ListaDoacoes from '@/components/organisms/ListaDoacoes';
+import MenuLateral from '@/components/organisms/MenuLateral';
+
 export default {
   layout: 'default',
   components: {
     ListaDoacoes,
     MenuLateral
-  },
-}
+  }
+};
 </script>
 
 <style lang="scss" scoped>
