@@ -61,6 +61,9 @@
 import cleave from '@/plugins/cleave-directive.js';
 import { mapActions, mapMutations } from 'vuex';
 export default {
+  props: {
+    isCadastro: Boolean
+  },
   data() {
     return {
       demanda: {
@@ -78,13 +81,22 @@ export default {
     }
   },
   methods: {
-    ...mapActions('demandas', ['createDemanda']),
+    ...mapMutations('demandas', ['SET_DEMANDA']),
+    ...mapActions('demandas', ['createDemanda', 'updateDemanda']),
     async create() {
       this.demanda.ong = this.ong;
-      await this.createDemanda({ ...this.demanda })
+      let method;
+
+      if (this.isCadastro) {
+        method = this.createDemanda;
+      } else {
+        method = this.updateDemanda;
+      }
+
+      method({ ...this.demanda })
         .then(response => {
           this.$buefy.toast.open({
-            message: 'Demanda cadastrado com successo!',
+            message: 'Operação realizada com successo!',
             type: 'is-success',
             position: 'is-top'
           });
@@ -118,6 +130,16 @@ export default {
         });
       });
     }
+  },
+  created() {
+    this.unsubscribe = this.$store.subscribe((mutation, state) => {
+      if (mutation.type === 'demandas/SET_DEMANDA') {
+        this.demanda = JSON.parse(JSON.stringify(state.demandas.demanda));
+      }
+    });
+  },
+  beforeDestroy() {
+    this.unsubscribe();
   }
 };
 </script>

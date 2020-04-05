@@ -9,7 +9,7 @@
               <div class="card-content">
                 <p class="form-section-title">Demandas da ONG</p>
                 <hr />
-                <ListaDemandas />
+                <ListaDemandas :demandas="demandas" />
               </div>
             </article>
           </div>
@@ -20,16 +20,31 @@
 </template>
 
 <script>
-import ListaDemandas from '@/components/organisms/ListaDemandas'
-import MenuLateral from '@/components/organisms/MenuLateral'
+import { mapActions, mapGetters } from 'vuex';
+
+import ListaDemandas from '@/components/organisms/ListaDemandas';
+import MenuLateral from '@/components/organisms/MenuLateral';
 
 export default {
   layout: 'default',
   components: {
     ListaDemandas,
     MenuLateral
+  },
+  computed:{
+    ...mapGetters({ demandas: 'demandas/demandas' })
+  },
+  methods: {
+    ...mapActions('demandas', [
+      'fetchDemandasOng',
+      'changeDemanda',
+      'deleteDemanda'
+    ])
+  },
+  async mounted (){
+    this.fetchDemandasOng()
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
