@@ -16,7 +16,7 @@ export default class DemandaService {
     else {
       const Ong = Parse.Object.extend('Ong');
       ong = new Ong();
-      ong.id = idOng;
+      ong.objectId = idOng;
     }
 
     let query = new Parse.Query(Demanda);
