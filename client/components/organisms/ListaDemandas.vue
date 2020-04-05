@@ -37,7 +37,7 @@
         >
           <template v-if="props.row.ativo">
             <nuxt-link
-              :to="`/ong/demandas/editar/${props.row.objectId }`"
+              :to="`/ong/demandas/editar/${props.row.objectId}`"
               exact-active-class="is-outlined is-success is-small"
             >
               <b-icon icon="settings"></b-icon>
@@ -45,22 +45,21 @@
             <b-tooltip class="is-danger" label="Inativar demanda" position="is-right">
               <b-button
                 class="is-danger is-outlined is-small"
-                @click="confirm(props.row.id, 'inativar')"
+                @click="inativar(props.row)"
               >
                 <b-icon icon="cancel"></b-icon>
               </b-button>
             </b-tooltip>
           </template>
-          <span v-else class="tag is-danger">INATIVA</span>
-          <!--<b-tooltip v-else class="is-success" label="Reativar demanda" position="is-right">
+          <!-- <span v-else class="tag is-danger">INATIVA</span> -->
+          <b-tooltip v-else class="is-info" label="Reativar demanda" position="is-right">
             <b-button
-              disabled
-              class="is-success is-outlined is-small"
-              @click="confirm(props.row.id, 'reativar')"
+              class="is-info is-outlined is-small"
+              @click="inativar(props.row)"
             >
               <b-icon icon="replay"></b-icon>
             </b-button>
-          </b-tooltip>-->
+          </b-tooltip>
         </b-table-column>
         <b-table-column
           :visible="columnsVisible['progresso'].display"
@@ -95,20 +94,16 @@ export default {
     ...mapActions('demandas', [
       'fetchDemandasOng',
       'changeDemanda',
-      'deleteDemanda'
+      'inativaAtiva'
     ]),
-    async confirm(id, acao) {
+    async inativar(demanda) {
       this.$buefy.dialog.confirm({
-        message: `Tem certeza que deseja ${acao} essa demanda?`,
+        message: `Tem certeza que deseja inativar essa demanda?`,
         confirmText: 'Sim',
         cancelText: 'Não',
 
         onConfirm: async () => {
-          if (acao == 'inativar') {
-            await this.deleteDemanda(id);
-          } else {
-            await this.changeDemanda(id, { ativo: true });
-          }
+          await this.inativaAtiva(demanda);
           await this.fetchDemandasOng();
         }
       });

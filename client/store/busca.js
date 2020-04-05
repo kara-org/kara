@@ -48,7 +48,8 @@ export const actions = {
     return await serviceDemanda
       .index()
       .then(demandas => {
-        let demandasJson = demandas.map(demanda => demanda.toJSON());
+        let demandasJson = demandas.map(demanda => demanda.toJSON())
+        demandasJson = demandasJson.filter(demanda => demanda.ativo)
         serviceBuscar.indexAdd(demandasJson);
         commit('UPDATE_RESULTADOS', demandasJson);
         commit('SET_DEFEAULT_RESULTADOS', demandasJson);
