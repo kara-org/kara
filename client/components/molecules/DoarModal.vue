@@ -6,7 +6,10 @@
       label="Confirmar doação"
       position="is-right"
     >
-      <b-button class="is-success is-outlined is-small" @click="isComponentModalActive = true">
+      <b-button
+        class="is-success is-outlined is-small"
+        @click="isComponentModalActive = true"
+      >
         <b-icon icon="check"></b-icon>
       </b-button>
     </b-tooltip>
@@ -14,7 +17,9 @@
       v-else
       class="button is-primary is-medium"
       @click="isComponentModalActive = true"
-    >{{text}}</button>
+    >
+      {{ text }}
+    </button>
     <b-modal :active.sync="isComponentModalActive" has-modal-card>
       <form action>
         <div class="modal-card" style="width: auto">
@@ -30,8 +35,16 @@
             ></b-numberinput>
           </section>
           <footer class="modal-card-foot">
-            <button class="button" type="button" @click="isComponentModalActive = false">Cancelar</button>
-            <button class="button is-primary" type="button" @click="confirmado">Confirmar</button>
+            <button
+              class="button"
+              type="button"
+              @click="isComponentModalActive = false"
+            >
+              Cancelar
+            </button>
+            <button class="button is-primary" type="button" @click="confirmado">
+              Confirmar
+            </button>
           </footer>
         </div>
       </form>
@@ -40,7 +53,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 export default {
   props: {
     text: {

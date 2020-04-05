@@ -40,7 +40,7 @@
               :to="`/ong/demandas/editar/${props.row.objectId}`"
               exact-active-class="is-outlined is-success is-small"
             >
-              <b-icon icon="apps"></b-icon>
+              <b-icon icon="settings"></b-icon>
             </nuxt-link>
             <b-tooltip class="is-danger" label="Inativar demanda" position="is-right">
               <b-button
@@ -84,9 +84,7 @@ export default {
     demandas: Array
   },
   computed: {
-    user() {
-      this.$store.state.login.usuario;
-    }
+    ...mapGetters({ user: 'login/usuario' })
   },
   methods: {
     qtdRestante(qtdSolicitada, qtdAlcancada) {

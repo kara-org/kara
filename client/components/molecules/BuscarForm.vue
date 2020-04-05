@@ -23,13 +23,14 @@
           @click="send"
           icon="magnify"
           :loading="loading"
-        >Buscar</b-button>
+          >Buscar</b-button
+        >
       </p>
     </b-field>
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   props: {
@@ -56,18 +57,22 @@ export default {
     }
   },
   computed: {
-    loading() {
-      return this.$store.state.global.loading;
-    }
+    ...mapGetters(
+      { loading: 'global/loading' },
+      { searchTerm: 'busca/searchTerm' },
+      { list: 'busca/list' }
+    )
   },
   watch: {
     palavraChave() {
       this.buscar({ tipo: this.tipo, palavraChave: this.palavraChave });
+    },
+    searchTerm() {
+      this.palavraChave = this.searchTerm != null ? this.searchTerm : '';
+    },
+    list() {
+      if (!this.list.length) this.fetchBusca(this.tipo);
     }
-  },
-  created() {
-    if (!this.$store.state.busca.list.length) this.fetchBusca(this.tipo);
-    this.palavraChave = this.$store.state.busca.searchTerm;
   }
 };
 </script>
@@ -101,4 +106,3 @@ export default {
   }
 }
 </style>
-

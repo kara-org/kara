@@ -28,18 +28,18 @@
           <small>Bem vindo!</small>
         </span>
         <span>
-          <strong>{{ userName }}</strong>
+          <strong>{{ user ? user.nome : '' }}</strong>
         </span>
       </div>
       <div class="navbar-item" />
-      <div class="navbar-item" v-show="vinculoOng">
+      <div class="navbar-item" v-show="!isDoador">
         <nuxt-link
           class="button is-primary is-outlined is-rounded"
           :to="`/ong/demandas`"
           exact-active-class="is-active"
         >Gerenciamento</nuxt-link>
       </div>
-      <div class="navbar-item" v-show="!vinculoOng">
+      <div class="navbar-item" v-show="isDoador">
         <nuxt-link
           class="button is-primary is-outlined is-rounded"
           :to="`/doador/editar`"
@@ -54,22 +54,15 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   computed: {
-    isAuthenticated() {
-      return this.$store.state.login.usuario.nome != "";
-    },
-    user() {
-      return this.$store.state.login.usuario;
-    },
-    userName() {
-      return this.isAuthenticated ? this.$store.state.login.usuario.nome : "" ;
-    },
-    vinculoOng() {
-      return (this.isAuthenticated ? this.$store.state.login.usuario.ong : null) != null;
-    }
+    ...mapGetters({
+      user: 'login/usuario',
+      isAuthenticated: 'login/isAuthenticated',
+      isDoador: 'login/isDoador'
+    })
   },
   methods: {
     ...mapActions({

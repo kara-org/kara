@@ -98,7 +98,7 @@
 <script>
 import cleave from '@/plugins/cleave-directive.js';
 import { ErrorBag } from 'vee-validate';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   props: {
@@ -124,9 +124,13 @@ export default {
     };
   },
 
-  created() {
+  computed: {
+    ...mapGetters({ user: 'login/usuario' })
+  },
+
+  mounted() {
     if (!this.isCadastro) {
-      this.usuario = this.$store.state.login.usuario;
+      this.usuario = { ...this.user };
     }
   },
 

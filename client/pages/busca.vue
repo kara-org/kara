@@ -10,9 +10,13 @@
     <section class="hero is-fullheight">
       <div class="hero-head">
         <div class="container">
-            <h1 class="title is-4  has-text-centered is-primary">Demandas</h1>
-            <p class="has-text-centered"><small >Busque por itens, caso não encontre, veja nossas sugestões abaixo </small></p>
-            <ListagemCards :list="list" :isBusca="true"/>
+          <h1 class="title is-4  has-text-centered is-primary">Demandas</h1>
+          <p class="has-text-centered">
+            <small
+              >Busque por itens, caso não encontre, veja nossas sugestões abaixo
+            </small>
+          </p>
+          <ListagemCards :list="list" :isBusca="true" />
         </div>
       </div>
     </section>
@@ -21,9 +25,9 @@
 </template>
 
 <script>
-import ListagemCards from '../components/organisms/ListagemCards'
-import Buscar from '../components/molecules/BuscarForm'
-import { mapActions } from 'vuex';
+import ListagemCards from '../components/organisms/ListagemCards';
+import Buscar from '../components/molecules/BuscarForm';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'HomePage',
@@ -32,17 +36,14 @@ export default {
     Buscar
   },
   computed: {
-    list (){
-      return this.$store.state.busca.list
-    }
+    ...mapGetters({ list: 'busca/list' })
   },
   methods: {
     ...mapActions('carrinho', ['limparCarrinho'])
   },
   mounted: function() {
-    this.limparCarrinho()
+    this.limparCarrinho();
   }
-}
+};
 </script>
-<style>
-</style>
+<style></style>

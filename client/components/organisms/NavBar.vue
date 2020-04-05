@@ -4,7 +4,13 @@
       <nuxt-link class="navbar-item" to="/" exact-active-class="is-active">
         <img src="~assets/kara-logo.svg" alt="kara" />
       </nuxt-link>
-      <a role="button" class="navbar-burger" aria-label="menu" data-target="navMenu" aria-expanded="false">
+      <a
+        role="button"
+        class="navbar-burger"
+        aria-label="menu"
+        data-target="navMenu"
+        aria-expanded="false"
+      >
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
@@ -30,14 +36,14 @@
   </nav>
 </template>
 <script>
-import LoginNavItem from '../molecules/LoginNavItem'
+import LoginNavItem from '../molecules/LoginNavItem';
 export default {
   props: ['items'],
   components: {
     LoginNavItem
   },
   asyncData() {
-    return {}
+    return {};
   },
   mounted() {
     document.addEventListener('DOMContentLoaded', () => {
@@ -45,7 +51,7 @@ export default {
       const $navbarBurgers = Array.prototype.slice.call(
         document.querySelectorAll('.navbar-burger'),
         0
-      )
+      );
 
       // Check if there are any navbar burgers
       if ($navbarBurgers.length > 0) {
@@ -53,18 +59,18 @@ export default {
         $navbarBurgers.forEach(el => {
           el.addEventListener('click', () => {
             // Get the target from the "data-target" attribute
-            const target = el.dataset.target
-            const $target = document.getElementById(target)
+            const target = el.dataset.target;
+            const $target = document.getElementById(target);
 
             // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
-            el.classList.toggle('is-active')
-            $target.classList.toggle('is-active')
-          })
-        })
+            el.classList.toggle('is-active');
+            $target.classList.toggle('is-active');
+          });
+        });
       }
-    })
+    });
   }
-}
+};
 </script>
 <style lang="scss">
 .navbar {

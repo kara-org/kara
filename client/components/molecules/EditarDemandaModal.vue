@@ -1,8 +1,11 @@
 <template>
   <span>
     <b-tooltip class="is-success" label="Editar demanda" position="is-right">
-      <b-button @click="isComponentModalActive = true" class="is-outlined is-success is-small">
-        <b-icon icon="apps"></b-icon>
+      <b-button
+        @click="isComponentModalActive = true"
+        class="is-outlined is-success is-small"
+      >
+        <b-icon icon="settings"></b-icon>
       </b-button>
     </b-tooltip>
     <b-modal :active.sync="isComponentModalActive" has-modal-card>
@@ -13,7 +16,11 @@
           </header>
           <section class="modal-card-body">
             <b-field label="Título">
-              <b-input type="text" v-model="demandaLocal.nome" placeholder="Açucar"></b-input>
+              <b-input
+                type="text"
+                v-model="demandaLocal.nome"
+                placeholder="Açucar"
+              ></b-input>
             </b-field>
             <b-field label="Quantidade esperada">
               <b-input
@@ -33,7 +40,9 @@
             </b-field>
           </section>
           <footer class="modal-card-foot">
-            <button class="button is-primary is-fullwidth" @click="confirm">Confirmar</button>
+            <button class="button is-primary is-fullwidth" @click="confirm">
+              Confirmar
+            </button>
           </footer>
         </div>
       </form>
@@ -42,14 +51,14 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapActions } from 'vuex';
 export default {
   props: { demanda: Object },
   data() {
     return {
       isComponentModalActive: false,
       demandaLocal: {
-        nome: "",
+        nome: '',
         quantidadeAlcancada: 0,
         quantidadeDesejada: 0
       }
@@ -57,15 +66,13 @@ export default {
   },
   async asyncData() {
     this.demandaLocal = JSON.parse(JSON.stringify(this.demanda));
-
   },
   methods: {
     ...mapActions('demandas', {
       changeDemanda: 'changeDemanda'
     }),
     async confirm() {
-      console.log(this.demandaLocal)
-      this.changeDemanda(this.demandaLocal)
+      this.changeDemanda(this.demandaLocal);
     }
   }
 };

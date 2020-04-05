@@ -1,10 +1,19 @@
 <template>
   <article class="has-background-white">
     <h1 class="title is-size-5 has-text-centered">Demandas selecionadas</h1>
-    <b-button  @click="send" class="is-primary is-fullwidth is-rounded is-stick-botton" size="is-medium" fullwidth="true"  icon="magnify">Finalizar doação</b-button>
-    <br>
+    <b-button
+      @click="send"
+      class="is-primary is-fullwidth is-rounded is-stick-botton"
+      size="is-medium"
+      fullwidth="true"
+      icon="magnify"
+      >Finalizar doação</b-button
+    >
+    <br />
     <div class="columns">
-      <p v-if="demandas && demandas.length == 0 ">Demandas aparecerão aqui a medida que você for selecionando.</p>
+      <p v-if="demandas && demandas.length == 0">
+        Demandas aparecerão aqui a medida que você for selecionando.
+      </p>
     </div>
     <div class="cards is-scroll-y">
       <div v-for="item in demandas" :key="item.objectId" class="column is-full">
@@ -20,37 +29,33 @@
 </template>
 
 <script>
-import CardDemanda from '../molecules/CardDemanda'
-import { mapGetters, mapActions, mapState } from 'vuex'
+import CardDemanda from '../molecules/CardDemanda';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   components: {
     CardDemanda
   },
   data() {
-    return {
-    }
+    return {};
   },
   computed: {
-    ...mapGetters({ demandas: 'carrinho/itensNoCarrinho' }),
-    ong () {
-      return this.$store.state.carrinho.ong
-    }
+    ...mapGetters({ demandas: 'carrinho/itensNoCarrinho', ong: 'carrinho/ong' })
   },
   methods: {
     ...mapActions('carrinho', ['sendDoacao']),
-    send(){
+    send() {
       this.sendDoacao().then(() => {
         this.$buefy.toast.open({
-            message: "Obrigado pela doação!",
-            type: 'is-success',
-            position: 'is-top'
-          })
-      })
-      this.$router.push('/doador/doacoes')
+          message: 'Obrigado pela doação!',
+          type: 'is-success',
+          position: 'is-top'
+        });
+      });
+      this.$router.push('/doador/doacoes');
     }
   }
-}
+};
 </script>
 
 <style lang="css" scoped>
