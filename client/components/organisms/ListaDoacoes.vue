@@ -11,8 +11,6 @@
       detailed
     >
       <template slot-scope="columnDoacoes">
-        <b-table-column field="objectId" label="ID Doação" centered>{{ columnDoacoes.row.objectId }}</b-table-column>
-
         <b-table-column v-if="isDoador" field="ong" label="ONG" centered>
           <span>{{ columnDoacoes.row.ong.nome }}</span>
         </b-table-column>
@@ -22,11 +20,14 @@
           :visible="columnsVisible['doador'].display"
           :label="columnsVisible['doador'].title"
           centered
-        >{{ columnDoacoes.row.user.nome }}</b-table-column>
+        >{{ nome(columnDoacoes.row.user.nome) }}</b-table-column>
+        <b-table-column field="telefone" label="Telefone" centered>{{ telefone(columnDoacoes.row) }}</b-table-column>
+        <b-table-column field="email" label="Email" centered>{{ email(columnDoacoes.row) }}</b-table-column>
+
         <b-table-column
-          field="data"
-          :visible="columnsVisible['data'].display"
-          :label="columnsVisible['data'].title"
+          field="situacao"
+          :visible="columnsVisible['situacao'].display"
+          :label="columnsVisible['situacao'].title"
           centered
         >
           <span
@@ -120,6 +121,28 @@ export default {
   },
 
   methods: {
+    nome(nome) {
+      let nomes = nome.split(' ');
+      return nomes[0] + (nomes.length > 1 ? ' ' + nomes[nomes.length - 1] : '');
+    },
+    telefone(doacao) {
+      let telefone;
+      if (this.isDoador) telefone = doacao.ong.telefones[0];
+      if (!this.isDoador) telefone = doacao.user.telefones[0];
+
+      if (telefone) {
+        let last = telefone.length - 4;
+        telefone = `(${telefone.substring(0, 2)}) ${telefone.substring(
+          2,
+          last
+        )}-${telefone.substring(last)}`;
+      }
+      return telefone;
+    },
+    email(doacao) {
+      if (this.isDoador) return doacao.ong.email;
+      if (!this.isDoador) return doacao.user.email;
+    },
     getStatusDoacao(itensDoacao) {
       console.log(this.doacoes);
       let status = 'CANCELADA';
@@ -178,7 +201,7 @@ export default {
         prometido: { title: 'Prometido', display: true },
         doador: { title: 'Doador', display: this.isDoador ? false : true },
         ong: { title: 'ONG', display: this.isDoador ? true : false },
-        data: { title: 'Estado', display: true },
+        situacao: { title: 'Situação', display: true },
         acao: { title: 'Ação', display: true }
       }
     };
