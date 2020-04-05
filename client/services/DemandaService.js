@@ -50,11 +50,7 @@ export default class DemandaService {
     demanda.set('quantidadeDesejada', quantidadeDesejada);
     demanda.set('categoria', categoria);
     demanda.set('ativo', true);
-
-    const params = { demanda: demanda.toJSON() };
-    let response = await Parse.Cloud.run('editarDemanda', params);
-    console.log(response);
-    return response;
+    return demanda.save();
   }
 
   async delete(id) {
