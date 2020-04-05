@@ -16,15 +16,7 @@ export const mutations = {
     state.list = payload;
   },
   SET_DEMANDA(state, demanda) {
-    state.list = state.list.map(i => {
-      if (i.id === demanda.id) {
-        i.data_fim = demanda.data_fim;
-        i.data_inicio = demanda.data_inicio;
-        i.descricao = demanda.descricao;
-        i.quantidade_solicitada = demanda.quantidade_solicitada;
-      }
-      return i;
-    });
+    state.demanda = demanda;
   },
   ADD_DEMANDA(state, payload) {
     state.list.push(payload);
@@ -57,20 +49,51 @@ export const actions = {
   fetchDemandas(context) {
     serviceDemanda
       .index()
-      .then(demandas => context.commit('UPDATE_DEMANDAS', demandas))
+      .then(demandas => {
+        let demandasJson = demandas.map(demanda => demanda.toJSON());
+        context.commit('UPDATE_DEMANDAS', demandasJson);
+      })
+      .catch(err => console.log(err));
+  },
+
+  fetchDemanda(context, id) {
+    serviceDemanda.show(id)
+      .then(demanda => {
+        console.log(demanda.toJSON());
+
+        context.commit('SET_DEMANDA', demanda.toJSON());
+      })
       .catch(err => console.log(err));
   },
 
   fetchDemandasOng(context, idOng) {
     serviceDemanda
       .indexOng({ idOng })
-      .then(demandas => context.commit('UPDATE_DEMANDAS', demandas))
+      .then(demandas => {
+        let demandasJson = demandas.map(demanda => demanda.toJSON());
+        context.commit('UPDATE_DEMANDAS', demandasJson);
+      })
       .catch(err => console.log(err));
   },
 
-  changeDemanda(_, id, payload) {},
+  deleteDemanda(_, id, payload) {},
 
-  deleteDemanda(context, id) {}
+  async updateDemanda(
+    { commit },
+    { objectId, nome, quantidadeAlcancada, quantidadeDesejada, categoria, ong }
+  ) {
+
+
+    return serviceDemanda.update({
+      objectId,
+      nome,
+      quantidadeDesejada,
+      quantidadeAlcancada,
+      categoria,
+      ong
+    })
+    .then(demanda => commit('ADD_DEMANDA', demanda));
+  }
 };
 
 export const getters = {

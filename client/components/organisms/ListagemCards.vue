@@ -33,7 +33,7 @@ export default {
   methods: {
     ...mapActions('busca', ['fetchBusca', 'buscar'])
   },
-  mounted () {
+  async asyncData () {
     this.fetchBusca()
   }
 }
