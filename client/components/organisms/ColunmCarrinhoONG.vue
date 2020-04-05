@@ -7,12 +7,12 @@
       <p v-if="demandas && demandas.length == 0 ">Demandas aparecerão aqui a medida que você for selecionando.</p>
     </div>
     <div class="cards is-scroll-y">
-      <div v-for="item in demandas" :key="item.id" class="column is-full">
+      <div v-for="item in demandas" :key="item.objectId" class="column is-full">
         <CardDemanda
           :demanda="item.demanda"
           :ong="ong"
           :isCarrinho="true"
-          :quantidadePrometida="item.quantidade_prometida"
+          :quantidadePrometida="item.quantidadePrometida"
         />
       </div>
     </div>
@@ -34,7 +34,6 @@ export default {
   computed: {
     ...mapGetters({ demandas: 'carrinho/itensNoCarrinho' }),
     ong () {
-      console.log(this.$store.state.carrinho['ong'])
       return this.$store.state.carrinho.ong
     }
   },

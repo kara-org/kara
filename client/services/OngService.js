@@ -14,6 +14,7 @@ export default class OngService {
   }
 
   async show(id) {
+    let query = new Parse.Query(Ong);
     return await query.get(id);
   }
 

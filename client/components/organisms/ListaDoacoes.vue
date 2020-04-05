@@ -7,14 +7,14 @@
       :per-page="5"
       :show-detail-icon="true"
       pagination-position="bottom"
-      detail-key="id"
+      detail-key="objectId"
       detailed
     >
-      <template slot-scope="fProps">
-        <b-table-column field="id" label="ID Doação" centered>{{ fProps.row.id }}</b-table-column>
+      <template slot-scope="columnDoacoes">
+        <b-table-column field="objectId" label="ID Doação" centered>{{ columnDoacoes.row.objectId }}</b-table-column>
 
         <b-table-column v-if="isDoador" field="ong" label="ONG" centered>
-          <span>{{ fProps && fProps.row.item_doacao[0]  && fProps.row.item_doacao[0].demanda.ong.nome }}</span>
+          <span>{{ columnDoacoes.row.ong.nome }}</span>
         </b-table-column>
         <b-table-column
           v-else
@@ -22,42 +22,39 @@
           :visible="columnsVisible['doador'].display"
           :label="columnsVisible['doador'].title"
           centered
-        >{{ fProps.row.usuario.nome_completo }}</b-table-column>
+        >{{ columnDoacoes.row.user.nome }}</b-table-column>
         <b-table-column
           field="data"
           :visible="columnsVisible['data'].display"
           :label="columnsVisible['data'].title"
           centered
         >
-          <span v-if="isDoacaoPendente(fProps.row.item_doacao)" class="tag">PENDENTE</span>
           <span
-            v-else-if="isDoacaoCancelada(fProps.row.item_doacao)"
-            class="tag is-danger"
-          >CANCELADA</span>
-          <span v-else class="tag is-success">ENTREGUE</span>
+            :class="getTagStatusDoacao(getStatusDoacao(columnDoacoes.row.demandas))"
+          >{{ getStatusDoacao(columnDoacoes.row.demandas) }}</span>
         </b-table-column>
       </template>
-      <template slot="detail" slot-scope="fProps">
-        <b-table :data="fProps.row.item_doacao">
-          <template slot-scope="props">
+      <template slot="detail" slot-scope="columnDoacoes">
+        <b-table :data="columnDoacoes.row.demandas">
+          <template slot-scope="columnItemDoacao">
             <b-table-column
               field="demanda"
               :visible="columnsVisible['demanda'].display"
               :label="columnsVisible['demanda'].title"
               centered
-            >{{ props.row.demanda.descricao }}</b-table-column>
+            >{{ columnItemDoacao.row.demanda.nome }}</b-table-column>
             <b-table-column
               field="prometido"
               :visible="columnsVisible['prometido'].display"
               :label="columnsVisible['prometido'].title"
               centered
-            >{{ props.row.quantidade_prometida }}</b-table-column>
+            >{{ columnItemDoacao.row.quantidadePrometida }}</b-table-column>
             <b-table-column
               field="efetivado"
               :visible="columnsVisible['efetivado'].display"
               :label="columnsVisible['efetivado'].title"
               centered
-            >{{ !props.row.quantidade_efetivada ? 0 : props.row.quantidade_efetivada }}</b-table-column>
+            >{{ !columnItemDoacao.row.quantidadeEfetivada ? 0 : columnItemDoacao.row.quantidadeEfetivada }}</b-table-column>
 
             <b-table-column
               field="acao"
@@ -65,12 +62,14 @@
               :label="columnsVisible['acao'].title"
               centered
             >
-              <template v-if="props.row.status.codigo_status===1">
-                <EditarModal v-if="isDoador" :doacao="props.row" />
+              <span v-if="columnItemDoacao.row.entregue" class="tag is-success">ENTREGUE</span>
+              <span v-else-if="columnItemDoacao.row.cancelado" class="tag is-danger">CANCELADA</span>
+              <template v-else>
+                <EditarModal v-if="isDoador" :doacao="columnItemDoacao.row" />
                 <b-tooltip class="is-danger" label="Cancelar doação" position="is-right">
                   <b-button
                     class="is-danger is-outlined is-small"
-                    @click="confirm(props.row.id, 'cancelar')"
+                    @click="cancell(columnItemDoacao.row.objectId)"
                   >
                     <b-icon icon="cancel"></b-icon>
                   </b-button>
@@ -81,12 +80,13 @@
                   label="Confirmar doação"
                   position="is-right"
                 >
-                  <DoarModal text="Confirmar" :id="props.row.id" :item="props.row"  />
+                  <DoarModal
+                    text="Confirmar"
+                    :idOng="columnItemDoacao.row.demanda.ong.objectId"
+                    :item="columnItemDoacao.row"
+                  />
                 </b-tooltip>
               </template>
-
-              <span v-else-if="props.row.status.codigo_status===3" class="tag is-success">ENTREGUE</span>
-              <span v-else class="tag is-danger">CANCELADA</span>
             </b-table-column>
           </template>
         </b-table>
@@ -96,13 +96,13 @@
 </template>
 
 <script>
-import DoarModal from '@/components/molecules/DoarModal.vue'
-import EditarModal from '@/components/molecules/EditarDoacaoModal.vue'
-import { mapActions, mapGetters } from 'vuex'
+import DoarModal from '@/components/molecules/DoarModal.vue';
+import EditarModal from '@/components/molecules/EditarDoacaoModal.vue';
+import { mapActions, mapGetters } from 'vuex';
 export default {
   components: { EditarModal, DoarModal },
   props: {
-    isDoador: Boolean,
+    isDoador: Boolean
   },
   computed: {
     user() {
@@ -113,28 +113,34 @@ export default {
 
   async asyncData() {
     if (this.isDoador) {
-      await this.fetchDoacoesDoador(this.user.id)
+      this.fetchDoacoesDoador(this.user.objectId);
     } else {
-      await this.fetchDoacoesOng(this.user.ong.id)
+      this.fetchDoacoesOng(this.user.ong.objectId);
     }
   },
 
   methods: {
-    isDoacaoPendente(doacao) {
-      for (let index = 0; index < doacao.length; index++) {
-        if (doacao[index].status.codigo_status === 1) {
-          return true
-        }
-      }
-      return false
+    getStatusDoacao(itensDoacao) {
+      console.log(this.doacoes);
+      let status = 'CANCELADA';
+      itensDoacao.forEach(item => {
+        if (item.entregue) status = 'ENTREGUE';
+        if (!item.cancelado && !item.entregue) return (status = 'PENDENTE');
+      });
+      return status;
     },
-    isDoacaoCancelada(doacao) {
-      for (let index = 0; index < doacao.length; index++) {
-        if (doacao[index].status.codigo_status !== 2) {
-          return false
-        }
+    getTagStatusDoacao(status) {
+      switch (status) {
+        case 'PENDENTE':
+          return 'tag';
+          break;
+        case 'CANCELADA':
+          return 'tag is-danger';
+          break;
+        default:
+          return 'tag is-success';
+          break;
       }
-      return true
     },
     ...mapActions('doacoes', [
       'fetchDoacoesDoador',
@@ -144,30 +150,24 @@ export default {
       'confirmaItemDoacao'
     ]),
     toggle(row) {
-      this.$refs.table.toggleDetails(row)
+      this.$refs.table.toggleDetails(row);
     },
     prettyDate(date) {
-      date = new Date(date)
-      return date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear()
+      date = new Date(date);
+      return date.getDate() + '/' + date.getMonth() + '/' + date.getFullYear();
     },
-    async confirm(id, acao) {
+    async cancell(objectId) {
       this.$buefy.dialog.confirm({
-
-        message: `Tem certeza que deseja ${acao} essa doação?`,
+        message: `Tem certeza que deseja cancelar este item?`,
         confirmText: 'Sim',
         cancelText: 'Não',
 
         onConfirm: async () => {
-          if (acao == 'cancelar') {
-            await this.deleteItemDoacao(id)
-            if (this.isDoador) {
-              await this.fetchDoacoesOng(this.user.ong.id)
-            } else await this.fetchDoacoesDoador(this.user.id)
-          } else {
-            await this.confirmaItemDoacao(id)
-          }
+          await this.deleteItemDoacao(objectId);
+          if (this.isDoador) await this.fetchDoacoesDoador(this.user.objectId);
+          else await this.fetchDoacoesOng(this.user.ong.objectId);
         }
-      })
+      });
     }
   },
   data() {
@@ -181,9 +181,9 @@ export default {
         data: { title: 'Estado', display: true },
         acao: { title: 'Ação', display: true }
       }
-    }
+    };
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 </style>
