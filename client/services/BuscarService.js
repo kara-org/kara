@@ -15,7 +15,6 @@ let index = new Flexsearch({
 
 export default class BuscarService {
   async buscar(palavraChave) {
-    console.log(index.index)
     if (index === null || palavraChave.length < 2) return [];
     return await index.search({
       query: palavraChave,
@@ -24,8 +23,6 @@ export default class BuscarService {
   }
 
   async indexAdd(data) {
-    console.log(index)
     return index.add(data);
   }
-
 }
