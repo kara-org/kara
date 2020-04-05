@@ -1,3 +1,7 @@
+import DoacaoService from "../services/DoacaoService"
+
+let serviceDoacao = new DoacaoService();
+
 export const state = () => ({
   ong: {},
   list: [],
@@ -18,16 +22,15 @@ export const mutations = {
     state.list = payload
   },
 
-  SET_ITEM_DOACAO(state, item) {
-    state.list = state.list.forEach((d) => {
-      if (d.id === doacao.id) {
-        d.item_doacao = state.list.map((i) => {
-          if (i.id === id) {
-            i.quantidade_prometida = item.quantidade_prometida
-          }
-          return i
-        })
-      }
+  SET_ITEM_DOACAO(state, { objectId, quantidadePrometida }) {
+    state.list = state.list.map((d) => {
+      d.demandas = state.list.map((i) => {
+        if (i.objectId === objectId) {
+          i.quantidadePrometida = quantidadePrometida
+        }
+        return i
+      })
+      return d
     })
   },
 
@@ -39,50 +42,41 @@ export const mutations = {
     state.list_item.push(payload)
   },
 
-  CANCELA_DOACAO(state, id) {
+  CANCELA_DOACAO(state, objectId) {
     state.list = state.list.forEach((d) => {
-      console.log(d)
-      if (d.id === id) {
+      if (d.objectId === objectId) {
         d = state.list.map((i) => {
-          i.status.codigo_status = 3
-          i.status.id = 3
-          i.status.mensagem = "CANCELADA"
+          i.cancelado = true
           return i
         })
       }
     })
   },
 
-  CANCELA_ITEM_DOACAO(state, id) {
+  CANCELA_ITEM_DOACAO(state, objectId) {
     state.list = state.list.map((i) => {
-      if (i.id === id) {
-        i.status.codigo_status = 3
-        i.status.id = 3
-        i.status.mensagem = "CANCELADA"
-      }
+      if (i.objectId === objectId)
+        i.cancelado = true
       return i
     })
   },
 
-  CONFIRMA_DOACAO(state, id) {
+  CONFIRMA_DOACAO(state, objectId) {
     state.list = state.list.forEach((d) => {
-      if (d.id === id) {
+      if (d.objectId === objectId) {
         d = state.list.map((i) => {
-          i.status.codigo_status = 2
-          i.status.mensagem = "ENTREGUE"
+          i.entregue = true
           return i
         })
       }
     })
   },
 
-  CONFIRMA_ITEM_DOACAO(state, id) {
+  CONFIRMA_ITEM_DOACAO(state, objectId) {
     state.list = state.list.forEach((d) => {
-      d.item_doacao = d.item_doacao.map((i) => {
-        if (i.id === id) {
-          i.status.codigo_status = 2
-          i.status.mensagem = "ENTREGUE"
-        }
+      d.demandas = d.demandas.map((i) => {
+        if (i.objectId === objectId)
+          i.entregue = true
         return i
       })
     })
@@ -90,76 +84,65 @@ export const mutations = {
 }
 
 export const actions = {
-  createDoacao(_, payload) {
-    this.$axios.$post(`/doacao/`, payload)
-      .then((response) => {
-        context.commit('ADD_DOACAO', response)
+  fetchDoacoesOng(context, objectId) {
+    serviceDoacao.indexOng(objectId)
+      .then((doacoes) => {
+        context.commit('UPDATE_DOACOES', doacoes.map(doacao => doacao.toJSON()))
       })
       .catch((err) => console.log(err))
   },
 
-  fetchDoacoesOng(context, idComposer) {
-    this.$OngService.$doacoes.index(idComposer)
-      .then((response) => {
-        context.commit('UPDATE_DOACOES', response)
-        context.commit('UPDATE_ONG', response[0].item_doacao[0].demanda.ong)
+  fetchDoacoesDoador(context, objectId) {
+    serviceDoacao.indexDoador(objectId)
+      .then((doacoes) => {
+        context.commit('UPDATE_DOACOES', doacoes.map(doacao => doacao.toJSON()))
       })
       .catch((err) => console.log(err))
   },
 
-  fetchDoacoesDoador(context, idComposer) {
-    this.$DoadorService.$doacoes.index(idComposer)
-      .then((response) => {
-        context.commit('UPDATE_DOACOES', response);
-        context.commit('UPDATE_USUARIO', response[0].usuario);
-      })
-      .catch((err) => console.log(err))
-  },
-
-  changeItemDoacao(_, payload) {
-    this.$axios.$patch(`/item/${payload.id}/`, payload)
-      .then((_) =>
-        context.commit('SET_ITEM_DOACAO', payload))
+  changeItemDoacao(context, { objectId, quantidadePrometida }) {
+    serviceDoacao.updateItemDoacao({ objectId, quantidadePrometida })
+      .then(/* (_) =>
+        context.commit('SET_ITEM_DOACAO', { objectId, quantidadePrometida }) */)
       .catch((err) => console.log(err));
   },
 
-  deleteItemDoacao(context, id) {
-    this.$axios.$delete(`/item/${id}/cancelar/`)
-      .then(context.commit('CANCELA_ITEM_DOACAO', id))
+  deleteItemDoacao(context, objectId) {
+    serviceDoacao.setStatusItemDoacao({ objectId, cancelado: true })
+      .then((_) => context.commit('CANCELA_ITEM_DOACAO', objectId))
       .catch((err) => console.log(err));
   },
 
-  deleteDoacao(context, id) {
-    this.$axios.$delete(`/doacao/${id}/cancelar/`)
+  deleteDoacao(context, objectId) {
+    serviceDoacao.setStatusDoacao({ objectId, cancelado: true })
       .then((_) =>
-        context.commit('CANCELA_DOACAO', id))
+        context.commit('CANCELA_DOACAO', objectId))
       .catch((err) => console.log(err))
   },
 
-  confirmaItemDoacao(context, id, payload) {
-    console.log(payload)
-    this.$axios.$post(`/item/${id}/confirmar/`, payload)
+  confirmaItemDoacao(context, { objectId, quantidadeEfetivada }) {
+    serviceDoacao.setStatusItemDoacao({ objectId, entregue: true, quantidadeEfetivada })
       .then((_) =>
-        context.commit('CONFIRMA_ITEM_DOACAO', id))
+        context.commit('CONFIRMA_ITEM_DOACAO', objectId))
       .catch((err) => console.log(err))
   },
 
-  confirmaDoacao(context, id) {
-    this.$axios.$post(`/doacao/${id}/confirmar/`)
+  confirmaDoacao(context, { objectId, quantidadeEfetivada }) {
+    serviceDoacao.setStatusDoacao({ objectId, entregue: true, quantidadeEfetivada })
       .then((_) =>
-        context.commit('CONFIRMA_DOACAO', id))
+        context.commit('CONFIRMA_DOACAO', objectId))
       .catch((err) => console.log(err))
   },
 }
 
 export const getters = {
-  item_doacao: (state) => {
+  demandas: (state) => {
     return state.list_item
   },
   ong: (state) => {
     return state.ong
   },
-  ong: (state) => {
+  usuario: (state) => {
     return state.usuario
   },
   doacoes: (state) => {

@@ -22,7 +22,7 @@
             <p class="modal-card-title">Item Doação</p>
           </header>
           <section class="modal-card-body">
-              <b-numberinput
+            <b-numberinput
               v-model.number="quantidade"
               name="quantidade"
               min="1"
@@ -40,61 +40,62 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex';
 export default {
   props: {
     text: {
       type: String,
       required: true
     },
-    id: {
-      type: Number
-    },
     item: {
       type: Object
     },
     idOng: {
-      type: Number
+      type: String
     }
   },
   data() {
     return {
       isComponentModalActive: false,
       quantidade: 1.0
-    }
+    };
   },
   computed: {
-    ...mapGetters({ carrinhoVazio: 'carrinho/isEmpty' }),
+    ...mapGetters({ carrinhoVazio: 'carrinho/isEmpty' })
   },
   methods: {
     ...mapGetters({ itensOng: 'busca/demandasPorOng' }),
-    ...mapActions('carrinho', ['fetchOng', 'fetchItens','adicionarItemNoCarrinho', 'alterarItemNoCarrinho']),
+    ...mapActions('carrinho', [
+      'fetchOng',
+      'fetchItens',
+      'adicionarItemNoCarrinho',
+      'alterarItemNoCarrinho'
+    ]),
     ...mapActions('doacoes', ['confirmaItemDoacao', 'fetchDoacoesOng']),
-    confirmado() {
+    async confirmado() {
       if (this.text === 'Confirmar') {
-        this.$axios
-          .$post(`/item/${this.id}/confirmar/`, {
-            quantidade_efetivada: this.quantidade
-          })
-          .then(response => {
-            this.fetchDoacoesOng(this.idOng)
-          })
-      } else if(this.text === 'Editar'){
+        this.confirmaItemDoacao({
+          objectId: this.item.objectId,
+          quantidadeEfetivada: this.quantidade
+        }).then(response => {
+          this.fetchDoacoesOng(this.idOng);
+        });
+      } else if (this.text === 'Editar') {
         this.alterarItemNoCarrinho({
           demanda: this.item,
-          quantidade_prometida: this.quantidade
-        })
-      }else {
-        this.fetchOng(this.idOng)
-        this.fetchItens(this.itensOng()(this.idOng))
+          quantidadePrometida: this.quantidade
+        });
+      } else {
+        await this.fetchOng(this.item.ong.objectId);
+        await this.fetchItens(this.itensOng()(this.item.ong.objectId));
         this.adicionarItemNoCarrinho({
           demanda: this.item,
-          quantidade_prometida: this.quantidade
-        })
-        if (this.carrinhoVazio) this.$router.push('/carrinho')
+          quantidadePrometida: this.quantidade
+        });
+        if (this.carrinhoVazio) this.$router.push('/carrinho');
       }
-      this.isComponentModalActive = false
+      this.isComponentModalActive = false;
     }
   }
-}
+};
 </script>

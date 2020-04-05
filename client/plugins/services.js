@@ -1,6 +1,6 @@
 import createService from '~/services/ServiceBase'
 import composite from '~/services/composite'
-import doacoesService from '~/services/DoacoesService'
+import doacoesService from '~/services/DoacaoService'
 // import buscarServiceBase from '~/services/BuscarService'
 
 
@@ -8,7 +8,7 @@ export default (ctx, inject) => {
   // inject the repository in the context (ctx.app.$repository)
   // And in the Vue instances (this.$repository in your components)
 
-  const serviceDefault = createService({ $axios: ctx.$axios, $store: ctx.app.$store });
+/*   const serviceDefault = createService({ $axios: ctx.$axios, $store: ctx.app.$store });
   // const buscarService  = buscarServiceBase(ctx.$axios);
 
   const serviceOng = composite(serviceDefault('/ong/'), "$doacoes", doacoesService);
@@ -16,9 +16,8 @@ export default (ctx, inject) => {
 
   // ex.: inject('NovoService', serviceDefault('/url/'));
   inject('UsuarioService', serviceDefault('/usuario/'));
-  inject('DoacaoService', serviceDefault('/doacao/'));
   inject('OngService', serviceOng);
-  inject('DoadorService', serviceDoador);
+  inject('DoadorService', serviceDoador); */
   // inject('BuscarService', buscarService);
 
 
