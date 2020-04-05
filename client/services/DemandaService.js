@@ -49,7 +49,7 @@ export default class DemandaService {
     demanda.set('quantidadeAlcancada', quantidadeAlcancada);
     demanda.set('quantidadeDesejada', quantidadeDesejada);
     demanda.set('categoria', categoria);
-    demanda.set('ativo', true);
+    demanda.set('ativo', ativo);
     return demanda.save();
   }
 

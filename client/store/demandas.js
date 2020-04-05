@@ -80,7 +80,7 @@ export const actions = {
 
   async updateDemanda(
     { commit },
-    { objectId, nome, quantidadeAlcancada, quantidadeDesejada, categoria, ong }
+    { objectId, nome, quantidadeAlcancada, quantidadeDesejada, categoria, ativo, ong }
   ) {
 
 
@@ -90,10 +90,32 @@ export const actions = {
       quantidadeDesejada,
       quantidadeAlcancada,
       categoria,
+      ativo,
       ong
     })
-    .then(demanda => commit('ADD_DEMANDA', demanda));
+    // .then(demanda => commit('ADD_DEMANDA', demanda));
+  },
+
+  async inativaAtiva(
+    { commit },
+    { objectId, nome, quantidadeAlcancada, quantidadeDesejada, categoria, ativo, ong }
+  ) {
+
+    ativo = !ativo;
+
+    return serviceDemanda.update({
+      objectId,
+      nome,
+      quantidadeDesejada,
+      quantidadeAlcancada,
+      categoria,
+      ativo,
+      ong
+    })
+    // .then(demanda => commit('ADD_DEMANDA', demanda));
   }
+
+
 };
 
 export const getters = {
