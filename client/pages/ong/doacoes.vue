@@ -23,6 +23,7 @@
 import ListaDoacoes from '@/components/organisms/ListaDoacoes';
 import MenuLateral from '@/components/organisms/MenuLateral';
 export default {
+  middleware: 'auth',
   layout: 'default',
   components: {
     ListaDoacoes,

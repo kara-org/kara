@@ -18,6 +18,7 @@
 import CadastroDoadorForm from '@/components/organisms/CadastroDoadorForm'
 import MenuLateral from '@/components/organisms/MenuLateral'
 export default {
+  middleware: 'auth',
   layout: 'default',
   components: {
     CadastroDoadorForm,

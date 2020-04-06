@@ -26,6 +26,7 @@ import ListaDemandas from '@/components/organisms/ListaDemandas';
 import MenuLateral from '@/components/organisms/MenuLateral';
 
 export default {
+  middleware: 'auth',
   layout: 'default',
   components: {
     ListaDemandas,
