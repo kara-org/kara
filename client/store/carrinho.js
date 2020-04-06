@@ -41,20 +41,17 @@ export const mutations = {
 };
 
 export const actions = {
-  fetchOng(context, idOng) {
-    serviceOng
-      .show(idOng)
-      .then(ong => {
-        context.commit('UPDATE_ONG', ong.toJSON());
-      })
-      .catch(err => console.log(err));
+  async fetchOng(context, idOng) {
+    return serviceOng.show(idOng).then(ong => {
+      context.commit('UPDATE_ONG', ong.toJSON());
+    });
   },
 
   fetchItens(context, payload) {
     context.commit('UPDATE_ITENS_FORA', payload);
   },
 
-  sendDoacao(context) {
+  async sendDoacao(context) {
     let itensDoacao = context.state.itensSelecionados.map(item => {
       return {
         demanda: item.demanda,
@@ -63,12 +60,9 @@ export const actions = {
       };
     });
 
-    serviceDoacao
-      .create(itensDoacao)
-      .then(() => {
-        context.commit('ESVAZIAR_CARRINHO');
-      })
-      .catch(err => console.log(err));
+    return serviceDoacao.create(itensDoacao).then(() => {
+      context.commit('ESVAZIAR_CARRINHO');
+    });
   },
 
   adicionarItemNoCarrinho(context, item) {

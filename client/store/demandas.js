@@ -36,7 +36,7 @@ export const actions = {
     { commit },
     { nome, quantidadeDesejada, categoria, ong }
   ) {
-    return await serviceDemanda
+    return serviceDemanda
       .create({
         nome,
         quantidadeDesejada,
@@ -46,8 +46,8 @@ export const actions = {
       .then(demanda => commit('ADD_DEMANDA', demanda));
   },
 
-  fetchDemandas(context) {
-    serviceDemanda
+  async fetchDemandas(context) {
+    return serviceDemanda
       .index()
       .then(demandas => {
         let demandasJson = demandas.map(demanda => demanda.toJSON());
@@ -56,8 +56,8 @@ export const actions = {
       .catch(err => console.log(err));
   },
 
-  fetchDemanda(context, id) {
-    serviceDemanda.show(id)
+  async fetchDemanda(context, id) {
+    return serviceDemanda.show(id)
       .then(demanda => {
         console.log(demanda.toJSON());
 
@@ -66,8 +66,8 @@ export const actions = {
       .catch(err => console.log(err));
   },
 
-  fetchDemandasOng(context, idOng) {
-    serviceDemanda
+  async fetchDemandasOng(context, idOng) {
+    return serviceDemanda
       .indexOng({ idOng })
       .then(demandas => {
         let demandasJson = demandas.map(demanda => demanda.toJSON());
