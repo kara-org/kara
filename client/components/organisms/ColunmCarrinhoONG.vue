@@ -52,7 +52,7 @@ export default {
             type: 'is-success',
             position: 'is-top'
           });
-          this.$router.push('/doador/doacoes');
+          this.$router.push(`/doador/contato/${this.ong.objectId}`);
         })
         .catch(err => {
           if (err.code === 142)

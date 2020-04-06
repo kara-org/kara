@@ -9,6 +9,13 @@
       >
         <b-input type="text" v-model.trim="ong.nome" name="ong_nome" v-validate="'required'"></b-input>
       </b-field>
+      <b-field
+        label="Link do whatsapp"
+        :type="{'is-danger': errors.has('linkParaContato')}"
+        :message="errors.first('ong_nome')"
+      >
+        <b-input type="text" v-model.trim="ong.linkParaContato" name="linkParaContato" v-validate="'required'"></b-input>
+      </b-field>
       <hr />
       <h1 class="title is-5 has-text-centered">Responsável</h1>
       <b-field
@@ -114,7 +121,8 @@ export default {
   data() {
     return {
       ong: {
-        nome: null
+        nome: null,
+        linkParaContato: null
       },
       usuario: {
         email: null,
