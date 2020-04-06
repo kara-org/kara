@@ -2,7 +2,7 @@
   <span>
     <b-tooltip class="is-success" label="Editar doação" position="is-right">
       <b-button @click="isComponentModalActive = true" class="is-outlined is-success is-small">
-        <b-icon icon="settings"></b-icon>
+        <b-icon icon="pencil"></b-icon>
       </b-button>
     </b-tooltip>
     <b-modal :active.sync="isComponentModalActive" has-modal-card>

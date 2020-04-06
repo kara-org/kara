@@ -40,7 +40,7 @@
               :to="`/ong/demandas/editar/${props.row.objectId}`"
               exact-active-class="is-outlined is-success is-small"
             >
-              <b-icon icon="settings"></b-icon>
+              <b-icon icon="pencil"></b-icon>
             </nuxt-link>
             <b-tooltip class="is-danger" label="Inativar demanda" position="is-right">
               <b-button
