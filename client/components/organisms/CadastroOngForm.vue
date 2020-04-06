@@ -12,7 +12,7 @@
       <b-field
         label="Link do whatsapp"
         :type="{'is-danger': errors.has('linkParaContato')}"
-        :message="errors.first('ong_nome')"
+        :message="errors.first('linkParaContato')"
       >
         <b-input type="text" v-model.trim="ong.linkParaContato" name="linkParaContato" v-validate="'required'"></b-input>
       </b-field>

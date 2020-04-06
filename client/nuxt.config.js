@@ -19,7 +19,20 @@ export default {
         hid: 'description',
         name: 'description',
         content: process.env.npm_package_description || ''
-      }
+      },
+        { hid: 'og:site_name', property: 'og:title', content: 'Kara: Mudar o mundo uma doação por vez' },
+        { hid: 'og:title', property: 'og:title', content: 'Kara: Mudar o mundo uma doação por vez' },
+        { hid: 'og:description', property: 'og:description', content: process.env.npm_package_description || '' },
+        { hid: 'og:type', property: 'og:type', content: 'website' },
+        { hid: 'og:url', property: 'og:url', content: 'https://karadoacoes.com.br' },
+        { hid: 'og:image', property: 'og:image', content: 'https://karadoacoes.com.br/meta_640.png' },
+        // Twitter Card
+        { hid: 'twitter:card', name: 'twitter:card', content: 'summary' },
+        // { hid: 'twitter:site', name: 'twitter:site', content: 'https://karadoacoes.com.br' },
+        { hid: 'twitter:title', name: 'twitter:title', content: 'Kara: Mudar o mundo uma doação por vez' },
+        { hid: 'twitter:description', name: 'twitter:description',ontent: process.env.npm_package_description || '' },
+        { hid: 'twitter:image', name: 'twitter:image', content: 'https://karadoacoes.com.br/meta_640.png' },
+        { hid: 'twitter:image:alt', name: 'twitter:image:alt', content: 'NuxtJS Logo' }
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
