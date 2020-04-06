@@ -22,6 +22,7 @@ import CarrinhoONG from '../components/organisms/ColunmCarrinhoONG';
 import { mapGetters } from 'vuex';
 
 export default {
+  middleware: 'auth',
   components: {
     PerfilONG,
     ListagemCards,
