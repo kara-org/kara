@@ -1,7 +1,7 @@
 {
-  "name": "kara-client",
+  "name": "kara",
   "version": "1.0.0",
-  "description": "Front-End do projeto Kara, plataforma de divulgaçao de doaçoes para ongs",
+  "description": "Ajude ONGs na suas ações e campanhas, Kara é um site pra conectar pessoas que querem ajudar a construir um mundo melhor",
   "author": "Kara-org",
   "private": true,
   "scripts": {
