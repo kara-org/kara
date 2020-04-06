@@ -15,16 +15,19 @@
         {{ ong.biografia }}
       </p>
       <hr />
-      <h3 class="title is-size-5 has-text-light">Endereço</h3>
+      <!-- <h3 class="title is-size-5 has-text-light">Endereço</h3>
       <p>
         {{ ong.enderecos[0] }}
       </p>
-      <hr />
+      <hr /> -->
       <h3 class="title is-size-5 has-text-light">Contato</h3>
       <p>
-        {{ telefone(ong.telefones[0]) }}
+        <a target="_blank" :href="ong.linkParaContato ? ong.linkParaContato : null">{{
+          ong.linkParaContato && ong.linkParaContato != "" ? 'Entrar em contato' : 'Não informado'
+        }}</a>
+        <!-- {{ telefone(ong.telefones[0]) }}
         <br />Email:
-        {{ ong.email }}
+        {{ ong.email }} -->
       </p>
     </div>
   </div>

@@ -22,9 +22,25 @@
           centered
           >{{ nome(columnDoacoes.row.user.nome) }}</b-table-column
         >
-        <b-table-column field="telefone" label="Telefone" centered>{{
-          telefone(columnDoacoes.row)
-        }}</b-table-column>
+        <b-table-column
+          v-if="isDoador"
+          field="linkWhatsapp"
+          label="Whatsapp da ONG"
+          centered
+        >
+          <a target="_blank" :href="columnDoacoes.row.ong.linkParaContato">{{
+            columnDoacoes.row.ong.linkParaContato && columnDoacoes.row.ong.linkParaContato != ""
+              ? 'Entrar em contato'
+              : 'Não informado'
+          }}</a>
+        </b-table-column>
+        <b-table-column
+          v-if="!isDoador"
+          field="telefone"
+          label="Telefone"
+          centered
+          >{{ telefone(columnDoacoes.row) }}</b-table-column
+        >
         <b-table-column field="email" label="Email" centered>{{
           email(columnDoacoes.row)
         }}</b-table-column>
