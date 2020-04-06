@@ -1,13 +1,21 @@
 import demandas from './fake/demandas'
 
+import OngService from '../services/OngService';
+
+let serviceOng = new OngService();
+
 export const state = () => ({
   list: [],
   perfil: {},
-  demandas: []
+  demandas: [],
+  ong: {}
 })
 
 export const mutations = {
   UPDATE_ONGS(state, payload) {
+    state.list = payload
+  },
+  UPDATE_ONG(state, payload) {
     state.list = payload
   },
   UPDATE_PERFIL(state, payload) {
@@ -18,6 +26,12 @@ export const mutations = {
   }
 }
 export const actions = {
+  fetchOng(context, id) {
+    serviceOng.show(id)
+      .then((ong) => context.commit('UPDATE_ONGS', ong.toJSON()))
+      .catch((err) => console.log(err))
+  },
+
   fetchOngs(context) {
     this.$OngService.index()
       .then((response) => context.commit('UPDATE_ONGS', response))
