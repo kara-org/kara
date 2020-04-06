@@ -45,14 +45,25 @@ export default {
   methods: {
     ...mapActions('carrinho', ['sendDoacao']),
     send() {
-      this.sendDoacao().then(() => {
-        this.$buefy.toast.open({
-          message: 'Obrigado pela doação!',
-          type: 'is-success',
-          position: 'is-top'
+      this.sendDoacao()
+        .then(() => {
+          this.$buefy.toast.open({
+            message: 'Obrigado pela doação!',
+            type: 'is-success',
+            position: 'is-top'
+          });
+          this.$router.push('/doador/doacoes');
+        })
+        .catch(err => {
+          if (err.code === 142)
+            err.message = 'É necessário estar logado para realizar uma doação';
+          console.log(err.message);
+          this.$buefy.toast.open({
+            message: err.message,
+            type: 'is-danger',
+            position: 'is-bottom'
+          });
         });
-      });
-      this.$router.push('/doador/doacoes');
     }
   }
 };
