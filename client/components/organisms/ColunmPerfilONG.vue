@@ -3,13 +3,13 @@
     <div class="card-content" style="text-align: center;">
       <h3 class="title is-size-5 has-text-light">{{ ong.nome }}</h3>
       <hr />
-      <figure class="image is-256x256" style="margin: 0 auto">
+      <figure class="image is-128x128" style="margin: 0 auto">
         <img
           class="is-rounded"
           :src="
             ong.fotoDoPerfil != null
               ? ong.fotoDoPerfil.url
-              : 'https://bulma.io/images/placeholders/256x256.png'
+              : 'https://bulma.io/images/placeholders/128x128.png'
           "
         />
       </figure>
@@ -33,7 +33,7 @@
       </template>
       {{ ong.telefones[0] ? telefone(ong.telefones[0]) : '' }}
       <br />
-      {{ ong.email ? 'Email:' + ong.email : '' }}
+      {{ ong.email ? ong.email : '' }}
     </div>
   </div>
 </template>
