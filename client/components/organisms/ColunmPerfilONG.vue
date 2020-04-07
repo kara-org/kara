@@ -6,7 +6,11 @@
       <figure class="image is-128x128" style="margin: 0 auto">
         <img
           class="is-rounded"
-          src="https://bulma.io/images/placeholders/128x128.png"
+          :src="
+            ong.fotoDoPerfil != null
+              ? ong.fotoDoPerfil.url
+              : 'https://bulma.io/images/placeholders/128x128.png'
+          "
         />
       </figure>
       <hr />
@@ -15,20 +19,21 @@
         {{ ong.biografia }}
       </p>
       <hr />
-      <!-- <h3 class="title is-size-5 has-text-light">Endereço</h3>
-      <p>
-        {{ ong.enderecos[0] }}
-      </p>
-      <hr /> -->
+      <template v-if="ong.enderecos && ong.enderecos[0]">
+        <h3 class="title is-size-5 has-text-light">Endereço</h3>
+        <p>
+          {{ ong.enderecos[0] }}
+        </p>
+        <hr />
+      </template>
       <h3 class="title is-size-5 has-text-light">Contato</h3>
-      <p>
-        <a target="_blank" :href="ong.linkParaContato ? ong.linkParaContato : null">{{
-          ong.linkParaContato && ong.linkParaContato != "" ? 'Entrar em contato' : 'Não informado'
-        }}</a>
-        <!-- {{ telefone(ong.telefones[0]) }}
-        <br />Email:
-        {{ ong.email }} -->
-      </p>
+      <template v-if="ong.linkParaContato && ong.linkParaContato != ''">
+        <a target="_blank" :href="ong.linkParaContato">Link para Whatsapp</a>
+        <br />
+      </template>
+      {{ ong.telefones[0] ? telefone(ong.telefones[0]) : '' }}
+      <br />
+      {{ ong.email ? ong.email : '' }}
     </div>
   </div>
 </template>
