@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="title">Encontre {{ tipo }} e faça sua doação!</h1>
+    <h2 class="title">Encontre {{ tipo }} e faça sua doação!</h2>
     <b-field grouped group-multiline position="is-centered" class="filtro">
       <!-- <b-select v-model="tipo" placeholder="Tipo da busca" size="is-large">
         <option value="demandas">Demanda</option>

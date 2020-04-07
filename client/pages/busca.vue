@@ -10,7 +10,7 @@
     <section class="hero is-fullheight">
       <div class="hero-head">
         <div class="container">
-          <h1 class="title is-4  has-text-centered is-primary">Demandas</h1>
+          <h2 class="title is-4  has-text-centered is-primary">Demandas</h2>
           <p class="has-text-centered">
             <small
               >Busque por itens, caso não encontre, veja nossas sugestões abaixo
