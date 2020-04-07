@@ -25,7 +25,8 @@ export default class OngService {
     linkParaContato,
     fotoDoPerfil
   }) {
-    const ong = Parse.Object.createWithoutData(objectId);
+    const ong = new Ong();
+    ong.set('objectId', objectId);
     ong.set('nome', nomeDaOng);
     ong.set('biografia', biografia);
     ong.set('linkParaContato', linkParaContato);
