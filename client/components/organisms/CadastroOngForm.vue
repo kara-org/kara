@@ -2,102 +2,155 @@
   <section>
     <form v-if="!success" @submit.prevent="validateBeforeSubmit" method="post">
       <h1 class="title is-5 has-text-centered">Dados da ONG</h1>
-      <b-field
-        label="Nome da ong"
-        :type="{'is-danger': errors.has('ong_nome')}"
-        :message="errors.first('ong_nome')"
-      >
-        <b-input type="text" v-model.trim="ong.nome" name="ong_nome" v-validate="'required'"></b-input>
-      </b-field>
-      <b-field
-        label="Link do whatsapp"
-        :type="{'is-danger': errors.has('linkParaContato')}"
-        :message="errors.first('linkParaContato')"
-      >
-        <b-input type="text" v-model.trim="ong.linkParaContato" name="linkParaContato" v-validate="'required'"></b-input>
+      <hr />
+      <b-field class="file is-centered" style="margin:10px;">
+        <b-upload v-model="ong.fotoDoPerfil">
+          <img
+            class="profile-image"
+            :src="
+              ong.fotoDoPerfil != null
+                ? fotoDoPerfil()
+                : 'https://bulma.io/images/placeholders/256x256.png'
+            "
+          />
+        </b-upload>
       </b-field>
       <hr />
-      <h1 class="title is-5 has-text-centered">Responsável</h1>
       <b-field
-        label="Nome"
-        :type="{'is-danger': errors.has('nome')}"
-        :message="errors.first('nome')"
-      >
-        <b-input type="text" v-model.trim="usuario.nome" name="nome" v-validate="'required'"></b-input>
-      </b-field>
-      <b-field
-        label="Telefone"
-        :type="{'is-danger': errors.has('telefone')}"
-        :message="errors.first('telefone')"
+        label="Nome da ong"
+        :type="{ 'is-danger': errors.has('ong_nome') }"
+        :message="errors.first('ong_nome')"
       >
         <b-input
           type="text"
-          v-model.trim="usuario.telefones[0]"
-          v-cleave="phoneMask"
-          maxlength="15"
-          name="telefone"
-          v-validate="'required|phone'"
+          v-model.trim="ong.nome"
+          name="ong_nome"
+          v-validate="'required'"
         ></b-input>
       </b-field>
       <b-field
-        label="Email"
-        :type="{'is-danger': errors.has('email')}"
-        :message="errors.first('email')"
+        label="Biografia"
+        :type="{ 'is-danger': errors.has('biografia') }"
+        :message="errors.first('biografia')"
+      >
+        <b-input
+          type="textarea"
+          maxlength="200"
+          v-model.trim="ong.biografia"
+          name="biografia"
+          v-validate="'required'"
+        ></b-input>
+      </b-field>
+      <b-field
+        label="Link do whatsapp"
+        :type="{ 'is-danger': errors.has('linkParaContato') }"
+        :message="errors.first('linkParaContato')"
       >
         <b-input
           type="text"
-          v-model.trim="usuario.email"
-          name="email"
-          v-validate="'required|email'"
-        />
+          v-model.trim="ong.linkParaContato"
+          name="linkParaContato"
+          v-validate="'required'"
+        ></b-input>
       </b-field>
+      <hr />
       <template v-if="isCadastro">
+        <h1 class="title is-5 has-text-centered">Responsável</h1>
         <b-field
-          label="Senha"
-          :type="{'is-danger': errors.has('senha')}"
-          :message="errors.first('senha')"
+          label="Nome"
+          :type="{ 'is-danger': errors.has('nome') }"
+          :message="errors.first('nome')"
         >
           <b-input
-            type="password"
-            name="senha"
-            v-model="usuario.password"
-            v-validate="'required|min:4'"
-            ref="senha"
-          />
+            type="text"
+            v-model.trim="usuario.nome"
+            name="nome"
+            v-validate="'required'"
+          ></b-input>
         </b-field>
         <b-field
-          label="Confirme sua senha"
-          :type="{'is-danger': errors.has('confirmação')}"
-          :message="errors.first('confirmação')"
+          label="Telefone"
+          :type="{ 'is-danger': errors.has('telefone') }"
+          :message="errors.first('telefone')"
         >
           <b-input
-            v-validate="'required|confirmed:senha'"
-            name="confirmação"
-            type="password"
-            v-model="passwordConfirm"
+            type="text"
+            v-model.trim="usuario.telefones[0]"
+            v-cleave="phoneMask"
+            maxlength="15"
+            name="telefone"
+            v-validate="'required|phone'"
+          ></b-input>
+        </b-field>
+        <b-field
+          label="Email"
+          :type="{ 'is-danger': errors.has('email') }"
+          :message="errors.first('email')"
+        >
+          <b-input
+            type="text"
+            v-model.trim="usuario.email"
+            name="email"
+            v-validate="'required|email'"
           />
         </b-field>
-        <hr />
+        <template v-if="isCadastro">
+          <b-field
+            label="Senha"
+            :type="{ 'is-danger': errors.has('senha') }"
+            :message="errors.first('senha')"
+          >
+            <b-input
+              type="password"
+              name="senha"
+              v-model="usuario.password"
+              v-validate="'required|min:4'"
+              ref="senha"
+            />
+          </b-field>
+          <b-field
+            label="Confirme sua senha"
+            :type="{ 'is-danger': errors.has('confirmação') }"
+            :message="errors.first('confirmação')"
+          >
+            <b-input
+              v-validate="'required|confirmed:senha'"
+              name="confirmação"
+              type="password"
+              v-model="passwordConfirm"
+            />
+          </b-field>
+          <hr />
+        </template>
         <div class="column has-text-centered">
           Já tem um cadastro?
           <nuxt-link
             class="is-primary is-inverted"
             to="/auth/login"
             exact-active-class="is-active"
-          >Logue-se</nuxt-link>
+            >Logue-se</nuxt-link
+          >
         </div>
       </template>
       <hr />
-      <button type="submit" class="button is-primary is-outlined is-medium is-rounded is-fullwidth">
+      <button
+        type="submit"
+        class="button is-primary is-outlined is-medium is-rounded is-fullwidth"
+      >
         Confirmar
-        <b-loading :is-full-page="true" :active.sync="isLoading" :can-cancel="false"></b-loading>
+        <b-loading
+          :is-full-page="true"
+          :active.sync="isLoading"
+          :can-cancel="false"
+        ></b-loading>
       </button>
       <div class="column has-text-centered">
         <nuxt-link
           class="voltar is-primary is-inverted"
           to="/"
           exact-active-class="is-active"
-        >Voltar</nuxt-link>
+          >Voltar</nuxt-link
+        >
       </div>
     </form>
     <div v-else class="column has-text-centered">
@@ -105,9 +158,11 @@
       <hr />
       <button
         class="button is-primary is-outlined is-rounded"
-        @click="success=false"
+        @click="success = false"
         exact-active-class="is-active"
-      >Voltar</button>
+      >
+        Voltar
+      </button>
     </div>
   </section>
 </template>
@@ -122,7 +177,9 @@ export default {
     return {
       ong: {
         nome: null,
-        linkParaContato: null
+        biografia: null,
+        linkParaContato: null,
+        fotoDoPerfil: null
       },
       usuario: {
         email: null,
@@ -153,9 +210,14 @@ export default {
   },
 
   methods: {
+    fotoDoPerfil() {
+      if (this.ong.fotoDoPerfil && this.ong.fotoDoPerfil.url)
+        return this.ong.fotoDoPerfil.url;
+      else return URL.createObjectURL(this.ong.fotoDoPerfil);
+    },
     ...mapActions({
       signUpParse: 'login/signUpOng',
-      updateParse: 'login/update'
+      updateParse: 'login/updateOng'
     }),
     async register() {
       await this.signUpParse({
@@ -163,7 +225,10 @@ export default {
         password: this.usuario.password,
         nome: this.usuario.nome,
         telefones: this.usuario.telefones,
-        nomeDaOng: this.ong.nome
+        nomeDaOng: this.ong.nome,
+        biografia: this.ong.biografia,
+        linkParaContato: this.ong.linkParaContato,
+        fotoDoPerfil: this.ong.fotoDoPerfil
       })
         .then(response => {
           this.$buefy.toast.open({
@@ -191,9 +256,10 @@ export default {
 
     async patch() {
       await this.updateParse({
-        email: this.usuario.email,
-        nome: this.usuario.nome,
-        telefones: this.usuario.telefones
+        nomeDaOng: this.ong.nome,
+        biografia: this.ong.biografia,
+        linkParaContato: this.ong.linkParaContato,
+        fotoDoPerfil: this.ong.fotoDoPerfil
       })
         .then(response => {
           this.$buefy.toast.open({
@@ -201,7 +267,6 @@ export default {
             type: 'is-success',
             position: 'is-top'
           });
-          this.$router.push('/');
         })
         .catch(err => {
           //console.error(this.errors)
@@ -222,10 +287,12 @@ export default {
     validateBeforeSubmit() {
       this.$validator.validateAll().then(result => {
         if (result) {
-          this.usuario.telefones[0] = this.usuario.telefones[0].replace(
-            /\D/g,
-            ''
-          );
+          if (this.isCadastro) {
+            this.usuario.telefones[0] = this.usuario.telefones[0].replace(
+              /\D/g,
+              ''
+            );
+          }
           this.isLoading = true;
           return this.isCadastro ? this.register() : this.patch();
         }

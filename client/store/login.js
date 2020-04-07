@@ -21,6 +21,9 @@ export const state = () => ({
 export const mutations = {
   SET(state, user) {
     state.usuario = user;
+  },
+  SET_ONG(state, ong) {
+    state.usuario.ong = ong;
   }
 };
 
@@ -35,8 +38,8 @@ export const actions = {
     return serviceUser.signUp(email, password, nome, telefones);
   },
 
-  async signUpOng({ commit }, { email, password, nome, telefones, nomeDaOng }) {
-    let ong = serviceOng.build({ nome: nomeDaOng });
+  async signUpOng({ commit }, { email, password, nome, telefones, nomeDaOng, biografia, linkParaContato, fotoDoPerfil }) {
+    let ong = await serviceOng.build({ nomeDaOng, email, telefones, biografia, linkParaContato, fotoDoPerfil });
     return serviceUser
       .signUp(email, password, nome, telefones, ong)
       .then(user => commit('SET', user.toJSON()));
@@ -48,9 +51,16 @@ export const actions = {
       .then(user => commit('SET', user.toJSON()));
   },
 
+  async updateOng({ commit }, { objectId, nomeDaOng, biografia, linkParaContato, fotoDoPerfil }) {
+    return serviceOng
+      .update({objectId, nomeDaOng, biografia, linkParaContato, fotoDoPerfil})
+      .then(ong => commit('SET_ONG', ong.toJSON()));
+  },
+
   async logout({ commit }) {
     return serviceUser.logout().then(() => commit('SET', usuarioDefaut));
   },
+
   async resetPassword(_, email) {
     return serviceUser.resetPassword(email);
   },

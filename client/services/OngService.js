@@ -18,9 +18,24 @@ export default class OngService {
     return await query.get(id);
   }
 
-  async update({ id, nome }) {
-    const ong = Parse.Object.createWithoutData(id);
-    ong.set('nome', nome);
+  async update({
+    objectId,
+    nomeDaOng,
+    biografia,
+    linkParaContato,
+    fotoDoPerfil
+  }) {
+    const ong = Parse.Object.createWithoutData(objectId);
+    ong.set('nome', nomeDaOng);
+    ong.set('biografia', biografia);
+    ong.set('linkParaContato', linkParaContato);
+
+    if (fotoDoPerfil && !fotoDoPerfil.url) {
+      var fotoBase64 = await this.readFileAsDataURL(fotoDoPerfil);
+      var file = new Parse.File(fotoDoPerfil.name, { base64: fotoBase64 });
+      ong.set('fotoDoPerfil', file);
+    }
+
     await ong.save();
     return await ong.fetch();
   }
@@ -30,9 +45,40 @@ export default class OngService {
     return ong.destroy();
   }
 
-  build({ nome }) {
+  async build({
+    nomeDaOng,
+    email,
+    telefones,
+    biografia,
+    linkParaContato,
+    fotoDoPerfil
+  }) {
+    var fotoBase64 = await this.readFileAsDataURL(fotoDoPerfil);
+    var file = new Parse.File(fotoDoPerfil.name, { base64: fotoBase64 });
+
     const ong = new Ong();
-    ong.set('nome', nome);
+    ong.set('nome', nomeDaOng);
+    ong.set('email', email);
+    ong.set('telefones', telefones);
+    ong.set('biografia', biografia);
+    ong.set('linkParaContato', linkParaContato);
+    ong.set('fotoDoPerfil', file);
     return ong;
+  }
+
+  async readFileAsDataURL(inputFile) {
+    const reader = new FileReader();
+
+    return new Promise((resolve, reject) => {
+      reader.onerror = () => {
+        reader.abort();
+        reject(new DOMException('Erro ao converter arquivo.'));
+      };
+
+      reader.onload = () => {
+        resolve(reader.result);
+      };
+      reader.readAsDataURL(inputFile);
+    });
   }
 }
