@@ -9,3 +9,5 @@ node_modules
 */migrations/*
 db.sqlite3
 **/media/*
+
+server-parse/public/*

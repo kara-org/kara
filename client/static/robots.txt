@@ -1,0 +1,9 @@
+User-agent: *
+Disallow: /auth/
+Disallow: /doador/
+Disallow: /ong/
+Disallow: /carrinho
+Disallow: /busca
+
+
+Sitemap: https://karadoacoes.com.br/sitemap.xml

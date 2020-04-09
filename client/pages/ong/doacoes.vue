@@ -5,7 +5,7 @@
       <div class="hero-body">
         <div class="container">
           <div class="columns is-centered">
-            <article class="card is-rounded" style="width:800px">
+            <article class="card is-rounded" style="width:1000px">
               <div class="card-content">
                 <p class="form-section-title">Doações da ONG</p>
                 <hr />
@@ -20,15 +20,16 @@
 </template>
 
 <script>
-import ListaDoacoes from '@/components/organisms/ListaDoacoes'
-import MenuLateral from '@/components/organisms/MenuLateral'
+import ListaDoacoes from '@/components/organisms/ListaDoacoes';
+import MenuLateral from '@/components/organisms/MenuLateral';
 export default {
+  middleware: 'auth',
   layout: 'default',
   components: {
     ListaDoacoes,
     MenuLateral
-  },
-}
+  }
+};
 </script>
 
 <style lang="scss" scoped>

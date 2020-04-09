@@ -3,9 +3,8 @@
     <div class="box">
       <div class="card-content">
         <p v-if="isCarrinho"> Entregar {{ quantidadePrometida }} de </p>
-        <p class="title is-4 heading" style="margin-bottom: 8px"><strong> {{ demanda.descricao }}</strong></p>
+        <p class="title is-4 heading" style="margin-bottom: 8px"><strong> {{ demanda.nome }}</strong></p>
         <p style="text-transform: uppercase">
-          <!-- <nuxt-link :to="`/ong/${ demanda && demanda.ong && demanda.ong.id }`" exact-active-class="is-active">{{ demanda && demanda.ong && demanda.ong.nome }}</nuxt-link> -->
           <small>para <span class="has-text-primary"> {{ demanda && demanda.ong && demanda.ong.nome  ? demanda.ong.nome : ong.nome }} </span></small>
         </p>
         <p class="is-size-5 heading" v-if="!isCarrinho">
@@ -14,11 +13,11 @@
           para a meta
         </p>
         <div class="level-right" v-if="!isCarrinho">
-          <DoarModal :text="'Doar'" :idOng="demanda && demanda.ong && demanda.ong.id  ? demanda.ong.id : ong.id" :id="1" :item="demanda" />
+          <DoarModal :text="'Doar'" :item="demanda" :idOng="demanda && demanda.ong && demanda.ong.objectId  ? demanda.ong.objectId : ong.objectId" />
         </div>
         <div class="level" v-else>
           <button class="delete is-medium" @click="remover">Remover</button>
-          <DoarModal :item="demanda" :idOng="demanda && demanda.ong && demanda.ong.id  ? demanda.ong.id : ong.id" :text="'Editar'" />
+          <DoarModal :text="'Editar'" :item="demanda" :idOng="demanda && demanda.ong && demanda.ong.objectId  ? demanda.ong.objectId : ong.objectId" />
         </div>
       </div>
     </div>
@@ -33,7 +32,7 @@ export default {
   props: ['demanda', 'isCarrinho', 'ong', 'quantidadePrometida'],
   computed: {
     quantidadeRestante () {
-      let restante = this.demanda.quantidade_solicitada - this.demanda.quantidade_alcancada
+      let restante = this.demanda.quantidadeDesejada - this.demanda.quantidadeAlcancada
       return restante >= 0 ? restante : 0
     }
 

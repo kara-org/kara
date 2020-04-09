@@ -23,6 +23,7 @@ import CadastroDemandaForm from '@/components/organisms/CadastroDemandaForm'
 import MenuLateral from '@/components/organisms/MenuLateral'
 
 export default {
+  middleware: 'auth',
   layout: 'default',
   components: {
     CadastroDemandaForm,
