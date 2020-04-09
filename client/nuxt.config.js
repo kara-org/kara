@@ -2,9 +2,6 @@ const env = require('dotenv').config();
 const nodeExternals = require('webpack-node-externals');
 
 export default {
-  generate: {
-    dir: '../server-parse/public'
-  },
   mode: 'universal',
   /*
    ** Headers of the page
