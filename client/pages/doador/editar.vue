@@ -1,6 +1,6 @@
 <template>
 <div class="columns is-fullheight">
-  <MenuLateral :isDoador="!this.$auth.user.vinculo_ong" />
+  <MenuLateral :isDoador="true" />
   <section class="column is-main-content hero is-medium is-bold" style="align-items:center;">
     <div class="hero-body">
       <article class="card is-rounded" style="width:600px">
@@ -18,6 +18,7 @@
 import CadastroDoadorForm from '@/components/organisms/CadastroDoadorForm'
 import MenuLateral from '@/components/organisms/MenuLateral'
 export default {
+  middleware: 'auth',
   layout: 'default',
   components: {
     CadastroDoadorForm,
