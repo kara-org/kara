@@ -2,7 +2,7 @@
   <span>
     <b-tooltip class="is-success" label="Editar doação" position="is-right">
       <b-button @click="isComponentModalActive = true" class="is-outlined is-success is-small">
-        <b-icon icon="settings"></b-icon>
+        <b-icon icon="pencil"></b-icon>
       </b-button>
     </b-tooltip>
     <b-modal :active.sync="isComponentModalActive" has-modal-card>
@@ -13,12 +13,12 @@
           </header>
           <section class="modal-card-body">
             <b-field label="Quantidade">
-              <b-input type="number" v-model="quantidade" placeholder="Quantidade a doar" required></b-input>
+              <b-numberinput v-model.number="quantidade" name="quantidade" required></b-numberinput>
             </b-field>
           </section>
           <footer class="modal-card-foot">
             <button class="button" type="button" @click="isComponentModalActive = false">Cancelar</button>
-            <button class="button is-primary" @click="confirm()">Confirmar</button>
+            <button class="button is-primary" type="button" @click="confirm">Confirmar</button>
           </footer>
         </div>
       </form>
@@ -27,31 +27,36 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
+
 export default {
   props: { doacao: Object },
   data() {
     return {
       isComponentModalActive: false,
-      quantidade: null
-    }
+      quantidade: 1.0
+    };
+  },
+  computed: {
+    ...mapGetters({ user: 'login/usuario' })
   },
   mounted() {
-    this.quantidade = this.doacao.quantidade_prometida
-
+    this.quantidade = this.doacao.quantidadePrometida;
   },
   methods: {
+    ...mapActions('doacoes', ['changeItemDoacao', 'fetchDoacoesDoador']),
     async confirm() {
       if (this.quantidade && this.quantidade > 0) {
-        console.log(
-          await this.$axios.$patch(`/item/${this.doacao.id}/`, {
-            quantidade_prometida: this.quantidade
-          })
-        )
+        await this.changeItemDoacao({
+          objectId: this.doacao.objectId,
+          quantidadePrometida: this.quantidade
+        });
+        await this.fetchDoacoesDoador(this.user.objectId);
       }
-      this.isComponentModalActive = false
+      this.isComponentModalActive = false;
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

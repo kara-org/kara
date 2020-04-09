@@ -1,11 +1,11 @@
 <template>
   <div>
-    <h1 class="title">Encontre {{ tipo }} e faça sua doação!</h1>
+    <h2 class="title">Encontre {{ tipo }} e faça sua doação!</h2>
     <b-field grouped group-multiline position="is-centered" class="filtro">
       <!-- <b-select v-model="tipo" placeholder="Tipo da busca" size="is-large">
         <option value="demandas">Demanda</option>
         <option value="ongs" disabled>ONG</option>
-      </b-select> -->
+      </b-select>-->
 
       <b-input
         :expanded="true"
@@ -17,58 +17,66 @@
         @keyup.enter.native="send"
       ></b-input>
       <p class="control">
-        <b-button class="button is-primary" size="is-large" @click="send" icon="magnify" :loading="loading">Buscar</b-button>
+        <b-button
+          class="button is-primary"
+          size="is-large"
+          @click="send"
+          icon="magnify"
+          :loading="loading"
+          >Buscar</b-button
+        >
       </p>
     </b-field>
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   props: {
     to: {
       type: String,
       default: null
-    },
+    }
   },
-   data () {
+  data() {
     return {
       palavraChave: '',
-      tipo: 'demandas',
-    }
+      tipo: 'demandas'
+    };
   },
   methods: {
     ...mapActions('global', ['startLoading']),
     ...mapActions('busca', ['fetchBusca', 'buscar']),
-    send () {
-      this.startLoading()
-      this.fetchBusca(this.tipo)
+    send() {
+      //this.startLoading()
+      //this.fetchBusca(this.tipo)
+      this.buscar({ tipo: this.tipo, palavraChave: this.palavraChave });
 
-      if (this.to)
-        this.$router.push(this.to)
+      if (this.to) this.$router.push(this.to);
     }
   },
   computed: {
-    loading () {
-      return this.$store.state.global.loading
-    }
-
+    ...mapGetters(
+      { loading: 'global/loading' },
+      { searchTerm: 'busca/searchTerm' },
+      { list: 'busca/list' }
+    )
   },
   watch: {
-    palavraChave () {
-      this.buscar({ tipo: this.tipo, palavraChave: this.palavraChave})
+    palavraChave() {
+      this.buscar({ tipo: this.tipo, palavraChave: this.palavraChave });
+    },
+    searchTerm() {
+      this.palavraChave = this.searchTerm != null ? this.searchTerm : '';
+    },
+    list() {
+      if (!this.list.length) this.fetchBusca(this.tipo);
     }
-  },
-  created () {
-    if (!this.$store.state.busca.list.length)
-      this.fetchBusca(this.tipo)
-    this.palavraChave =  this.$store.state.busca.searchTerm
   }
-}
+};
 </script>
 <style lang="scss" scoped>
-
 .filtro input {
   border-radius: 50px;
 }
@@ -78,7 +86,6 @@ export default {
   border-top-left-radius: 25px;
   border-bottom-left-radius: 25px;
 }
-
 
 .title,
 .subtitle {
@@ -90,14 +97,12 @@ export default {
   }
 }
 
-  @media only screen and (max-width:768px){
-    .button {
-      width: 100%;
-      padding: auto 30px;
-      border-top-left-radius: 25px;
-      border-bottom-left-radius: 25px;
-    }
+@media only screen and (max-width: 768px) {
+  .button {
+    width: 100%;
+    padding: auto 30px;
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
   }
-
+}
 </style>
-

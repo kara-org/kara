@@ -22,7 +22,7 @@ export default {
   methods: {
     ...mapActions('ongs', ['fetchOngs'])
   },
-  mounted() {
+  async asyncData() {
     this.fetchOngs()
   }
 }

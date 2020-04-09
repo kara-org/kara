@@ -22,10 +22,10 @@
           v-validate="'required|min:4'"
         />
       </b-field>
-        <div class="level has-text-centered">
+      <div class="level has-text-centered">
         <nuxt-link
           class="is-primary is-inverted"
-          to="/esqueciSenha"
+          to="/auth/esqueciSenha"
           exact-active-class="is-active"
         >Esqueci minha senha</nuxt-link>
         <br />
@@ -35,10 +35,10 @@
           exact-active-class="is-active"
         >Não sou cadastrado</nuxt-link>
       </div>
-      <button
-        type="submit"
-        class="button is-primary is-outlined is-medium is-rounded is-fullwidth"
-      >Entrar</button>
+      <button type="submit" class="button is-primary is-outlined is-medium is-rounded is-fullwidth">
+        Entrar
+        <b-loading :is-full-page="true" :active.sync="isLoading" :can-cancel="false"></b-loading>
+      </button>
       <div class="column has-text-centered">
         <nuxt-link
           class="voltar is-primary is-inverted"
@@ -51,45 +51,55 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   data() {
     return {
       email: null,
-      password: null
-    }
+      password: null,
+      isLoading: null
+    };
   },
   methods: {
+    ...mapActions({ loginParse: 'login/login' }),
     async login() {
-        await this.$LoginService.login(this.email, this.password)
-                .catch((err) => {
-                  if (!err.response) {
-                    err.message = 'Servidor desconectado'
-                  } else if (err.response.status === 400) {
-                    err.message = "Login ou senha inválidos, confira os dados e tente novamente"
-                  }
+      this.isLoading = true;
+      await this.loginParse({ login: this.email, senha: this.password })
+        .then(() => {
+          this.$router.push('/');
+        })
+        .catch(err => {
+          if (!err.code === 404) {
+            err.message = 'Servidor desconectado';
+          } else if (err.code == 101) {
+            err.message =
+              'Login ou senha inválidos, confira os dados e tente novamente';
+          }
 
-                  this.$buefy.toast.open({
-                    message: err.message,
-                    type: 'is-danger',
-                    position: 'is-bottom'
-                  })
-                return
-              })
+          this.$buefy.toast.open({
+            message: err.message,
+            type: 'is-danger',
+            position: 'is-bottom'
+          });
+          return;
+        });
+      this.isLoading = false;
     },
 
     validateBeforeSubmit() {
       this.$validator.validateAll().then(result => {
         if (result) {
-          this.login()
-          return
+          this.login();
+          return;
         }
         this.$buefy.toast.open({
           message: 'Formulário inválido, verifique os campos em vermelho',
           type: 'is-danger',
           position: 'is-bottom'
-        })
-      })
+        });
+      });
     }
   }
-}
+};
 </script>

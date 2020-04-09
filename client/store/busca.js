@@ -1,13 +1,19 @@
+import DemandaService from '../services/DemandaService';
+import BuscarService from '../services/BuscarService';
+
+let serviceBuscar = new BuscarService();
+let serviceDemanda = new DemandaService();
+
 export const state = () => ({
   list: [],
   default: [],
   searchTerm: '',
   tipo: ''
-})
+});
 
 export const mutations = {
-  ORDER_ITENS(state){
-    state.list.sort((a, b) => a.descricao.localeCompare(b.descricao));
+  ORDER_ITENS(state) {
+    state.list.sort((a, b) => a.nome.localeCompare(b.nome));
   },
   UPDATE_TIPO(state, payload) {
     state.tipo = payload;
@@ -24,27 +30,29 @@ export const mutations = {
   SET_DEFEAULT_RESULTADOS(state, payload) {
     state.default = payload;
   }
-}
+};
 
 export const actions = {
   async buscar({ commit, dispatch }, { tipo, palavraChave }) {
-    commit('UPDATE_TIPO', tipo);
     commit('UPDATE_SEARCH_TERM', palavraChave);
-    return await this.$BuscarService.buscar(palavraChave).then(response => {
-      if (response.length !== 0) {
-        commit('UPDATE_RESULTADOS', response);
+    return await serviceBuscar.buscar(palavraChave).then(demandas => {
+      if (demandas.length !== 0) {
+        commit('UPDATE_RESULTADOS', demandas);
       } else {
         commit('TO_DEFEAULT_RESULTADOS');
       }
       commit('ORDER_ITENS');
-    })
+    });
   },
   async fetchBusca({ commit, dispatch }, tipo) {
-    return await this.$BuscarService
-      .fetch(tipo)
-      .then(response => {
-        commit('UPDATE_RESULTADOS', response);
-        commit('SET_DEFEAULT_RESULTADOS', response);
+    return await serviceDemanda
+      .index()
+      .then(demandas => {
+        let demandasJson = demandas.map(demanda => demanda.toJSON())
+        demandasJson = demandasJson.filter(demanda => demanda.ativo)
+        serviceBuscar.indexAdd(demandasJson);
+        commit('UPDATE_RESULTADOS', demandasJson);
+        commit('SET_DEFEAULT_RESULTADOS', demandasJson);
         commit('ORDER_ITENS');
       })
       .catch(err => {
@@ -53,10 +61,16 @@ export const actions = {
       })
       .then(() => dispatch('global/stopLoading', null, { root: true }));
   }
-}
+};
 
 export const getters = {
-  demandasPorOng: (state) => idOng => {
-    return state.default.filter(i => i.ong.id === idOng);
+  demandasPorOng: state => idOng => {
+    return state.default.filter(i => i.ong.objectId === idOng);
   },
-}
+  list: state => {
+    return state.list;
+  },
+  searchTerm: state => {
+    return state.searchTerm;
+  }
+};

@@ -31,6 +31,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   data() {
     return {
@@ -39,12 +41,12 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      recuperarSenha: "login/resetPassword"
+    }),
     async resetPassword() {
       try {
-        await this.$axios
-          .post('/recuperar-senha/', {
-            email: this.email
-          })
+       this.recuperarSenha(this.email)
           .then(response => {
             this.$buefy.toast.open({
               message: 'Recuperação de senha enviada para email com successo!',
@@ -77,7 +79,7 @@ export default {
             })
           })
       } catch (e) {
-        this.error = e.response.data.message
+        console.log(e)
       }
     },
 
