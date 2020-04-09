@@ -28,18 +28,18 @@
           <small>Bem vindo!</small>
         </span>
         <span>
-          <strong>{{ userName }}</strong>
+          <strong>{{ user ? user.nome : '' }}</strong>
         </span>
       </div>
       <div class="navbar-item" />
-      <div class="navbar-item" v-show="vinculoOng">
+      <div class="navbar-item" v-show="!isDoador">
         <nuxt-link
           class="button is-primary is-outlined is-rounded"
           :to="`/ong/demandas`"
           exact-active-class="is-active"
         >Gerenciamento</nuxt-link>
       </div>
-      <div class="navbar-item" v-show="!vinculoOng">
+      <div class="navbar-item" v-show="isDoador">
         <nuxt-link
           class="button is-primary is-outlined is-rounded"
           :to="`/doador/editar`"
@@ -54,35 +54,34 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
+
 export default {
   computed: {
-    isAuthenticated() {
-      return this.$auth.loggedIn
-    },
-    user() {
-      return this.$auth.user
-    },
-    userName() {
-      return this.isAuthenticated ? this.user.nome_completo.split(' ')[0] : null
-    },
-    vinculoOng() {
-      return this.isAuthenticated ? this.user.vinculo_ong : null
-    }
+    ...mapGetters({
+      user: 'login/usuario',
+      isAuthenticated: 'login/isAuthenticated',
+      isDoador: 'login/isDoador'
+    })
   },
   methods: {
+    ...mapActions({
+      logoutParse: 'login/logout'
+    }),
     logout: function() {
       this.$buefy.dialog.confirm({
         message: 'Deseja mesmo sair?',
         confirmText: 'Sim',
         onConfirm: () => {
-          this.$auth.logout()
-          this.$router.push('/')
-          this.$buefy.toast.open('Logout realizado com sucesso')
+          this.logoutParse().then(() => {
+            this.$router.push('/');
+            this.$buefy.toast.open('Logout realizado com sucesso');
+          });
         }
-      })
+      });
     }
-  },
-}
+  }
+};
 </script>
 
 <style lang="scss">

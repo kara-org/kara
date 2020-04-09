@@ -14,9 +14,9 @@
       </div>
       <div class="hero-body banner">
         <div class="container">
-          <h2 class="subtitle">
-            <span>Ajude o próximo</span>
-          </h2>
+          <h1 class="subtitle">
+            <span>Faça sua doação e ajude ONGs a salvar o mundo</span>
+          </h1>
           <Buscar to="busca" />
         </div>
       </div>
@@ -25,13 +25,13 @@
       <div class="container">
         <div class="columns">
           <div class="column is-full">
-            <h1 class="title is-primary is-size-2 has-text-centered">Como funciona</h1>
+            <h2 class="title primary is-primary is-size-2 has-text-centered">Como funciona</h2>
           </div>
         </div>
         <div class="columns is-vcentered">
           <div class="column is-half">
             <figure class="image">
-              <img src="~assets/sobre/acesso.svg">
+              <img src="~assets/sobre/acesso.svg" alt="criando uma conta no site para fazer doação">
             </figure>
           </div>
           <div class="column">
@@ -60,14 +60,14 @@
             </div>
             <div class="column is-half">
               <figure class="image">
-                <img src="~assets/sobre/combine.svg">
+                <img src="~assets/sobre/combine.svg" alt="entrando em contato com a ong para combinar entrega da doação">
               </figure>
             </div>
         </div>
         <div class="columns is-vcentered">
           <div class="column is-half">
             <figure class="image">
-              <img src="~assets/sobre/entrega.svg">
+              <img src="~assets/sobre/entrega.svg" alt="entregando produtos para ongs" >
             </figure>
           </div>
           <div class="column">
@@ -101,15 +101,14 @@ export default {
   computed: {
   },
   methods: {
-     ...mapActions('busca', ['fetchBusca', 'buscar']),
+     ...mapActions('busca', ['fetchBusca']),
   },
   created: function() {
-    this.fetchBusca('demandas')
+    this.fetchBusca()
   }
 }
 </script>
 <style lang="scss" scoped>
-
 
 .title,
 .subtitle {
@@ -120,6 +119,12 @@ export default {
     padding: 5px;
   }
 }
+
+
+.primary {
+  color: $primary;
+}
+
 
 .banner {
   position: relative;

@@ -7,7 +7,7 @@
         :type="{'is-danger': errors.has('titulo')}"
         :message="errors.first('titulo')"
       >
-        <b-input type="text" v-model.trim="demanda.descricao" name="titulo" v-validate="'required'"></b-input>
+        <b-input type="text" v-model.trim="demanda.nome" name="titulo" v-validate="'required'"></b-input>
       </b-field>
       <b-field
         label="Categoria"
@@ -15,14 +15,14 @@
         :message="errors.first('categoria')"
       >
         <b-select
-          v-model="demanda.id_categoria"
+          v-model="demanda.categoria"
           placeholder="Selecione uma categoria"
           name="categoria"
           v-validate="'required'"
         >
-          <option :value="1">Alimentos</option>
-          <option :value="2">Roupas</option>
-          <option :value="3">Utilitários</option>
+          <option :value="'Alimentos'">Alimentos</option>
+          <option :value="'Roupas'">Roupas</option>
+          <option :value="'Utilitários'">Utilitários</option>
         </b-select>
       </b-field>
       <b-field
@@ -31,7 +31,7 @@
         :message="errors.first('quantidade')"
       >
         <b-numberinput
-          v-model.number="demanda.quantidade_solicitada"
+          v-model.number="demanda.quantidadeDesejada"
           name="quantidade"
           min="1"
           v-validate="'required'"
@@ -58,66 +58,86 @@
 </template>
 
 <script>
-import cleave from '@/plugins/cleave-directive.js'
-import { mapActions, mapMutations } from 'vuex'
+import cleave from '@/plugins/cleave-directive.js';
+import { mapActions, mapMutations, mapGetters } from 'vuex';
 export default {
+  props: {
+    isCadastro: Boolean
+  },
   data() {
     return {
       demanda: {
-        id_categoria: null,
-        descricao: null,
-        quantidade_solicitada: null,
-        id_ong: null
+        categoria: null,
+        nome: null,
+        quantidadeDesejada: null,
+        ong: null
       },
       success: false
-    }
+    };
   },
   computed: {
-    ong() {
-      return this.$auth.user.ong
-    }
+    ...mapGetters({ ong: 'login/ong' })
   },
   methods: {
-    ...mapActions('demandas', ['createDemanda', 'fetchOng']),
+    ...mapMutations('demandas', ['SET_DEMANDA']),
+    ...mapActions('demandas', ['createDemanda', 'updateDemanda']),
     async create() {
-      this.demanda.id_ong = this.ong.id
-      await this.$axios
-        .$post(`/ong/${this.ong.id}/demandas/`, this.demanda)
+      this.demanda.ong = this.ong;
+      let method;
+
+      if (this.isCadastro) {
+        method = this.createDemanda;
+      } else {
+        method = this.updateDemanda;
+      }
+
+      method({ ...this.demanda })
         .then(response => {
           this.$buefy.toast.open({
-            message: 'Demanda cadastrado com successo!',
+            message: 'Operação realizada com successo!',
             type: 'is-success',
             position: 'is-top'
-          })
-          this.success = true
+          });
+          this.success = true;
         })
         .catch(err => {
+          console.log(err);
           if (!err.response) {
-            err.message = 'Servidor desconectado'
+            err.message = 'Servidor desconectado';
           } else if (err.response.status === 400) {
             if (err.response.data.non_field_errors)
-              err.message = err.response.data.non_field_errors[0]
+              err.message = err.response.data.non_field_errors[0];
           }
           this.$buefy.toast.open({
             message: err.message,
             type: 'is-danger',
             position: 'is-bottom'
-          })
-        })
+          });
+        });
     },
     validateBeforeSubmit() {
       this.$validator.validateAll().then(result => {
         if (result) {
-          this.create()
-          return
+          this.create();
+          return;
         }
         this.$buefy.toast.open({
           message: 'Formulário inválido, verifique os campos em vermelho',
           type: 'is-danger',
           position: 'is-bottom'
-        })
-      })
+        });
+      });
     }
+  },
+  created() {
+    this.unsubscribe = this.$store.subscribe((mutation, state) => {
+      if (mutation.type === 'demandas/SET_DEMANDA') {
+        this.demanda = JSON.parse(JSON.stringify(state.demandas.demanda));
+      }
+    });
+  },
+  beforeDestroy() {
+    this.unsubscribe();
   }
-}
+};
 </script>

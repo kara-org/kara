@@ -3,31 +3,31 @@
     <b-table class="table" :data="demandas" ref="table" :bordered="false" :striped="true">
       <template slot-scope="props">
         <b-table-column
-          field="descricao"
-          :visible="columnsVisible['descricao'].display"
-          :label="columnsVisible['descricao'].title"
+          field="nome"
+          :visible="columnsVisible['nome'].display"
+          :label="columnsVisible['nome'].title"
           centered
-        >{{ props.row.descricao }}</b-table-column>
+        >{{ props.row.nome }}</b-table-column>
         <b-table-column
-          field="quantidade_solicitada"
-          :visible="columnsVisible['quantidade_solicitada'].display"
-          :label="columnsVisible['quantidade_solicitada'].title"
+          field="quantidadeDesejada"
+          :visible="columnsVisible['quantidadeDesejada'].display"
+          :label="columnsVisible['quantidadeDesejada'].title"
           centered
-        >{{ props.row.quantidade_solicitada }}</b-table-column>
+        >{{ props.row.quantidadeDesejada }}</b-table-column>
 
         <b-table-column
-          field="quantidade_alcancada"
-          :visible="columnsVisible['quantidade_alcancada'].display"
-          :label="columnsVisible['quantidade_alcancada'].title"
+          field="quantidadeAlcancada"
+          :visible="columnsVisible['quantidadeAlcancada'].display"
+          :label="columnsVisible['quantidadeAlcancada'].title"
           centered
-        >{{ !props.row.quantidade_alcancada ? 0 : props.row.quantidade_alcancada }}</b-table-column>
+        >{{ !props.row.quantidadeAlcancada ? 0 : props.row.quantidadeAlcancada }}</b-table-column>
 
         <b-table-column
           field="restante"
           :visible="columnsVisible['restante'].display"
           :label="columnsVisible['restante'].title"
           centered
-        >{{ qtdRestante(props.row.quantidade_solicitada, props.row.quantidade_alcancada)}}</b-table-column>
+        >{{ qtdRestante(props.row.quantidadeDesejada, props.row.quantidadeAlcancada)}}</b-table-column>
 
         <b-table-column
           field="acao"
@@ -36,26 +36,30 @@
           centered
         >
           <template v-if="props.row.ativo">
-            <EditarModal :demanda="props.row" />
+            <nuxt-link
+              :to="`/ong/demandas/editar/${props.row.objectId}`"
+              exact-active-class="is-outlined is-success is-small"
+            >
+              <b-icon icon="pencil"></b-icon>
+            </nuxt-link>
             <b-tooltip class="is-danger" label="Inativar demanda" position="is-right">
               <b-button
                 class="is-danger is-outlined is-small"
-                @click="confirm(props.row.id, 'inativar')"
+                @click="inativar(props.row)"
               >
                 <b-icon icon="cancel"></b-icon>
               </b-button>
             </b-tooltip>
           </template>
-          <span v-else class="tag is-danger">INATIVA</span>
-          <!--<b-tooltip v-else class="is-success" label="Reativar demanda" position="is-right">
+          <!-- <span v-else class="tag is-danger">INATIVA</span> -->
+          <b-tooltip v-else class="is-info" label="Reativar demanda" position="is-right">
             <b-button
-              disabled
-              class="is-success is-outlined is-small"
-              @click="confirm(props.row.id, 'reativar')"
+              class="is-info is-outlined is-small"
+              @click="inativar(props.row)"
             >
               <b-icon icon="replay"></b-icon>
             </b-button>
-          </b-tooltip>-->
+          </b-tooltip>
         </b-table-column>
         <b-table-column
           :visible="columnsVisible['progresso'].display"
@@ -64,7 +68,7 @@
         >
           <span
             class="tag is-success"
-          >{{ Math.round(( !props.row.quantidade_alcancada ? 0 : props.row.quantidade_alcancada / props.row.quantidade_solicitada) * 100) }}%</span>
+          >{{ Math.round(( !props.row.quantidadeAlcancada ? 0 : props.row.quantidadeAlcancada / props.row.quantidadeDesejada) * 100) }}%</span>
         </b-table-column>
       </template>
     </b-table>
@@ -72,53 +76,45 @@
 </template>
 
 <script>
-import EditarModal from '@/components/molecules/EditarDemandaModal.vue'
-import { mapActions, mapGetters } from 'vuex'
+import EditarModal from '@/components/molecules/EditarDemandaModal.vue';
+import { mapActions, mapGetters } from 'vuex';
 export default {
   components: { EditarModal },
-  async mounted() {
-    await this.fetchDemandasOng(this.$auth.user.ong.id)
+  props: {
+    demandas: Array
   },
   computed: {
-    user() {
-      this.$auth.user
-    },
-    ...mapGetters({ demandas: 'demandas/demandas' })
+    ...mapGetters({ user: 'login/usuario' })
   },
   methods: {
     qtdRestante(qtdSolicitada, qtdAlcancada) {
-      var restante = qtdSolicitada - qtdAlcancada
-      return restante >= 0 ? restante : 0
+      var restante = qtdSolicitada - qtdAlcancada;
+      return restante >= 0 ? restante : 0;
     },
     ...mapActions('demandas', [
       'fetchDemandasOng',
       'changeDemanda',
-      'deleteDemanda'
+      'inativaAtiva'
     ]),
-    async confirm(id, acao) {
+    async inativar(demanda) {
       this.$buefy.dialog.confirm({
-        message: `Tem certeza que deseja ${acao} essa demanda?`,
+        message: `Tem certeza que deseja inativar essa demanda?`,
         confirmText: 'Sim',
         cancelText: 'Não',
 
         onConfirm: async () => {
-          if (acao == 'inativar') {
-            await this.deleteDemanda(id)
-          } else {
-            await this.changeDemanda(id, { ativo: true })
-          }
-          await this.fetchDemandasOng(this.$auth.user.ong.id)
-          console.log(this.demandas)
+          await this.inativaAtiva(demanda);
+          await this.fetchDemandasOng();
         }
-      })
+      });
     }
   },
   data() {
     return {
       columnsVisible: {
-        descricao: { title: 'Título', display: true },
-        quantidade_solicitada: { title: 'Esperado', display: true },
-        quantidade_alcancada: { title: 'Doado', display: true },
+        nome: { title: 'Título', display: true },
+        quantidadeDesejada: { title: 'Esperado', display: true },
+        quantidadeAlcancada: { title: 'Doado', display: true },
         restante: { title: 'Restante', display: true },
         acao: { title: 'Ação', display: true },
         progresso: { title: 'Progresso', display: true }
@@ -128,9 +124,9 @@ export default {
       currentPage: 1,
       perPage: 5,
       isPaginationSimple: true
-    }
+    };
   }
-}
+};
 </script>
 
 <style lang="scss">
