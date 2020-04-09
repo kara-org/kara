@@ -1,3 +1,6 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/24378b23-954c-4e3d-a1ad-fe4c63d35f2e/deploy-status)](https://app.netlify.com/sites/karadocoes/deploys)
+
+
 # Kara
 
 Projeto Kara surgiu da ideia de fornecer uma plataforma que pudesse interligar ongs e doadores, de acordo com as suas necessidades e a disponibilidade do cidadão.
