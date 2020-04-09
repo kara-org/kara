@@ -121,6 +121,7 @@ export default {
   ],
 
   sitemap: {
+    hostname: 'https://karadoacoes.com.br/',
     exclude: ['/auth/**', '/doador/**', '/ong/**', '/carrinho', '/busca'],
     defaults: {
       changefreq: 'daily',
