@@ -9,7 +9,7 @@ export default class OngService {
   }
 
   async create({ nome }) {
-    let ong = build({ nome });
+    let ong = await build({ nome });
     return await ong.save();
   }
 
@@ -21,21 +21,21 @@ export default class OngService {
   async update({
     objectId,
     nomeDaOng,
+    email,
+    telefones,
     biografia,
     linkParaContato,
     fotoDoPerfil
   }) {
-    const ong = new Ong();
-    ong.set('objectId', objectId);
-    ong.set('nome', nomeDaOng);
-    ong.set('biografia', biografia);
-    ong.set('linkParaContato', linkParaContato);
-
-    if (fotoDoPerfil && !fotoDoPerfil.url) {
-      var fotoBase64 = await this.readFileAsDataURL(fotoDoPerfil);
-      var file = new Parse.File(fotoDoPerfil.name, { base64: fotoBase64 });
-      ong.set('fotoDoPerfil', file);
-    }
+    const ong = await this.build({
+      objectId,
+      nomeDaOng,
+      email,
+      telefones,
+      biografia,
+      linkParaContato,
+      fotoDoPerfil
+    });
 
     await ong.save();
     return await ong.fetch();
@@ -47,6 +47,7 @@ export default class OngService {
   }
 
   async build({
+    objectId,
     nomeDaOng,
     email,
     telefones,
@@ -54,16 +55,22 @@ export default class OngService {
     linkParaContato,
     fotoDoPerfil
   }) {
-    var fotoBase64 = await this.readFileAsDataURL(fotoDoPerfil);
-    var file = new Parse.File(fotoDoPerfil.name, { base64: fotoBase64 });
+    let ong = new Ong();
 
-    const ong = new Ong();
-    ong.set('nome', nomeDaOng);
-    ong.set('email', email);
-    ong.set('telefones', telefones);
-    ong.set('biografia', biografia);
-    ong.set('linkParaContato', linkParaContato);
-    ong.set('fotoDoPerfil', file);
+    if (fotoDoPerfil && !fotoDoPerfil.url) {
+      let fotoBase64 = await this.readFileAsDataURL(fotoDoPerfil);
+      let file = new Parse.File(fotoDoPerfil.name, { base64: fotoBase64 });
+      ong.set('fotoDoPerfil', file);
+    }
+
+    if (objectId && objectId != '') ong.set('objectId', objectId);
+    if (nomeDaOng && nomeDaOng != '') ong.set('nome', nomeDaOng);
+    if (email && email != '') ong.set('email', email);
+    if (telefones && telefones[0] && telefones[0] != '')
+      ong.set('telefones', telefones);
+    if (biografia && biografia != '') ong.set('biografia', biografia);
+    if (linkParaContato && linkParaContato != '')
+      ong.set('linkParaContato', linkParaContato);
     return ong;
   }
 

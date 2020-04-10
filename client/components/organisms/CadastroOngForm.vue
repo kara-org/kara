@@ -1,14 +1,16 @@
 <template>
   <section>
     <form v-if="!success" @submit.prevent="validateBeforeSubmit" method="post">
-      <h1 class="title is-5 has-text-centered">Dados da ONG</h1>
+      <h1 v-if="isCadastro" class="title is-5 has-text-centered">
+        Dados da ONG
+      </h1>
       <hr />
       <b-field class="file is-centered" style="margin:10px;">
         <b-upload v-model="ong.fotoDoPerfil">
           <img
             class="profile-image"
             :src="
-              ong.fotoDoPerfil != null
+              ong.fotoDoPerfil && ong.fotoDoPerfil.name
                 ? fotoDoPerfil()
                 : 'https://bulma.io/images/placeholders/256x256.png'
             "
@@ -53,10 +55,11 @@
           v-validate="'required'"
         ></b-input>
       </b-field>
-      <hr />
       <template v-if="isCadastro">
+        <hr />
         <h1 class="title is-5 has-text-centered">Responsável</h1>
         <b-field
+          v-if="isCadastro"
           label="Nome"
           :type="{ 'is-danger': errors.has('nome') }"
           :message="errors.first('nome')"
@@ -68,70 +71,88 @@
             v-validate="'required'"
           ></b-input>
         </b-field>
+      </template>
+      <b-field
+        label="Telefone"
+        :type="{ 'is-danger': errors.has('telefone') }"
+        :message="errors.first('telefone')"
+      >
+        <b-input
+          v-if="isCadastro"
+          type="text"
+          v-model.trim="usuario.telefones[0]"
+          v-cleave="phoneMask"
+          maxlength="15"
+          name="telefone"
+          v-validate="'required|phone'"
+        ></b-input>
+        <b-input
+          v-else
+          type="text"
+          v-model.trim="usuario.telefones[0]"
+          v-cleave="phoneMask"
+          maxlength="15"
+          name="telefone"
+          v-validate="'required|phone'"
+        ></b-input>
+      </b-field>
+      <b-field
+        label="Email"
+        :type="{ 'is-danger': errors.has('email') }"
+        :message="errors.first('email')"
+      >
+        <b-input
+          v-if="isCadastro"
+          type="text"
+          v-model.trim="usuario.email"
+          name="email"
+          v-validate="'required|email'"
+        />
+        <b-input
+          v-else
+          type="text"
+          v-model.trim="ong.email"
+          name="email"
+          v-validate="'required|email'"
+        />
+      </b-field>
+      <template v-if="isCadastro">
         <b-field
-          label="Telefone"
-          :type="{ 'is-danger': errors.has('telefone') }"
-          :message="errors.first('telefone')"
+          label="Senha"
+          :type="{ 'is-danger': errors.has('senha') }"
+          :message="errors.first('senha')"
         >
           <b-input
-            type="text"
-            v-model.trim="usuario.telefones[0]"
-            v-cleave="phoneMask"
-            maxlength="15"
-            name="telefone"
-            v-validate="'required|phone'"
-          ></b-input>
-        </b-field>
-        <b-field
-          label="Email"
-          :type="{ 'is-danger': errors.has('email') }"
-          :message="errors.first('email')"
-        >
-          <b-input
-            type="text"
-            v-model.trim="usuario.email"
-            name="email"
-            v-validate="'required|email'"
+            type="password"
+            name="senha"
+            v-model="usuario.password"
+            v-validate="'required|min:4'"
+            ref="senha"
           />
         </b-field>
-        <template v-if="isCadastro">
-          <b-field
-            label="Senha"
-            :type="{ 'is-danger': errors.has('senha') }"
-            :message="errors.first('senha')"
-          >
-            <b-input
-              type="password"
-              name="senha"
-              v-model="usuario.password"
-              v-validate="'required|min:4'"
-              ref="senha"
-            />
-          </b-field>
-          <b-field
-            label="Confirme sua senha"
-            :type="{ 'is-danger': errors.has('confirmação') }"
-            :message="errors.first('confirmação')"
-          >
-            <b-input
-              v-validate="'required|confirmed:senha'"
-              name="confirmação"
-              type="password"
-              v-model="passwordConfirm"
-            />
-          </b-field>
-          <hr />
-        </template>
-        <div class="column has-text-centered">
-          Já tem um cadastro?
-          <nuxt-link
-            class="is-primary is-inverted"
-            to="/auth/login"
-            exact-active-class="is-active"
-            >Logue-se</nuxt-link
-          >
-        </div>
+        <b-field
+          label="Confirme sua senha"
+          :type="{ 'is-danger': errors.has('confirmação') }"
+          :message="errors.first('confirmação')"
+        >
+          <b-input
+            v-validate="'required|confirmed:senha'"
+            name="confirmação"
+            type="password"
+            v-model="passwordConfirm"
+          />
+        </b-field>
+        <hr />
       </template>
+      <div v-if="isCadastro" class="column has-text-centered">
+        Já tem um cadastro?
+        <nuxt-link
+          class="is-primary is-inverted"
+          to="/auth/login"
+          exact-active-class="is-active"
+          >Logue-se</nuxt-link
+        >
+      </div>
       <hr />
       <button
         type="submit"
@@ -177,9 +198,11 @@ export default {
     return {
       ong: {
         nome: null,
+        email: null,
         biografia: null,
         linkParaContato: null,
-        fotoDoPerfil: null
+        fotoDoPerfil: null,
+        telefones: [null]
       },
       usuario: {
         email: null,
@@ -204,8 +227,8 @@ export default {
 
   mounted() {
     if (!this.isCadastro) {
-      this.usuario = { ...this.user };
-      this.ong = { ...this.user.ong };
+      this.usuario = JSON.parse(JSON.stringify(this.user));
+      this.ong = JSON.parse(JSON.stringify(this.user.ong));
     }
   },
 
@@ -256,7 +279,10 @@ export default {
 
     async patch() {
       await this.updateParse({
+        objectId: this.ong.objectId,
         nomeDaOng: this.ong.nome,
+        email: this.ong.email,
+        telefones: this.ong.telefones,
         biografia: this.ong.biografia,
         linkParaContato: this.ong.linkParaContato,
         fotoDoPerfil: this.ong.fotoDoPerfil
@@ -292,6 +318,8 @@ export default {
               /\D/g,
               ''
             );
+          } else {
+            this.ong.telefones[0] = this.ong.telefones[0].replace(/\D/g, '');
           }
           this.isLoading = true;
           return this.isCadastro ? this.register() : this.patch();

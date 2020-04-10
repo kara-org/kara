@@ -50,10 +50,10 @@ export const actions = {
       .update(email, nome, telefones)
       .then(user => commit('SET', user.toJSON()));
   },
-
-  async updateOng({ commit }, { objectId, nomeDaOng, biografia, linkParaContato, fotoDoPerfil }) {
+  
+  async updateOng({ commit }, { objectId, nomeDaOng, email, telefones, biografia, linkParaContato, fotoDoPerfil }) {
     return serviceOng
-      .update({objectId, nomeDaOng, biografia, linkParaContato, fotoDoPerfil})
+      .update({objectId, nomeDaOng, email, telefones, biografia, linkParaContato, fotoDoPerfil})
       .then(ong => commit('SET_ONG', ong.toJSON()));
   },
 
