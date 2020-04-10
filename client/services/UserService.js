@@ -2,7 +2,8 @@ let Parse = require('parse');
 
 export default class UserService {
   async login(username, password) {
-    let response = Parse.User.logIn(username, password);
+    let response = await Parse.User.logIn(username, password);
+    await response.fetchWithInclude('ong');
     return response;
   }
 

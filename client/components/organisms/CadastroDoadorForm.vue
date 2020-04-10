@@ -130,7 +130,7 @@ export default {
 
   mounted() {
     if (!this.isCadastro) {
-      this.usuario = { ...this.user };
+      this.usuario = JSON.parse(JSON.stringify(this.user));
     }
   },
 
