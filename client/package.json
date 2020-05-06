@@ -22,6 +22,7 @@
     "cleave.js": "^1.5.3",
     "dotenv": "^8.0.0",
     "flexsearch": "^0.6.30",
+    "material-design-icons": "^3.0.1",
     "nuxt": "^2.0.0",
     "nuxt-buefy": "^0.3.2",
     "nuxt-parse": "^0.1.3",
