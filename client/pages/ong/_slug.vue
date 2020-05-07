@@ -47,8 +47,8 @@ export default {
     CarrinhoONG
   },
   created: async function() {
-    // const ong = await this.fetchOngSlug(this.$route.params.slug);
-    // this.fetchDemandasOng(ong.id);
+    const ong = await this.fetchOngSlug(this.$route.params.slug);
+    this.fetchDemandasOng(ong.id);
   },
   data() {
     return {};

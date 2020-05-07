@@ -22,7 +22,6 @@ export const mutations = {
     state.list = payload;
   },
   UPDATE_ONG(state, payload) {
-    console.log(payload);
     state.ong = payload;
   },
   UPDATE_PERFIL(state, payload) {
