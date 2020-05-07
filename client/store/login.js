@@ -38,8 +38,27 @@ export const actions = {
     return serviceUser.signUp(email, password, nome, telefones);
   },
 
-  async signUpOng({ commit }, { email, password, nome, telefones, nomeDaOng, biografia, linkParaContato, fotoDoPerfil }) {
-    let ong = await serviceOng.build({ nomeDaOng, email, telefones, biografia, linkParaContato, fotoDoPerfil });
+  async signUpOng(
+    { commit },
+    {
+      email,
+      password,
+      nome,
+      telefones,
+      nomeDaOng,
+      biografia,
+      linkParaContato,
+      fotoDoPerfil
+    }
+  ) {
+    let ong = await serviceOng.build({
+      nomeDaOng,
+      email,
+      telefones,
+      biografia,
+      linkParaContato,
+      fotoDoPerfil
+    });
     return serviceUser
       .signUp(email, password, nome, telefones, ong)
       .then(user => commit('SET', user.toJSON()));
@@ -50,10 +69,29 @@ export const actions = {
       .update(email, nome, telefones)
       .then(user => commit('SET', user.toJSON()));
   },
-  
-  async updateOng({ commit }, { objectId, nomeDaOng, email, telefones, biografia, linkParaContato, fotoDoPerfil }) {
+
+  async updateOng(
+    { commit },
+    {
+      objectId,
+      nomeDaOng,
+      email,
+      telefones,
+      biografia,
+      linkParaContato,
+      fotoDoPerfil
+    }
+  ) {
     return serviceOng
-      .update({objectId, nomeDaOng, email, telefones, biografia, linkParaContato, fotoDoPerfil})
+      .update({
+        objectId,
+        nomeDaOng,
+        email,
+        telefones,
+        biografia,
+        linkParaContato,
+        fotoDoPerfil
+      })
       .then(ong => commit('SET_ONG', ong.toJSON()));
   },
 
@@ -73,7 +111,7 @@ export const actions = {
 
 export const getters = {
   isAuthenticated: state => {
-    return state.usuario && state.usuario.email != '';
+    return  state.usuario != usuarioDefaut && serviceUser.isAuthenticated();
   },
   isDoador: state => {
     return !(state.usuario.ong && state.usuario.ong.objectId != '');
