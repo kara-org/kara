@@ -35,10 +35,14 @@ export default {
     ListagemCards,
     Buscar
   },
+  created() {
+    this.fetchBusca();
+  },
   computed: {
     ...mapGetters({ list: 'busca/list' })
   },
   methods: {
+    ...mapActions('busca', ['fetchBusca']),
     ...mapActions('carrinho', ['limparCarrinho'])
   },
   mounted: function() {
