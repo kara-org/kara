@@ -18,6 +18,12 @@ export default class OngService {
     return await query.get(id);
   }
 
+  async showBySlug(slug) {
+    let query = new Parse.Query(Ong);
+    query.equalTo("slug", slug)
+    return await query.first();
+  }
+
   async update({
     objectId,
     nomeDaOng,
@@ -57,6 +63,8 @@ export default class OngService {
   }) {
     let ong = new Ong();
 
+    let slug = convertToSlug(nomeDaOng);
+
     if (fotoDoPerfil && !fotoDoPerfil.url) {
       let fotoBase64 = await this.readFileAsDataURL(fotoDoPerfil);
       let file = new Parse.File(fotoDoPerfil.name, { base64: fotoBase64 });
@@ -71,6 +79,9 @@ export default class OngService {
     if (biografia && biografia != '') ong.set('biografia', biografia);
     if (linkParaContato && linkParaContato != '')
       ong.set('linkParaContato', linkParaContato);
+
+    if (slug && slug != '') ong.set('slug', slug);
+
     return ong;
   }
 
@@ -88,5 +99,11 @@ export default class OngService {
       };
       reader.readAsDataURL(inputFile);
     });
+  }
+
+  convertToSlug(Text) {
+    return Text.toLowerCase()
+      .replace(/ /g, '-')
+      .replace(/[^\w-]+/g, '');
   }
 }
