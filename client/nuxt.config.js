@@ -80,7 +80,7 @@ export default {
   /*
    ** Global CSS
    */
-  css: ['~assets/styles/main.scss'],
+  css: ['~assets/styles/main.scss', 'material-design-icons/iconfont/material-icons.css'],
 
   styleResources: {
     scss: ['~assets/styles/main.scss']
@@ -100,7 +100,12 @@ export default {
    */
   modules: [
     // Doc: https://buefy.github.io/#/documentation
-    'nuxt-buefy',
+    [
+      'nuxt-buefy',
+      {
+        materialDesignIcons: false
+      }
+    ],
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/pwa',

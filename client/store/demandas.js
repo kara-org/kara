@@ -59,8 +59,6 @@ export const actions = {
   async fetchDemanda(context, id) {
     return serviceDemanda.show(id)
       .then(demanda => {
-        console.log(demanda.toJSON());
-
         context.commit('SET_DEMANDA', demanda.toJSON());
       })
       .catch(err => console.log(err));

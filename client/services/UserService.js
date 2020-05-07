@@ -46,7 +46,14 @@ export default class UserService {
 
   async currentUser() {
     let user = Parse.User.current();
+    if (!user) return {};
     return user.toJSON();
+  }
+
+  isAuthenticated() {
+    let user = Parse.User.current();
+    if (!user) return false;
+    return user.authenticated();
   }
 
   async logout() {

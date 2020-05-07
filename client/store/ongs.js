@@ -8,7 +8,13 @@ export const state = () => ({
   list: [],
   perfil: {},
   demandas: [],
-  ong: {}
+  ong: {
+    nome: '',
+    email: '',
+    fotoDoPerfil: {
+      url: ''
+    }
+  }
 });
 
 export const mutations = {
@@ -16,7 +22,6 @@ export const mutations = {
     state.list = payload;
   },
   UPDATE_ONG(state, payload) {
-    console.log(payload);
     state.ong = payload;
   },
   UPDATE_PERFIL(state, payload) {
@@ -31,6 +36,16 @@ export const actions = {
     serviceOng
       .show(id)
       .then(ong => context.commit('UPDATE_ONG', ong.toJSON()))
+      .catch(err => console.log(err));
+  },
+
+  fetchOngSlug(context, slug) {
+    return serviceOng
+      .showBySlug(slug)
+      .then(ong => {
+        context.commit('UPDATE_ONG', ong.toJSON());
+        return ong;
+      })
       .catch(err => console.log(err));
   },
 

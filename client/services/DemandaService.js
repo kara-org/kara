@@ -11,12 +11,12 @@ export default class DemandaService {
 
   async indexOng({ idOng }) {
     let ong;
-    if (!idOng) ong = Parse.User.current().get('ong');
-    else {
-      const Ong = Parse.Object.extend('Ong');
-      ong = new Ong();
-      ong.objectId = idOng;
-    }
+    // if (!idOng) ong = Parse.User.current().get('ong');
+    // else {
+    const Ong = Parse.Object.extend('Ong');
+    ong = new Ong();
+    ong.id = idOng;
+    // }
 
     let query = new Parse.Query(Demanda);
     query.equalTo('ong', ong);
