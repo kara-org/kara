@@ -7,7 +7,7 @@
             <div class="column is-narrow">
               <figure class="image is-256x256">
                 <!-- <img class="is-rounded" :src="image" /> -->
-                <v-lazy-image :src="ong.fotoDoPerfil.url" />
+                <v-lazy-image class="is-rounded is-max-256x256 " :src="ong.fotoDoPerfil && ong.fotoDoPerfil.url" />
               </figure>
             </div>
             <div class="column is-4 is-flex">
@@ -67,5 +67,9 @@ export default {
 <style lang="scss">
 .columns {
   margin: 5px;
+}
+.is-max-256x256{
+  max-width: 256px;
+  max-height: 256px;
 }
 </style>
