@@ -78,8 +78,8 @@ export default {
               position: 'is-bottom'
             })
           })
-      } catch (e) {
-        console.log(e)
+      } catch (err) {
+        console.log(err)
       }
     },
 

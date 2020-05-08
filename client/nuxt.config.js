@@ -1,11 +1,33 @@
 const env = require('dotenv').config();
 const nodeExternals = require('webpack-node-externals');
+import axios from 'axios';
 
 export default {
   mode: 'universal',
   /*
    ** Headers of the page
    */
+
+  // TODO: Criar dinamicamente as rotas
+  generate: {
+    routes() {
+      return axios
+        .get('https://kara.back4app.io/classes/Ong', {
+          headers: {
+            'accept': 'application/json',
+            'X-Parse-Application-Id': 'ElfuZaaNpkOuF9DvMrAnfPxOypoxH1HT72jxLmTG',
+            'X-Parse-REST-API-Key': '92n38U9r6jitkaFn57hbUCPnMLhJ7JFVYZsaKuBv'
+          }
+        })
+        .then(res => {
+          return res.data.results
+            .filter(o => o.slug != undefined)
+            .map(ong => {
+              return '/ong/' + ong.slug;
+            });
+        });
+    }
+  },
 
   head: {
     htmlAttrs: {
@@ -80,7 +102,10 @@ export default {
   /*
    ** Global CSS
    */
-  css: ['~assets/styles/main.scss'],
+  css: [
+    '~assets/styles/main.scss',
+    'material-design-icons/iconfont/material-icons.css'
+  ],
 
   styleResources: {
     scss: ['~assets/styles/main.scss']
@@ -100,7 +125,12 @@ export default {
    */
   modules: [
     // Doc: https://buefy.github.io/#/documentation
-    'nuxt-buefy',
+    [
+      'nuxt-buefy',
+      {
+        materialDesignIcons: false
+      }
+    ],
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
@@ -130,9 +160,9 @@ export default {
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
-  axios: {
-    baseURL: process.env.BASE_URL || 'http://localhost:8000/api'
-  },
+  // axios: {
+  //   baseURL: process.env.BASE_URL || 'http://localhost:8000/api'
+  // },
 
   /*
    ** Build configuration
