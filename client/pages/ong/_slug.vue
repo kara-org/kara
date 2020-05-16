@@ -6,7 +6,6 @@
           <div class="columns is-flex is-vcentered is-centered">
             <div class="column is-narrow">
               <figure class="image is-256x256">
-                <!-- <img class="is-rounded" :src="image" /> -->
                 <v-lazy-image class="is-rounded is-max-256x256 " :src="ong.fotoDoPerfil && ong.fotoDoPerfil.url" />
               </figure>
             </div>
