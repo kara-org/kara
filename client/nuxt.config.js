@@ -145,6 +145,10 @@ export default {
       }
     ],
     '@nuxtjs/sitemap'
+    ['@netsells/nuxt-hotjar', {
+      id: '1814711',
+      sv: '6',
+  }],
   ],
 
   sitemap: {

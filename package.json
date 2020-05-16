@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@netsells/nuxt-hotjar": "^0.1.2"
+  }
+}
