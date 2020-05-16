@@ -14,8 +14,9 @@ export default {
       return axios
         .get('https://kara.back4app.io/classes/Ong', {
           headers: {
-            'accept': 'application/json',
-            'X-Parse-Application-Id': 'ElfuZaaNpkOuF9DvMrAnfPxOypoxH1HT72jxLmTG',
+            accept: 'application/json',
+            'X-Parse-Application-Id':
+              'ElfuZaaNpkOuF9DvMrAnfPxOypoxH1HT72jxLmTG',
             'X-Parse-REST-API-Key': '92n38U9r6jitkaFn57hbUCPnMLhJ7JFVYZsaKuBv'
           }
         })
@@ -144,11 +145,14 @@ export default {
         serverUrl: 'https://kara.back4app.io'
       }
     ],
-    '@nuxtjs/sitemap'
-    ['@netsells/nuxt-hotjar', {
-      id: '1814711',
-      sv: '6',
-  }],
+    '@nuxtjs/sitemap',
+    [
+      '@netsells/nuxt-hotjar',
+      {
+        id: '1814711',
+        sv: '6'
+      }
+    ]
   ],
 
   sitemap: {
