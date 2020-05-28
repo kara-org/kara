@@ -14,21 +14,31 @@ export default {
   components: {
     NavBar
   },
-  created () {
+  created() {
     this.fetchCurrentUser();
   },
   data() {
     return {
       items: [
         {
-          title: 'Home',
+          title: 'INÍCIO',
           icon: 'home',
           to: { name: 'index' }
         },
         {
-          title: 'Demandas',
+          title: 'QUEM SOMOS',
+          icon: 'lightbulb',
+          to: { name: 'quemsomos' }
+        },
+        {
+          title: 'DEMANDAS',
           icon: 'lightbulb',
           to: { name: 'busca' }
+        },
+        {
+          title: 'ONGS',
+          icon: 'lightbulb',
+          to: { name: 'ongs' }
         }
       ]
     };
