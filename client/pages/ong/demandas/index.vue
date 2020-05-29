@@ -33,7 +33,7 @@ export default {
     MenuLateral
   },
   computed:{
-    ...mapGetters({ demandas: 'demandas/demandas' })
+    ...mapGetters({ demandas: 'demandas/demandas', user: 'login/usuario' })
   },
   methods: {
     ...mapActions('demandas', [
@@ -43,7 +43,7 @@ export default {
     ])
   },
   async mounted (){
-    this.fetchDemandasOng()
+    this.fetchDemandasOng(this.user.objectId)
   }
 };
 </script>

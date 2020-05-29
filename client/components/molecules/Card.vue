@@ -17,7 +17,7 @@
                   <p class="title" style="margin-bottom: 10px;">{{ titulo }}</p>
                   <p class="heading">
                     para
-                    <nuxt-link :to="'/ong/'+idOng" exact-active-class="is-active">{{ ongTitulo }}</nuxt-link>
+                    <nuxt-link :to="'/ong/'+slug" exact-active-class="is-active">{{ ongTitulo }}</nuxt-link>
                   </p>
                 </div>
               </div>

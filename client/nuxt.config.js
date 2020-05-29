@@ -129,7 +129,7 @@ export default {
     [
       'nuxt-buefy',
       {
-        materialDesignIcons: false
+        materialDesignIcons: true
       }
     ],
     // Doc: https://axios.nuxtjs.org/usage
