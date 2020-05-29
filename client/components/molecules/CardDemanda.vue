@@ -62,4 +62,7 @@ export default {
 .heading {
   font-size: 1.5rem;
 }
+.box {
+  height: 100%;
+}
 </style>

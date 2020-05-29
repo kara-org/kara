@@ -1,8 +1,10 @@
 import DemandaService from '../services/DemandaService';
 import BuscarService from '../services/BuscarService';
+import OngService from '../services/OngService';
 
 let serviceBuscar = new BuscarService();
 let serviceDemanda = new DemandaService();
+let serviceOng = new OngService();
 
 export const state = () => ({
   list: [],
@@ -35,9 +37,9 @@ export const mutations = {
 export const actions = {
   async buscar({ commit, dispatch }, { tipo, palavraChave }) {
     commit('UPDATE_SEARCH_TERM', palavraChave);
-    return await serviceBuscar.buscar(palavraChave).then(demandas => {
-      if (demandas.length !== 0) {
-        commit('UPDATE_RESULTADOS', demandas);
+    return await serviceBuscar.buscar(palavraChave).then(items => {
+      if (items.length !== 0) {
+        commit('UPDATE_RESULTADOS', items);
       } else {
         commit('TO_DEFEAULT_RESULTADOS');
       }
@@ -53,6 +55,24 @@ export const actions = {
         serviceBuscar.indexAdd(demandasJson);
         commit('UPDATE_RESULTADOS', demandasJson);
         commit('SET_DEFEAULT_RESULTADOS', demandasJson);
+        commit('ORDER_ITENS');
+      })
+      .catch(err => {
+        console.log(err);
+        dispatch('global/addErro', err, { root: true });
+      })
+      .then(() => dispatch('global/stopLoading', null, { root: true }));
+  },
+
+  async fetchBuscaOng({ commit, dispatch }, tipo) {
+    return await serviceOng
+      .index()
+      .then(ongs => {
+        let ongsJson = ongs.map(ong => ong.toJSON())
+        ongsJson = ongsJson.filter(ong => ong.ativo)
+        serviceBuscar.indexAdd(ongsJson);
+        commit('UPDATE_RESULTADOS', ongsJson);
+        commit('SET_DEFEAULT_RESULTADOS', ongsJson);
         commit('ORDER_ITENS');
       })
       .catch(err => {

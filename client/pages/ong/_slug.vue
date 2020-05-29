@@ -1,6 +1,6 @@
 <template>
   <div>
-    <section class="hero is-medium is-bold">
+    <section class="hero is-bold">
       <div class="hero-body">
         <div class="container">
           <div class="columns is-flex is-vcentered is-centered">
@@ -10,7 +10,7 @@
               </figure>
             </div>
             <div class="column is-4 is-flex">
-              <div class="hero is-vcentered">
+              <div class="hero is-vcentered ">
                 <div class="content">
                   <p class="title ">{{ ong.nome }}</p>
                   <p class="subtitle">{{ ong.email }}</p>
@@ -25,7 +25,7 @@
       </div>
     </section>
     <section class="hero is-medium is-bold">
-      <ListagemCards :list="demandas" />
+      <ListagemCards :list="demandasAtivas" />
     </section>
   </div>
 </template>
@@ -36,7 +36,7 @@ import ListagemCards from '@/components/organisms/ListagemCards';
 import CarrinhoONG from '@/components/organisms/ColunmCarrinhoONG';
 import VLazyImage from 'v-lazy-image';
 
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters} from 'vuex';
 
 export default {
   components: {
@@ -54,7 +54,7 @@ export default {
   },
   computed: {
     ...mapState('ongs', ['ong']),
-    ...mapState('demandas', { demandas: 'list' })
+    ...mapGetters('demandas', { demandasAtivas: 'demandasAtivas' })
   },
   methods: {
     ...mapActions('ongs', ['fetchOngSlug']),

@@ -122,5 +122,8 @@ export const getters = {
   },
   demandas: state => {
     return state.list;
+  },
+  demandasAtivas: state => {
+    return state.list.filter(d => d.ativo);
   }
 };
